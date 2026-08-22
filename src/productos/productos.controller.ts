@@ -76,4 +76,22 @@ export class ProductosController {
   ): ProductoResponseDto {
     return {} as ProductoResponseDto;
   }
+
+
+  
+  @ApiOperation({
+    summary: 'Crear producto',
+    description: 'Crea un nuevo producto.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Producto creado correctamente.',
+    type: ProductoResponseDto,
+  })
+  @Post()
+  create(
+    @Body() createProductoDto: CreateProductoDto,
+  ): ProductoResponseDto {
+    return {} as ProductoResponseDto;
+  }
 }
