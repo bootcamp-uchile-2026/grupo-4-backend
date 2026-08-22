@@ -94,4 +94,29 @@ export class ProductosController {
   ): ProductoResponseDto {
     return {} as ProductoResponseDto;
   }
+
+
+  
+  @ApiOperation({
+    summary: 'Actualizar producto',
+    description: 'Actualiza parcialmente los datos de un producto existente.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único del producto',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Producto actualizado correctamente.',
+    type: ProductoResponseDto,
+  })
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProductoDto: UpdateProductoDto,
+  ): ProductoResponseDto {
+    return {} as ProductoResponseDto;
+  }
 }
