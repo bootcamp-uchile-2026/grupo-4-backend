@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
@@ -24,6 +24,32 @@ export class ProductosController {
   @Get()
   findAll(
     @Query() query: ProductoQueryDto,
+  ): ProductoResponseDto[] {
+    return [];
+  }
+
+  
+  @ApiOperation({
+    summary: 'Obtener productos más vendidos',
+    description: 'Obtiene los productos con mayor cantidad de ventas.',
+  })
+  @ApiQuery({
+    name: 'limite',
+    required: false,
+    type: Number,
+    example: 5,
+    description: 'Cantidad máxima de productos a retornar',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de productos más vendidos obtenida correctamente.',
+    type: ProductoResponseDto,
+    isArray: true,
+  })
+  @Get('top-ventas')
+  findTopVentas(
+    @Query('limite', new DefaultValuePipe(5), ParseIntPipe)
+    limite: number,
   ): ProductoResponseDto[] {
     return [];
   }

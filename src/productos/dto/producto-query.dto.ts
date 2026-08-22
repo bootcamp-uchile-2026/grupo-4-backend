@@ -3,8 +3,8 @@ import { TipoConservacion } from '../enums/tipo-conservacion.enum';
 
 export class ProductoQueryDto {
   @ApiPropertyOptional({
-    description: 'Nombre del producto a buscar',
-    example: 'Mermelada de frutilla',
+    description: 'Busca productos cuyo nombre contenga el texto indicado',
+    example: 'Mermelada',
   })
   nombre?: string;
 
@@ -43,5 +43,5 @@ export class ProductoQueryDto {
     description: 'Filtrar productos que tienen descuento',
     example: true,
   })
-  descuento?: boolean;
+  tieneDescuento?: boolean;
 }
