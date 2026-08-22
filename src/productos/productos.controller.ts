@@ -4,7 +4,7 @@ import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { ProductoResponseDto } from './dto/producto-response.dto';
 import { ProductoQueryDto } from './dto/producto-query.dto';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Productos')
 @Controller('productos')
@@ -52,5 +52,28 @@ export class ProductosController {
     limite: number,
   ): ProductoResponseDto[] {
     return [];
+  }
+
+  
+  @ApiOperation({
+    summary: 'Obtener producto por ID',
+    description: 'Obtiene un producto específico mediante su identificador.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único del producto',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Producto obtenido correctamente.',
+    type: ProductoResponseDto,
+  })
+  @Get(':id')
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): ProductoResponseDto {
+    return {} as ProductoResponseDto;
   }
 }
