@@ -6,8 +6,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('SaborOnline API')
-    .setDescription('API Backend para el ecommerce SaborOnline')
+    .setTitle('LaSobremesa API')
+    .setDescription('API Backend para el ecommerce LaSobremesa')
     .setVersion('1.0')
     .build();
 
