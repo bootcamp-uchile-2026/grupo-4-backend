@@ -119,4 +119,29 @@ export class ProductosController {
   ): ProductoResponseDto {
     return {} as ProductoResponseDto;
   }
+
+
+  
+  @ApiOperation({
+    summary: 'Eliminar producto',
+    description: 'Elimina un producto mediante su identificador.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único del producto',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Producto eliminado correctamente.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Producto no encontrado.',
+  })
+  @Delete(':id')
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): void {}
 }
