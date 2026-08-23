@@ -28,18 +28,21 @@ export class CreateProductoDto {
 
   @ApiProperty({
     example: 1,
+    minimum: 1,
     description: 'ID de la categoría del producto',
   })
   categoriaId: number;
 
   @ApiProperty({
     example: 1,
+    minimum: 1,
     description: 'ID del proveedor del producto',
   })
   proveedorId: number;
 
   @ApiProperty({
     example: 5990,
+    minimum: 1,
     description: 'Precio del producto',
   })
   precio: number;
@@ -54,6 +57,8 @@ export class CreateProductoDto {
 
   @ApiProperty({
     example: 10,
+    minimum: 0,
+    maximum: 100,
     description: 'Porcentaje de descuento del producto',
   })
   descuento: number;
