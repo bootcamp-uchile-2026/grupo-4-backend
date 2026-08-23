@@ -40,7 +40,6 @@ export class ProductoQueryDto {
     description: 'Tipo de conservación',
     enum: TipoConservacion,
     example: TipoConservacion.REFRIGERADO,
-    examples: [TipoConservacion.REFRIGERADO, TipoConservacion.AMBIENTE, TipoConservacion.CONGELADO],
   })
   tipoConservacion?: TipoConservacion;
 

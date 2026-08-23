@@ -87,7 +87,6 @@ export class ProductoResponseDto {
   @ApiProperty({
     enum: TipoConservacion,
     example: TipoConservacion.AMBIENTE,
-    examples: [TipoConservacion.REFRIGERADO, TipoConservacion.AMBIENTE, TipoConservacion.CONGELADO],
     description: 'Tipo de conservación requerido por el producto',
   })
   tipoConservacion: TipoConservacion;
@@ -101,7 +100,7 @@ export class ProductoResponseDto {
   valoracion: number;
 
   @ApiProperty({
-    example: true,
+    example: false,
     description: 'Indica si el producto está destacado como favorito de la tienda',
   })
   favorito: boolean;

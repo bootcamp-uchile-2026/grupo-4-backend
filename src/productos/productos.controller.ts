@@ -21,6 +21,10 @@ export class ProductosController {
     type: ProductoResponseDto,
     isArray: true,
   })
+  @ApiResponse({
+    status: 400,
+    description: 'Los parámetros de búsqueda no son válidos.',
+  })
   @Get()
   findAll(
     @Query() query: ProductoQueryDto,
@@ -37,14 +41,18 @@ export class ProductosController {
     name: 'limite',
     required: false,
     type: Number,
-    example: 5,
-    description: 'Cantidad máxima de productos a retornar',
+    example: 10,
+    description: 'Cantidad máxima de productos a retornar, debe ser mayor a 0',
   })
   @ApiResponse({
     status: 200,
     description: 'Lista de productos más vendidos obtenida correctamente.',
     type: ProductoResponseDto,
     isArray: true,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El límite indicado no es válido.',
   })
   @Get('top-ventas')
   findTopVentas(
@@ -70,6 +78,14 @@ export class ProductosController {
     description: 'Producto obtenido correctamente.',
     type: ProductoResponseDto,
   })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID del producto no es válido.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Producto no encontrado.',
+  })
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe) id: number,
@@ -87,6 +103,14 @@ export class ProductosController {
     status: 201,
     description: 'Producto creado correctamente.',
     type: ProductoResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Los datos del producto no son válidos.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe un producto con los datos proporcionados.',
   })
   @Post()
   create(
@@ -112,6 +136,14 @@ export class ProductosController {
     description: 'Producto actualizado correctamente.',
     type: ProductoResponseDto,
   })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID o los datos del producto no son válidos.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Producto no encontrado.',
+  })
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -135,6 +167,10 @@ export class ProductosController {
   @ApiResponse({
     status: 204,
     description: 'Producto eliminado correctamente.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID del producto no es válido.',
   })
   @ApiResponse({
     status: 404,
