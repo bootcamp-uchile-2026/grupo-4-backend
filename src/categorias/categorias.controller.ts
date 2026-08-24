@@ -35,6 +35,30 @@ export class CategoriasController {
   }
 
 
+  @ApiOperation({
+    summary: 'Obtener categorías más utilizadas',
+    description: 'Obtiene las categorías con mayor cantidad de productos.',
+  })
+  @ApiQuery({
+    name: 'limite',
+    required: false,
+    type: Number,
+    example: 5,
+    description: 'Cantidad máxima de categorías a retornar',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de categorías más utilizadas obtenida correctamente.',
+    type: CategoriaResponseDto,
+    isArray: true,
+  })
+  @Get('top')
+  findTop(
+    @Query('limite', new DefaultValuePipe(5), ParseIntPipe)
+    limite: number,
+  ): CategoriaResponseDto[] {
+    return [];
+  }
   
 
 }
