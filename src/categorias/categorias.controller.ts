@@ -91,4 +91,30 @@ export class CategoriasController {
     return {} as CategoriaResponseDto;
   }
 
+
+  @ApiOperation({
+    summary: 'Crear categoría',
+    description: 'Crea una nueva categoría.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Categoría creada correctamente.',
+    type: CategoriaResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Los datos de la categoría no son válidos.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe una categoría con el nombre indicado.',
+  })
+  @Post()
+  create(
+    @Body() createCategoriaDto: CreateCategoriaDto,
+  ): CategoriaResponseDto {
+    return {} as CategoriaResponseDto;
+  }
+
+  
 }
