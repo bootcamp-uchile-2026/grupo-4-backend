@@ -57,6 +57,26 @@ export class DireccionesController {
     return {} as DireccionResponseDto;
   }
 
+  
+  @ApiOperation({
+    summary: 'Crear dirección',
+    description: 'Crea una nueva dirección.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Dirección creada correctamente.',
+    type: DireccionResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Los datos de la dirección no son válidos.',
+  })
+  @Post()
+  create(
+    @Body() createDireccionDto: CreateDireccionDto,
+  ): DireccionResponseDto {
+    return {} as DireccionResponseDto;
+  }
 
 
 }
