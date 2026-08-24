@@ -61,4 +61,34 @@ export class CategoriasController {
   }
   
 
+  @ApiOperation({
+    summary: 'Obtener categoría por ID',
+    description: 'Obtiene una categoría específica mediante su identificador.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único de la categoría',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Categoría obtenida correctamente.',
+    type: CategoriaResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID de la categoría no es válido.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Categoría no encontrada.',
+  })
+  @Get(':id')
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): CategoriaResponseDto {
+    return {} as CategoriaResponseDto;
+  }
+
 }
