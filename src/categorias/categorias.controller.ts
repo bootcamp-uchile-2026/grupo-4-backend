@@ -151,5 +151,33 @@ export class CategoriasController {
     return {} as CategoriaResponseDto;
   }
 
+
+   @ApiOperation({
+    summary: 'Eliminar categoría',
+    description: 'Elimina una categoría mediante su identificador.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único de la categoría',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Categoría eliminada correctamente.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID de la categoría no es válido.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Categoría no encontrada.',
+  })
+  @Delete(':id')
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): void {}
+
   
 }
