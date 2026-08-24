@@ -57,7 +57,7 @@ export class DireccionesController {
     return {} as DireccionResponseDto;
   }
 
-  
+
   @ApiOperation({
     summary: 'Crear dirección',
     description: 'Crea una nueva dirección.',
@@ -78,5 +78,36 @@ export class DireccionesController {
     return {} as DireccionResponseDto;
   }
 
+
+  @ApiOperation({
+    summary: 'Actualizar dirección',
+    description: 'Actualiza parcialmente los datos de una dirección existente.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único de la dirección',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Dirección actualizada correctamente.',
+    type: DireccionResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID o los datos de la dirección no son válidos.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Dirección no encontrada.',
+  })
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDireccionDto: UpdateDireccionDto,
+  ): DireccionResponseDto {
+    return {} as DireccionResponseDto;
+  }
 
 }
