@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { DireccionesService } from './direcciones.service';
 import { CreateDireccionDto } from './dto/create-direccion.dto';
 import { UpdateDireccionDto } from './dto/update-direccion.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DireccionResponseDto } from './dto/direccion-response.dto';
 
 @ApiTags('Direcciones')
@@ -25,4 +25,38 @@ export class DireccionesController {
     return [];
   }
   
+
+
+  @ApiOperation({
+    summary: 'Obtener dirección por ID',
+    description: 'Obtiene una dirección específica mediante su identificador.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único de la dirección',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Dirección obtenida correctamente.',
+    type: DireccionResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID de la dirección no es válido.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Dirección no encontrada.',
+  })
+  @Get(':id')
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): DireccionResponseDto {
+    return {} as DireccionResponseDto;
+  }
+
+
+
 }
