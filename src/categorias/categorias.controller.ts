@@ -116,5 +116,40 @@ export class CategoriasController {
     return {} as CategoriaResponseDto;
   }
 
+  @ApiOperation({
+    summary: 'Actualizar categoría',
+    description: 'Actualiza parcialmente los datos de una categoría existente.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único de la categoría',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Categoría actualizada correctamente.',
+    type: CategoriaResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID o los datos de la categoría no son válidos.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Categoría no encontrada.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe una categoría con el nombre indicado.',
+  })
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCategoriaDto: UpdateCategoriaDto,
+  ): CategoriaResponseDto {
+    return {} as CategoriaResponseDto;
+  }
+
   
 }
