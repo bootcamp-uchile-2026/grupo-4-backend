@@ -1,34 +1,28 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { DireccionesService } from './direcciones.service';
-import { CreateDireccioneDto } from './dto/create-direccion.dto';
-import { UpdateDireccioneDto } from './dto/update-direccion.dto';
+import { CreateDireccionDto } from './dto/create-direccion.dto';
+import { UpdateDireccionDto } from './dto/update-direccion.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { DireccionResponseDto } from './dto/direccion-response.dto';
 
+@ApiTags('Direcciones')
 @Controller('direcciones')
 export class DireccionesController {
   constructor(private readonly direccionesService: DireccionesService) {}
 
-  @Post()
-  create(@Body() createDireccioneDto: CreateDireccioneDto) {
-    return this.direccionesService.create(createDireccioneDto);
-  }
-
+  @ApiOperation({
+  summary: 'Obtener direcciones',
+  description: 'Obtiene una lista de direcciones.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de direcciones obtenida correctamente.',
+    type: DireccionResponseDto,
+    isArray: true,
+  })
   @Get()
-  findAll() {
-    return this.direccionesService.findAll();
+  findAll(): DireccionResponseDto[] {
+    return [];
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.direccionesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDireccioneDto: UpdateDireccioneDto) {
-    return this.direccionesService.update(+id, updateDireccioneDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.direccionesService.remove(+id);
-  }
+  
 }
