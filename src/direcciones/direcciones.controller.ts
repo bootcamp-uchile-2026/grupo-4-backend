@@ -110,4 +110,34 @@ export class DireccionesController {
     return {} as DireccionResponseDto;
   }
 
+
+
+  @ApiOperation({
+    summary: 'Eliminar dirección',
+    description: 'Elimina una dirección mediante su identificador.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único de la dirección',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Dirección eliminada correctamente.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID de la dirección no es válido.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Dirección no encontrada.',
+  })
+  @Delete(':id')
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): void {}
+
+
 }
