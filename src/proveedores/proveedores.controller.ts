@@ -92,4 +92,49 @@ export class ProveedoresController {
     return {} as ProveedorResponseDto;
   }
 
+
+
+  @ApiOperation({
+    summary: 'Actualizar proveedor',
+    description: 'Actualiza parcialmente los datos de un proveedor existente.',
+  })
+
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único del proveedor',
+  })
+
+  @ApiResponse({
+    status: 200,
+    description: 'Proveedor actualizado correctamente.',
+    type: ProveedorResponseDto,
+  })
+
+  @ApiResponse({
+    status: 400,
+    description: 'El ID o los datos del proveedor no son válidos.',
+  })
+
+  @ApiResponse({
+    status: 404,
+    description: 'Proveedor no encontrado.',
+  })
+
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe un proveedor con los datos proporcionados.',
+  })
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProveedorDto: UpdateProveedorDto,
+  ): ProveedorResponseDto {
+    return {} as ProveedorResponseDto;
+  }
+
+
+
 }
