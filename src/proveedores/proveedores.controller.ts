@@ -64,4 +64,32 @@ export class ProveedoresController {
   }
 
 
+  @ApiOperation({
+    summary: 'Crear proveedor',
+    description: 'Crea un nuevo proveedor.',
+  })
+
+  @ApiResponse({
+    status: 201,
+    description: 'Proveedor creado correctamente.',
+    type: ProveedorResponseDto,
+  })
+
+  @ApiResponse({
+    status: 400,
+    description: 'Los datos del proveedor no son válidos.',
+  })
+
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe un proveedor con los datos proporcionados.',
+  })
+
+  @Post()
+  create(
+    @Body() createProveedorDto: CreateProveedorDto,
+  ): ProveedorResponseDto {
+    return {} as ProveedorResponseDto;
+  }
+
 }
