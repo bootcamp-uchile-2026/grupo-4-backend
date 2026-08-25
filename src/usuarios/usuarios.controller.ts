@@ -81,4 +81,43 @@ export class UsuariosController {
     return {} as UsuarioResponseDto;
   }
 
+
+  @ApiOperation({
+    summary: 'Actualizar usuario',
+    description: 'Actualiza parcialmente los datos de un usuario existente.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único del usuario',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuario actualizado correctamente.',
+    type: UsuarioResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID o los datos del usuario no son válidos.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuario no encontrado.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe un usuario con los datos proporcionados.',
+  })
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUsuarioDto: UpdateUsuarioDto,
+  ): UsuarioResponseDto {
+    return {} as UsuarioResponseDto;
+  }
+
+  
+
+
 }
