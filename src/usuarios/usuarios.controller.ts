@@ -2,33 +2,29 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UsuarioResponseDto } from './dto/usuarios-response.dto';
 
+@ApiTags('Usuarios')
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
-  @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuariosService.create(createUsuarioDto);
-  }
-
+  @ApiOperation({
+    summary: 'Obtener usuarios',
+    description: 'Obtiene una lista de usuarios.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de usuarios obtenida correctamente.',
+    type: UsuarioResponseDto,
+    isArray: true,
+  })
   @Get()
-  findAll() {
-    return this.usuariosService.findAll();
+  findAll(): UsuarioResponseDto[] {
+    return [];
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usuariosService.findOne(+id);
-  }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuariosService.update(+id, updateUsuarioDto);
-  }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usuariosService.remove(+id);
-  }
 }
