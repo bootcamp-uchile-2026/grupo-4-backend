@@ -117,7 +117,32 @@ export class UsuariosController {
     return {} as UsuarioResponseDto;
   }
 
-  
+  @ApiOperation({
+    summary: 'Eliminar usuario',
+    description: 'Elimina un usuario mediante su identificador.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único del usuario',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Usuario eliminado correctamente.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID del usuario no es válido.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuario no encontrado.',
+  })
+  @Delete(':id')
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): void {}
 
 
 }
