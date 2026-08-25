@@ -56,4 +56,29 @@ export class UsuariosController {
     return {} as UsuarioResponseDto;
   }
 
+
+  @ApiOperation({
+    summary: 'Crear usuario',
+    description: 'Crea un nuevo usuario.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Usuario creado correctamente.',
+    type: UsuarioResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Los datos del usuario no son válidos.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe un usuario con los datos proporcionados.',
+  })
+  @Post()
+  create(
+    @Body() createUsuarioDto: CreateUsuarioDto,
+  ): UsuarioResponseDto {
+    return {} as UsuarioResponseDto;
+  }
+
 }
