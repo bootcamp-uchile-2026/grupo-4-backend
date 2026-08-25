@@ -24,4 +24,12 @@ export class CreateUsuarioDto {
     description: 'Número de teléfono del usuario',
   })
   telefono: string;
+
+  @ApiProperty({
+    example: 'MiPassword123!',
+    description: 'Contraseña del usuario',
+    minLength: 8,
+    maxLength: 72,
+  })
+  password: string;
 }
