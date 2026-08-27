@@ -7,9 +7,10 @@ import { DireccionesModule } from './direcciones/direcciones.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { ProveedoresModule } from './proveedores/proveedores.module';
 import { SuscripcionesModule } from './suscripciones/suscripciones.module';
+import { ResenasModule } from './resenas/resenas.module';
 
 @Module({
-  imports: [ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule],
+  imports: [ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule],
   controllers: [AppController],
   providers: [AppService],
 })

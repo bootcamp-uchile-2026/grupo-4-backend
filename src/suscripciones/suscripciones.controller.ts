@@ -16,7 +16,7 @@ export class SuscripcionesController {
   @ApiResponse({
     status: 201,
     description: 'Suscripción creada correctamente.',
-    type: CreateSuscripcionDto,
+    type: Suscripcion,
   })
   @ApiResponse({
     status: 400,
