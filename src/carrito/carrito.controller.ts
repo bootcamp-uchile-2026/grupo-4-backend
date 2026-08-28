@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe } from '@nestjs/common';
 import { CarritoService } from './carrito.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CartResponseDto } from './dto/cart-response.dto';
 import { CartItemResponseDto } from './dto/cart-item-response.dto';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
+import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
 @ApiTags('Carrito')
 @Controller('carrito')
@@ -49,5 +50,36 @@ export class CarritoController {
     return {} as CartItemResponseDto;
   }
 
-  
+
+  @ApiOperation({
+    summary: 'Actualizar cantidad de producto',
+    description: 'Actualiza la cantidad de un producto existente en el carrito.',
+  })
+  @ApiParam({
+    name: 'itemId',
+    type: Number,
+    example: 4,
+    description: 'Identificador único del producto',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Cantidad del producto actualizada correctamente.',
+    type: CartItemResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID o los datos enviados no son válidos.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'El producto no existe en el carrito.',
+  })
+  @Put('items/:itemId')
+  updateItem(
+    @Param('itemId', ParseIntPipe) itemId: number,
+    @Body() updateCartItemDto: UpdateCartItemDto,
+  ): CartItemResponseDto {
+    return {} as CartItemResponseDto;
+  }
+
 }
