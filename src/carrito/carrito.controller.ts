@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CarritoService } from './carrito.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CartResponseDto } from './dto/cart-response.dto';
+import { CartItemResponseDto } from './dto/cart-item-response.dto';
+import { AddCartItemDto } from './dto/add-cart-item.dto';
 
 @ApiTags('Carrito')
 @Controller('carrito')
@@ -21,5 +23,31 @@ export class CarritoController {
   findCart(): CartResponseDto {
     return {} as CartResponseDto;
   }
+  
+
+  @ApiOperation({
+    summary: 'Agregar producto al carrito',
+    description: 'Agrega un producto al carrito del usuario.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Producto agregado correctamente al carrito.',
+    type: CartItemResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Los datos enviados no son válidos.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'El producto no existe.',
+  })
+  @Post('items')
+  addItem(
+    @Body() addCartItemDto: AddCartItemDto,
+  ): CartItemResponseDto {
+    return {} as CartItemResponseDto;
+  }
+
   
 }
