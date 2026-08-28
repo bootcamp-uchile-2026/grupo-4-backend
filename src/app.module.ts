@@ -10,9 +10,10 @@ import { SuscripcionesModule } from './suscripciones/suscripciones.module';
 import { ResenasModule } from './resenas/resenas.module';
 import { CarritoModule } from './carrito/carrito.module';
 import { StockModule } from './stock/stock.module';
+import { PedidosModule } from './pedidos/pedidos.module';
 
 @Module({
-  imports: [ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule],
+  imports: [ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule],
   controllers: [AppController],
   providers: [AppService],
 })
