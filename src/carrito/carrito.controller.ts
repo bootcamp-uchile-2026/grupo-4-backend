@@ -82,4 +82,32 @@ export class CarritoController {
     return {} as CartItemResponseDto;
   }
 
+
+  @ApiOperation({
+    summary: 'Eliminar producto del carrito',
+    description: 'Elimina un producto específico del carrito.',
+  })
+  @ApiParam({
+    name: 'itemId',
+    type: Number,
+    example: 1,
+    description: 'Identificador único del producto',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Producto eliminado correctamente del carrito.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El ID del producto no es válido.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'El producto no existe en el carrito.',
+  })
+  @Delete('items/:itemId')
+  removeItem(
+    @Param('itemId', ParseIntPipe) itemId: number,
+  ): void {}
+
 }
