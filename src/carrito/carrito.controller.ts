@@ -1,34 +1,25 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CarritoService } from './carrito.service';
-import { CreateCarritoDto } from './dto/create-carrito.dto';
-import { UpdateCarritoDto } from './dto/update-carrito.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CartResponseDto } from './dto/cart-response.dto';
 
+@ApiTags('Carrito')
 @Controller('carrito')
 export class CarritoController {
   constructor(private readonly carritoService: CarritoService) {}
 
-  @Post()
-  create(@Body() createCarritoDto: CreateCarritoDto) {
-    return this.carritoService.create(createCarritoDto);
-  }
-
+  @ApiOperation({
+    summary: 'Obtener carrito',
+    description: 'Obtiene el carrito actual del usuario.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Carrito obtenido correctamente.',
+    type: CartResponseDto,
+  })
   @Get()
-  findAll() {
-    return this.carritoService.findAll();
+  findCart(): CartResponseDto {
+    return {} as CartResponseDto;
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.carritoService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCarritoDto: UpdateCarritoDto) {
-    return this.carritoService.update(+id, updateCarritoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.carritoService.remove(+id);
-  }
+  
 }
