@@ -110,4 +110,21 @@ export class CarritoController {
     @Param('itemId', ParseIntPipe) itemId: number,
   ): void {}
 
+
+  @ApiOperation({
+    summary: 'Vaciar carrito',
+    description: 'Elimina todos los productos del carrito del usuario.',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Carrito vaciado correctamente.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Carrito no encontrado.',
+  })
+  @Delete()
+  removeCart(): void {}
+
+
 }
