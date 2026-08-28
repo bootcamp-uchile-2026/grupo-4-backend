@@ -1,4 +1,4 @@
-import { CartItem } from "./card-item.entity";
+import { CartItem } from "./cart-item.entity";
 
 export class Carrito {
   constructor(
