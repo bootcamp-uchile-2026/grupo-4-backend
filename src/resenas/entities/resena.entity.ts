@@ -1,26 +1,22 @@
-import { randomUUID } from "crypto";
-
 export class Resena {
-    id?: number;
-    clienteId: number;
-    productoId: number;
-    titulo: string;
-    detalle: string;
-    estrellas: string;
+  id?: number;
+  clienteId: number;
+  productoId: number;
+  titulo: string;
+  detalle?: string;
+  estrellas: number;
 
-    constructor(
-        self,
-        clienteId: number,
-        productoId: number,
-        titulo: string,
-        detalle: string,
-        estrellas: string
-    ) {
-        self.id = randomUUID();
-        self.clienteId = clienteId;
-        self.productoId = productoId;
-        self.titulo = titulo;
-        self.detalle = detalle;
-        self.estrellas = estrellas;
-    }
+  constructor(
+    clienteId: number,
+    productoId: number,
+    titulo: string,
+    detalle: string | undefined,
+    estrellas: number,
+  ) {
+    this.clienteId = clienteId;
+    this.productoId = productoId;
+    this.titulo = titulo;
+    this.detalle = detalle;
+    this.estrellas = estrellas;
+  }
 }
