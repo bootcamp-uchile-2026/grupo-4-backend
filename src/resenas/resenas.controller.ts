@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, DefaultValuePipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { ResenasService } from './resenas.service';
 import { CreateResenaDto } from './dto/create-resena.dto';
 import { UpdateResenaDto } from './dto/update-resena.dto';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Resena } from './entities/resena.entity';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ResenaResponseDto } from './dto/resena-response.dto';
+import { ResenaQueryDto } from './dto/resena-query.dto';
 
 @Controller('resenas')
 export class ResenasController {
@@ -11,12 +12,12 @@ export class ResenasController {
 
   @ApiOperation({
     summary: 'Crear reseña',
-    description: 'Crea un nueva reseña.',
+    description: 'Crea una nueva reseña.',
   })
   @ApiResponse({
     status: 201,
     description: 'Reseña creada correctamente.',
-    type: Resena,
+    type: ResenaResponseDto,
   })
   @ApiResponse({
     status: 400,
@@ -39,27 +40,11 @@ export class ResenasController {
   @ApiResponse({
     status: 200,
     description: 'Lista de reseñas obtenida correctamente.',
-    type: Resena,
+    type: ResenaResponseDto,
     isArray: true,
   })
-  @ApiQuery({
-    name: 'productoId',
-    required: false,
-    type: Number,
-    example: true,
-    description: 'Id del producto al cual se reseña',
-  })
-  @ApiQuery({
-    name: 'clienteId',
-    required: false,
-    type: Number,
-    example: true,
-    description: 'Id del cliente que hace la reseña',
-  })
   @Get()
-  findAll(
-    @Query('productoId') productoId: number,
-    @Query('clienteId') clienteId: number,) {
+  findAll( @Query() query: ResenaQueryDto ) {
     return this.resenasService.findAll();
   }
 
@@ -75,8 +60,8 @@ export class ResenasController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Reseña obtenido correctamente.',
-    type: Resena,
+    description: 'Reseña obtenida correctamente.',
+    type: ResenaResponseDto,
   })
   @ApiResponse({
     status: 400,
@@ -84,11 +69,11 @@ export class ResenasController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Reseña no encontrado.',
+    description: 'Reseña no encontrada.',
   })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resenasService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe ) id: number) {
+    return this.resenasService.findOne(id);
   }
 
   @ApiOperation({
@@ -104,7 +89,7 @@ export class ResenasController {
   @ApiResponse({
     status: 200,
     description: 'Reseña modificada correctamente.',
-    type: Resena,
+    type: ResenaResponseDto,
   })
   @ApiResponse({
     status: 400,
@@ -119,8 +104,11 @@ export class ResenasController {
     description: 'Ya existe una reseña con los datos proporcionados.',
   })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResenaDto: UpdateResenaDto) {
-    return this.resenasService.update(+id, updateResenaDto);
+  update(
+    @Param('id', ParseIntPipe) id: number, 
+    @Body() updateResenaDto: UpdateResenaDto
+  ) {
+    return this.resenasService.update(id, updateResenaDto);
   }
 
   @ApiOperation({
@@ -146,7 +134,7 @@ export class ResenasController {
     description: 'Reseña no encontrada.',
   })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.resenasService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.resenasService.remove(id);
   }
 }
