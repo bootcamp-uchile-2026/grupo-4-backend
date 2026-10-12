@@ -18,6 +18,16 @@ async function bootstrap() {
     .setTitle('LaSobremesa API')
     .setDescription('API Backend para el ecommerce LaSobremesa')
     .setVersion('1.0')
+    .addGlobalParameters({
+      in: 'header',
+      name: 'x-request-id',
+      required: false,
+      description:
+        'Identificador opcional de la petición. Si se omite, se genera automáticamente.',
+      schema: {
+        type: 'string',
+      },
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

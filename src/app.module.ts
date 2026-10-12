@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductosModule } from './productos/productos.module';
@@ -11,10 +11,17 @@ import { ResenasModule } from './resenas/resenas.module';
 import { CarritoModule } from './carrito/carrito.module';
 import { StockModule } from './stock/stock.module';
 import { PedidosModule } from './pedidos/pedidos.module';
+import { RequestIdMiddleware } from './common/middleware/request-id/request-id.middleware';
 
 @Module({
   imports: [ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer
+    .apply(RequestIdMiddleware)
+    .forRoutes('*');
+  }
+}
