@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpCode } from '@nestjs/common';
 import { ProveedoresService } from './proveedores.service';
 import { CreateProveedorDto } from './dto/create-proveedor.dto';
 import { UpdateProveedorDto } from './dto/update-proveedor.dto';
@@ -24,7 +24,7 @@ export class ProveedoresController {
 
   @Get()
   findAll(): ProveedorResponseDto[] {
-    return [];
+    return this.proveedoresService.findAll();
   }
 
 
@@ -60,7 +60,7 @@ export class ProveedoresController {
   findOne(
     @Param('id', ParseIntPipe) id: number,
   ): ProveedorResponseDto {
-    return {} as ProveedorResponseDto;
+    return this.proveedoresService.findOne(id);
   }
 
 
@@ -89,7 +89,7 @@ export class ProveedoresController {
   create(
     @Body() createProveedorDto: CreateProveedorDto,
   ): ProveedorResponseDto {
-    return {} as ProveedorResponseDto;
+    return this.proveedoresService.create(createProveedorDto);
   }
 
 
@@ -132,7 +132,7 @@ export class ProveedoresController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProveedorDto: UpdateProveedorDto,
   ): ProveedorResponseDto {
-    return {} as ProveedorResponseDto;
+    return this.proveedoresService.update(id, updateProveedorDto);
   }
 
 
@@ -164,8 +164,9 @@ export class ProveedoresController {
   })
 
   @Delete(':id')
-  remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): void {}
+  @HttpCode(204)
+  remove(@Param('id', ParseIntPipe) id: number): void {
+    return this.proveedoresService.remove(id);
+  }
 
 }
