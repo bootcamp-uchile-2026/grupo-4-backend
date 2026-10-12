@@ -4,8 +4,8 @@ import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { ProductoResponseDto } from './dto/producto-response.dto';
 import { ProductoQueryDto } from './dto/producto-query.dto';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('Productos')
 @Controller('productos')
 export class ProductosController {
