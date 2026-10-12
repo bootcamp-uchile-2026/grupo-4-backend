@@ -1,14 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, DefaultValuePipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
 import { SuscripcionesService } from './suscripciones.service';
 import { CreateSuscripcionDto } from './dto/create-suscripcion.dto';
 import { UpdateSuscripcionDto } from './dto/update-suscripcion.dto';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Suscripcion } from './entities/suscripcion.entity';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SuscripcionResponseDTO } from './dto/suscripcion-response.dto';
 
+@ApiTags('Suscripciones')
 @Controller('suscripciones')
 export class SuscripcionesController {
   constructor(private readonly suscripcionesService: SuscripcionesService) { }
 
+  @Post()
   @ApiOperation({
     summary: 'Crear suscripción',
     description: 'Crea una nueva suscripción.',
@@ -16,7 +18,7 @@ export class SuscripcionesController {
   @ApiResponse({
     status: 201,
     description: 'Suscripción creada correctamente.',
-    type: Suscripcion,
+    type: SuscripcionResponseDTO,
   })
   @ApiResponse({
     status: 400,
@@ -26,7 +28,6 @@ export class SuscripcionesController {
     status: 409,
     description: 'Ya existe una suscripción con el nombre y/o productos indicados.',
   })
-  @Post()
   create(@Body() createSuscripcionDto: CreateSuscripcionDto) {
     return this.suscripcionesService.create(createSuscripcionDto);
   }
@@ -38,12 +39,9 @@ export class SuscripcionesController {
   })
   @ApiResponse({
     status: 200,
+    isArray: true,
     description: 'Lista de suscripciones obtenida correctamente.',
-    type: Suscripcion,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Los parámetros de búsqueda no son válidos.',
+    type: SuscripcionResponseDTO,
   })
   @ApiQuery({
     name: 'activa',
@@ -52,32 +50,36 @@ export class SuscripcionesController {
     example: true,
     description: 'Estado de suscripción, activa o deshabilitada',
   })
-  findAll(@Query('activa', new DefaultValuePipe(true)) activa: Boolean) {
-    return this.suscripcionesService.findAll();
+  findAll(@Query('activa') activa: boolean) {
+    return this.suscripcionesService.findAll(activa);
   }
 
   @Get(':id')
   @ApiOperation({
-    summary: 'Obtener suscripcion por id',
-    description: 'Obtiene una suscripcion que tenga el id dado',
+    summary: 'Obtener suscripción por id',
+    description: 'Obtiene una suscripción que tenga el id dado',
   })
   @ApiParam({
     name: 'id',
-    type: Number,
-    example: 1,
+    type: String,
+    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
     description: 'Identificador único de la suscripción',
   })
   @ApiResponse({
     status: 200,
     description: 'Suscripción obtenida correctamente.',
-    type: Suscripcion,
+    type: SuscripcionResponseDTO,
   })
   @ApiResponse({
     status: 400,
-    description: 'Los parámetros de búsqueda no son válidos.',
+    description: 'El id de la suscripción no es válido.',
   })
-  findOne(@Param('id') id: string) {
-    return this.suscripcionesService.findOne(+id);
+  @ApiResponse({
+    status: 404,
+    description: 'Suscripción no encontrada.',
+  })
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.suscripcionesService.findOne(id);
   }
 
   @Patch(':id')
@@ -87,51 +89,57 @@ export class SuscripcionesController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
-    example: 1,
+    type: String,
+    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
     description: 'Identificador único de la suscripción',
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Suscripción modificada correctamente.',
-    type: UpdateSuscripcionDto,
+    type: SuscripcionResponseDTO,
   })
   @ApiResponse({
     status: 400,
     description: 'Los datos de la suscripción no son válidos.',
   })
   @ApiResponse({
+    status: 404,
+    description: 'Suscripción no encontrada.',
+  })
+  @ApiResponse({
     status: 409,
     description: 'Ya existe una suscripción con el nombre y/o productos indicados.',
   })
-  update(@Param('id') id: string, @Body() updateSuscripcioneDto: UpdateSuscripcionDto) {
-    return this.suscripcionesService.update(+id, updateSuscripcioneDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateSuscripcionDto: UpdateSuscripcionDto) {
+    return this.suscripcionesService.update(id, updateSuscripcionDto);
   }
 
+  @Delete(':id')
   @ApiOperation({
-    summary: 'Eliminar suscripción',
-    description: 'Elimina una suscripción mediante su identificador.',
+    summary: 'Deshabilitar suscripción',
+    description: 'Deshabilita una suscripción mediante su identificador.',
   })
   @ApiParam({
     name: 'id',
-    type: Number,
-    example: 1,
+    type: String,
+    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
     description: 'Identificador único de la suscripción',
   })
   @ApiResponse({
-    status: 204,
-    description: 'Suscripción eliminada correctamente.',
+    status: 200,
+    description: 'Suscripción deshabilitada correctamente.',
   })
   @ApiResponse({
     status: 400,
-    description: 'El ID de la suscripción no es válido.',
+    description: 'El id de la suscripción no es válido.',
   })
   @ApiResponse({
     status: 404,
     description: 'Suscripción no encontrada.',
   })
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.suscripcionesService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.suscripcionesService.remove(id);
   }
 }
