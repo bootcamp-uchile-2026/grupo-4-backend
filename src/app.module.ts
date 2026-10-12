@@ -13,13 +13,14 @@ import { StockModule } from './stock/stock.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { RequestIdMiddleware } from './common/middleware/request-id/request-id.middleware';
 import { ConfigModule } from '@nestjs/config';
+import { FavoritosModule } from './favoritos/favoritos.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule],
+    ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule, FavoritosModule],
   controllers: [AppController],
   providers: [AppService],
 })
