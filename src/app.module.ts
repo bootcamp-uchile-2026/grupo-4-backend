@@ -12,9 +12,14 @@ import { CarritoModule } from './carrito/carrito.module';
 import { StockModule } from './stock/stock.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { RequestIdMiddleware } from './common/middleware/request-id/request-id.middleware';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule],
   controllers: [AppController],
   providers: [AppService],
 })
