@@ -1,25 +1,25 @@
 import { randomUUID } from "crypto";
 
 export class Suscripcion {
-    id?: number;
+    id?: string;
     descripcion: string;
     nombre: string;
     precio: number;
-    productosId: number[];
+    productosId: string[];
     activa: boolean;
 
-    constructor(self,
+    constructor(
         descripcion: string,
         nombre: string,
         precio: number,
-        productosId: number[],
+        productosId: string[],
     ) {
-        self.id = randomUUID();
-        self.descripcion = descripcion;
-        self.nombre = nombre;
-        self.precio = precio;
-        self.productosId = productosId;
-        self.activa = true;
+        this.id = randomUUID();
+        this.descripcion = descripcion;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.productosId = productosId;
+        this.activa = true;
 
     }
 }
