@@ -1,7 +1,7 @@
 export class Stock {
   constructor(
-    public id: number,
-    public productoId: number,
+    public id: string,
+    public productoId: string,
     public cantidad: number,
     public stockMinimo: number,
   ) {}
