@@ -19,7 +19,7 @@ export class EstadoPedidoResponseDto {
   @ApiProperty({
     enum: EstadoPedido,
     isArray: true,
-    example: [EstadoPedido.ENVIADO, EstadoPedido.CANCELADO],
+    example: [EstadoPedido.EN_PREPARACION, EstadoPedido.CANCELADO],
     description: 'Estados a los que el pedido puede pasar desde el estado actual',
   })
   @IsArray()

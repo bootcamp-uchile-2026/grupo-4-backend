@@ -1,7 +1,6 @@
+import { HistorialPedidosQueryDto } from './dto/query-historial-pedido.dto';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { HistorialPedidosService } from './historial-pedidos.service';
-import { CreateHistorialPedidoDto } from './dto/create-historial-pedido.dto';
-import { UpdateHistorialPedidoDto } from './dto/update-historial-pedido.dto';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Historial de pedidos')
@@ -16,7 +15,7 @@ export class HistorialPedidosController {
   findAll(
     @Query() query: HistorialPedidosQueryDto,
   ) {
-    return this.service.listarMisPedidos(usuarioId, query);
+    return this.historialPedidosService.findAll();
   }
 
   @ApiOperation({
@@ -27,8 +26,7 @@ export class HistorialPedidosController {
   })
   @Get(':id')
   findOne(
-    @Param('usuarioId', ParseIntPipe) usuarioId: number,
-    @Query() query: HistorialPedidosQueryDto,
+        @Query() query: HistorialPedidosQueryDto,
     @Param('id') id: string
   ) {
     return this.historialPedidosService.findOne(+id);
@@ -37,7 +35,7 @@ export class HistorialPedidosController {
   @ApiOperation({
     description: 'Obtener el detalle de un pedido específico del historial'
   })
-  @Get(':pedidoId')
+  @Get(':pedidoId/detalle')
   findDetalle(
     @Param('pedidoId', ParseIntPipe) pedidoId: number
   ) {

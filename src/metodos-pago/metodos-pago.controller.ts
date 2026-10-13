@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MetodosPagoService } from './metodos-pago.service';
-import { CreateMetodosPagoDto } from './dto/create-metodos-pago.dto';
-import { UpdateMetodosPagoDto } from './dto/update-metodos-pago.dto';
+import { CreateMetodoPagoDto } from './dto/create-metodos-pago.dto';
+import { UpdateMetodoPagoDto } from './dto/update-metodos-pago.dto';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { ApiOperation } from '@nestjs/swagger';
 import { MetodoPagoResponseDto } from './dto/response-metodos-pago.dto';
@@ -54,7 +54,7 @@ export class MetodosPagoController {
     description: 'Método de pago creado' 
   })
   @Post()
-  create(@Body() createMetodosPagoDto: CreateMetodosPagoDto) {
+  create(@Body() createMetodosPagoDto: CreateMetodoPagoDto) {
     return this.metodosPagoService.create(createMetodosPagoDto);
   }
 
@@ -66,7 +66,7 @@ export class MetodosPagoController {
     description: 'Método de pago actualizado' 
   })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMetodosPagoDto: UpdateMetodosPagoDto) {
+  update(@Param('id') id: string, @Body() updateMetodosPagoDto: UpdateMetodoPagoDto) {
     return this.metodosPagoService.update(+id, updateMetodosPagoDto);
   }
 
@@ -78,7 +78,7 @@ export class MetodosPagoController {
     description: 'Método de pago predeterminado actualizado' 
   })
   @Patch('predeterminado')
-  updatePredeterminado(@Body() updateMetodosPagoDto: UpdateMetodosPagoDto) {
+  updatePredeterminado(@Body() updateMetodosPagoDto: UpdateMetodoPagoDto) {
     return this.metodosPagoService.updatePredeterminado(updateMetodosPagoDto);
   }
 

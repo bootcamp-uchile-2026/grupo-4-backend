@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsInt, Min, ValidateNested } from 'class-validator';
-import { HistorialPedidoResumenResponseDto } from './historial-pedido-resumen-response.dto';
+import { HistorialPedidoResumenResponseDto } from './resumen-response-historial-pedido.dto';
 
 export class HistorialPedidosPaginadoResponseDto {
   @ApiProperty({
