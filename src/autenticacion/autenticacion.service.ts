@@ -9,7 +9,7 @@ export class AutenticacionService {
     createAutenticacionDto: CreateAutenticacionDto,
   ): UsuarioResponseDto {
     return {
-      id: 1,
+      id: '1',
       nombre: createAutenticacionDto.nombre,
       apellido: createAutenticacionDto.apellido,
       email: createAutenticacionDto.email,
