@@ -22,12 +22,20 @@ import { HistorialPedidosModule } from './historial-pedidos/historial-pedidos.mo
 import { DatosDespachoModule } from './datos-despacho/datos-despacho.module';
 import { MetodosPagoModule } from './metodos-pago/metodos-pago.module';
 import { MetodosEntregaModule } from './metodos-entrega/metodos-entrega.module';
+import { RegistroModule } from './registro/registro.module';
+import { RecuperacionPasswordModule } from './recuperacion-password/recuperacion-password.module';
+import { VerificacionCorreoModule } from './verificacion-correo/verificacion-correo.module';
+import { DespachosModule } from './despachos/despachos.module';
+import { TiemposEntregaModule } from './tiempos-entrega/tiempos-entrega.module';
+import { SeguimientosDespachoModule } from './seguimientos-despacho/seguimientos-despacho.module';
+import { ZonasDespachoModule } from './zonas-despacho/zonas-despacho.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    RegistroModule, RecuperacionPasswordModule, VerificacionCorreoModule, DespachosModule, TiemposEntregaModule, SeguimientosDespachoModule, ZonasDespachoModule,
     ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule, ItemsCarritoModule, DetallePedidosModule, EstadoPedidosModule, HistorialPedidosModule, DatosDespachoModule, MetodosPagoModule, MetodosEntregaModule],
   controllers: [AppController, ItemsController],
   providers: [AppService, ItemsService],
