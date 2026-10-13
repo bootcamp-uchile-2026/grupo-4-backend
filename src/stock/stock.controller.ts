@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpCode } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
@@ -16,8 +16,8 @@ export class StockController {
   })
   @ApiParam({
     name: 'productoId',
-    type: Number,
-    example: 1,
+    type: String,
+    example: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
     description: 'Identificador único del producto',
   })
   @ApiResponse({
@@ -35,9 +35,9 @@ export class StockController {
   })
   @Get(':productoId')
   findOne(
-    @Param('productoId', ParseIntPipe) productoId: number,
+    @Param('productoId', ParseUUIDPipe) productoId: string,
   ): StockResponseDto {
-    return {} as StockResponseDto;
+    return this.stockService.findOne(productoId);
   }
 
   @ApiOperation({
@@ -65,7 +65,7 @@ export class StockController {
   create(
     @Body() createStockDto: CreateStockDto,
   ): StockResponseDto {
-    return {} as StockResponseDto;
+    return this.stockService.create(createStockDto);
   }
 
   @ApiOperation({
@@ -74,8 +74,8 @@ export class StockController {
   })
   @ApiParam({
     name: 'productoId',
-    type: Number,
-    example: 1,
+    type: String,
+    example: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
     description: 'Identificador único del producto',
   })
   @ApiResponse({
@@ -93,10 +93,10 @@ export class StockController {
   })
   @Patch(':productoId')
   update(
-    @Param('productoId', ParseIntPipe) productoId: number,
+    @Param('productoId', ParseUUIDPipe) productoId: string,
     @Body() updateStockDto: UpdateStockDto,
   ): StockResponseDto {
-    return {} as StockResponseDto;
+    return this.stockService.update(productoId, updateStockDto);
   }
 
   @ApiOperation({
@@ -105,8 +105,8 @@ export class StockController {
   })
   @ApiParam({
     name: 'productoId',
-    type: Number,
-    example: 1,
+    type: String,
+    example: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
     description: 'Identificador único del producto',
   })
   @ApiResponse({
@@ -121,10 +121,13 @@ export class StockController {
     status: 404,
     description: 'No existe stock asociado al producto.',
   })
+  @HttpCode(204)
   @Delete(':productoId')
   remove(
-    @Param('productoId', ParseIntPipe) productoId: number,
-  ): void {}
+    @Param('productoId', ParseUUIDPipe) productoId: string,
+  ): void {
+    this.stockService.remove(productoId);
+  }
 
   
 }
