@@ -13,21 +13,24 @@ import { StockModule } from './stock/stock.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { RequestIdMiddleware } from './common/middleware/request-id/request-id.middleware';
 import { ConfigModule } from '@nestjs/config';
-import { FavoritosModule } from './favoritos/favoritos.module';
-import { TarjetasModule } from './tarjetas/tarjetas.module';
-import { AutenticacionModule } from './autenticacion/autenticacion.module';
-import { CheckoutModule } from './checkout/checkout.module';
-import { DatosFacturacionModule } from './datos-facturacion/datos-facturacion.module';
-import { ConfirmacionCompraModule } from './confirmacion-compra/confirmacion-compra.module';
+import { ItemsController } from './items/items.controller';
+import { ItemsService } from './items/items.service';
+import { ItemsCarritoModule } from './items-carrito/items-carrito.module';
+import { DetallePedidosModule } from './detalle-pedidos/detalle-pedidos.module';
+import { EstadoPedidosModule } from './estado-pedidos/estado-pedidos.module';
+import { HistorialPedidosModule } from './historial-pedidos/historial-pedidos.module';
+import { DatosDespachoModule } from './datos-despacho/datos-despacho.module';
+import { MetodosPagoModule } from './metodos-pago/metodos-pago.module';
+import { MetodosEntregaModule } from './metodos-entrega/metodos-entrega.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule, FavoritosModule, TarjetasModule, AutenticacionModule, CheckoutModule, DatosFacturacionModule, ConfirmacionCompraModule],
-  controllers: [AppController],
-  providers: [AppService],
+    ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule, ItemsCarritoModule, DetallePedidosModule, EstadoPedidosModule, HistorialPedidosModule, DatosDespachoModule, MetodosPagoModule, MetodosEntregaModule],
+  controllers: [AppController, ItemsController],
+  providers: [AppService, ItemsService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer): void {
