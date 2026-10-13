@@ -1,4 +1,4 @@
-import { TipoConservacion } from "../enums/tipo-conservacion.enum";
+import { TipoConservacion } from '../enums/tipo-conservacion.enum';
 
 export class Producto {
   constructor(
@@ -6,16 +6,16 @@ export class Producto {
     public nombre: string,
     public descripcion: string,
     public ingredientes: string,
-    public valorNutricional: string,
     public categoriaId: number,
     public proveedorId: number,
     public precio: number,
-    public fechaVencimiento: Date,
-    public descuento: number,
-    public precioDescuento: number,
-    public imagen: string,
     public tipoConservacion: TipoConservacion,
-    public valoracion: number,
-    public favorito: boolean,
+    public valorNutricional?: string,
+    public fechaVencimiento?: Date,
+    public descuento?: number,
+    public precioDescuento?: number,
+    public imagen?: string,
+    public valoracion?: number,
+    public favorito?: boolean,
   ) {}
 }

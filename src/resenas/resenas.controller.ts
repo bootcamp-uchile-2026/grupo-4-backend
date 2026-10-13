@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, HttpCode } from '@nestjs/common';
 import { ResenasService } from './resenas.service';
 import { CreateResenaDto } from './dto/create-resena.dto';
 import { UpdateResenaDto } from './dto/update-resena.dto';
@@ -45,7 +45,7 @@ export class ResenasController {
   })
   @Get()
   findAll( @Query() query: ResenaQueryDto ) {
-    return this.resenasService.findAll();
+    return this.resenasService.findAll(query);
   }
 
   @ApiOperation({
@@ -134,7 +134,8 @@ export class ResenasController {
     description: 'Reseña no encontrada.',
   })
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @HttpCode(204)
+  remove(@Param('id', ParseIntPipe) id: number): void {
     return this.resenasService.remove(id);
   }
 }

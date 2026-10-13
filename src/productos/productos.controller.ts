@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, DefaultValuePipe, ParseIntPipe, HttpCode } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
@@ -29,7 +29,7 @@ export class ProductosController {
   findAll(
     @Query() query: ProductoQueryDto,
   ): ProductoResponseDto[] {
-    return [];
+    return this.productosService.findAll( query );
   }
 
   
@@ -59,7 +59,7 @@ export class ProductosController {
     @Query('limite', new DefaultValuePipe(5), ParseIntPipe)
     limite: number,
   ): ProductoResponseDto[] {
-    return [];
+    return this.productosService.findTopVentas(limite);
   }
 
   
@@ -90,7 +90,7 @@ export class ProductosController {
   findOne(
     @Param('id', ParseIntPipe) id: number,
   ): ProductoResponseDto {
-    return {} as ProductoResponseDto;
+    return this.productosService.findOne(id);
   }
 
 
@@ -116,7 +116,7 @@ export class ProductosController {
   create(
     @Body() createProductoDto: CreateProductoDto,
   ): ProductoResponseDto {
-    return {} as ProductoResponseDto;
+    return this.productosService.create(createProductoDto);
   }
 
 
@@ -149,7 +149,7 @@ export class ProductosController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductoDto: UpdateProductoDto,
   ): ProductoResponseDto {
-    return {} as ProductoResponseDto;
+    return this.productosService.update(id, updateProductoDto);
   }
 
 
@@ -177,7 +177,8 @@ export class ProductosController {
     description: 'Producto no encontrado.',
   })
   @Delete(':id')
-  remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): void {}
+  @HttpCode(204)
+  remove(@Param('id', ParseIntPipe) id: number): void {
+    return this.productosService.remove(id);
+}
 }
