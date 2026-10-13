@@ -23,4 +23,11 @@ export class ItemsCarritoService {
   remove(id: number) {
     return `This action removes a #${id} itemsCarrito`;
   }
+  eliminarItem(usuarioId: number, itemId: number) {
+    return { usuarioId, itemId, mensaje: 'Eliminación simulada; no se modificaron datos' };
+  }
+
+  eliminarTodosLosItems(usuarioId: number) {
+    return { usuarioId, itemsEliminados: 0, mensaje: 'Vaciado simulado; no se modificaron datos' };
+  }
 }

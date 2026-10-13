@@ -13,8 +13,6 @@ import { StockModule } from './stock/stock.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { RequestIdMiddleware } from './common/middleware/request-id/request-id.middleware';
 import { ConfigModule } from '@nestjs/config';
-import { ItemsController } from './items/items.controller';
-import { ItemsService } from './items/items.service';
 import { ItemsCarritoModule } from './items-carrito/items-carrito.module';
 import { DetallePedidosModule } from './detalle-pedidos/detalle-pedidos.module';
 import { EstadoPedidosModule } from './estado-pedidos/estado-pedidos.module';
@@ -29,8 +27,8 @@ import { MetodosEntregaModule } from './metodos-entrega/metodos-entrega.module';
       isGlobal: true,
     }),
     ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule, ItemsCarritoModule, DetallePedidosModule, EstadoPedidosModule, HistorialPedidosModule, DatosDespachoModule, MetodosPagoModule, MetodosEntregaModule],
-  controllers: [AppController, ItemsController],
-  providers: [AppService, ItemsService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer): void {

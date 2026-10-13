@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEstadoPedidoDto } from './dto/create-estado-pedido.dto';
 import { UpdateEstadoPedidoDto } from './dto/update-estado-pedido.dto';
 
 @Injectable()
 export class EstadoPedidosService {
-  create(createEstadoPedidoDto: CreateEstadoPedidoDto) {
-    return 'This action adds a new estadoPedido';
-  }
 
-  findAll() {
+  findAll(pedidoId?: number) {
     return `This action returns all estadoPedidos`;
   }
 
@@ -22,5 +18,8 @@ export class EstadoPedidosService {
 
   remove(id: number) {
     return `This action removes a #${id} estadoPedido`;
+  }
+  cancelar(pedidoId: number) {
+    return { pedidoId, estado: 'CANCELADO', transicionesPermitidas: [] };
   }
 }

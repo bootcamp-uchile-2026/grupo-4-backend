@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Delete } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { DatosDespachoService } from './datos-despacho.service';
-import { CreateDatosDespachoDto } from './dto/create-datos-despacho.dto';
+import { CreateDatoDespachoDto } from './dto/create-datos-despacho.dto';
 import { UpdateDatosDespachoDto } from './dto/update-datos-despacho.dto';
 import { DatoDespachoResponseDto } from './dto/response-datos-despacho.dto';
 
@@ -41,7 +41,7 @@ export class DatosDespachoController {
     description: 'Dirección de despacho por ID' 
   })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.datosDespachoService.findOne(id);
   }
 
@@ -53,7 +53,7 @@ export class DatosDespachoController {
     description: 'Nueva dirección de despacho creada' 
   })
   @Post()
-  create(@Body() createDatosDespachoDto: CreateDatosDespachoDto) {
+  create(@Body() createDatosDespachoDto: CreateDatoDespachoDto) {
     return this.datosDespachoService.create(createDatosDespachoDto);
   }
 
@@ -65,7 +65,7 @@ export class DatosDespachoController {
     description: 'Dirección de despacho actualizada' 
   })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDatosDespachoDto: UpdateDatosDespachoDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateDatosDespachoDto: UpdateDatosDespachoDto) {
     return this.datosDespachoService.update(id, updateDatosDespachoDto);
   }
 
@@ -89,7 +89,7 @@ export class DatosDespachoController {
     description: 'Dirección de despacho eliminada' 
   })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.datosDespachoService.remove(id);
   }
 }
