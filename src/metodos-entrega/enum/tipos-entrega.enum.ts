@@ -1,0 +1,4 @@
+export enum TipoEntrega {
+  DOMICILIO = 'DOMICILIO',
+  RETIRO_EN_TIENDA = 'RETIRO_EN_TIENDA',
+}

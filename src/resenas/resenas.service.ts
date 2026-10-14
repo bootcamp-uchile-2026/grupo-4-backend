@@ -1,26 +1,59 @@
+
 import { Injectable } from '@nestjs/common';
 import { CreateResenaDto } from './dto/create-resena.dto';
 import { UpdateResenaDto } from './dto/update-resena.dto';
+import { ResenaQueryDto } from './dto/resena-query.dto';
+import { ResenaResponseDto } from './dto/resena-response.dto';
 
 @Injectable()
 export class ResenasService {
-  create(createResenaDto: CreateResenaDto) {
-    return 'This action adds a new resena';
+  private readonly resenas: ResenaResponseDto[] = [
+    {
+      id: 1,
+      clienteId: 1,
+      productoId: 1,
+      titulo: 'Excelente mermelada',
+      detalle: 'Muy buen sabor y textura.',
+      estrellas: 5,
+    },
+    {
+      id: 2,
+      clienteId: 2,
+      productoId: 2,
+      titulo: 'Buen producto',
+      detalle: 'Queso fresco y de buena calidad.',
+      estrellas: 4,
+    },
+    {
+      id: 3,
+      clienteId: 1,
+      productoId: 3,
+      titulo: 'Muy recomendado',
+      detalle: 'Buen aceite para cocinar y aliñar.',
+      estrellas: 5,
+    },
+  ];
+
+  findAll(query: ResenaQueryDto): ResenaResponseDto[] {
+    return [...this.resenas];
   }
 
-  findAll() {
-    return `This action returns all resenas`;
+  findOne(id: number): ResenaResponseDto {
+    return { ...this.resenas[0] };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} resena`;
+  create(dto: CreateResenaDto): ResenaResponseDto {
+    return { ...this.resenas[0] };
   }
 
-  update(id: number, updateResenaDto: UpdateResenaDto) {
-    return `This action updates a #${id} resena`;
+  update(
+    id: number,
+    dto: UpdateResenaDto,
+  ): ResenaResponseDto {
+    return { ...this.resenas[0] };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} resena`;
+  remove(id: number): void {
+    // Dummy: no elimina datos reales.
   }
 }
