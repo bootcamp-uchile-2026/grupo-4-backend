@@ -5,7 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
-  ParseUUIDPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -41,7 +41,9 @@ export class DespachosController {
     description: 'El pedido ya tiene un despacho.',
   })
   @Post()
-  create(@Body() createDespachoDto: CreateDespachoDto): DespachoResponseDto {
+  create(
+    @Body() createDespachoDto: CreateDespachoDto,
+  ): Promise<DespachoResponseDto> {
     return this.despachosService.create(createDespachoDto);
   }
 
@@ -61,7 +63,7 @@ export class DespachosController {
     description: 'Los parámetros de búsqueda no son válidos.',
   })
   @Get()
-  findAll(@Query() query: DespachoQueryDto): DespachoResponseDto[] {
+  findAll(@Query() query: DespachoQueryDto): Promise<DespachoResponseDto[]> {
     return this.despachosService.findAll(query);
   }
 
@@ -71,8 +73,8 @@ export class DespachosController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del despacho',
   })
   @ApiResponse({
@@ -89,7 +91,7 @@ export class DespachosController {
     description: 'Despacho no encontrado.',
   })
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): DespachoResponseDto {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<DespachoResponseDto> {
     return this.despachosService.findOne(id);
   }
 
@@ -100,8 +102,8 @@ export class DespachosController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del despacho',
   })
   @ApiResponse({
@@ -123,9 +125,9 @@ export class DespachosController {
   })
   @Patch(':id')
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateDespachoDto: UpdateDespachoDto,
-  ): DespachoResponseDto {
+  ): Promise<DespachoResponseDto> {
     return this.despachosService.update(id, updateDespachoDto);
   }
 
@@ -135,8 +137,8 @@ export class DespachosController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del despacho',
   })
   @ApiResponse({
@@ -153,7 +155,7 @@ export class DespachosController {
   })
   @HttpCode(204)
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string): void {
-    this.despachosService.remove(id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.despachosService.remove(id);
   }
 }

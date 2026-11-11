@@ -11,7 +11,9 @@ describe('ConfirmacionCompraController', () => {
       providers: [ConfirmacionCompraService],
     }).compile();
 
-    controller = module.get<ConfirmacionCompraController>(ConfirmacionCompraController);
+    controller = module.get<ConfirmacionCompraController>(
+      ConfirmacionCompraController,
+    );
   });
 
   it('should be defined', () => {

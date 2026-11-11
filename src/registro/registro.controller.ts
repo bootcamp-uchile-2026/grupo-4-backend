@@ -29,7 +29,7 @@ export class RegistroController {
     description: 'Ya existe un usuario con ese email.',
   })
   @Post()
-  registrar(@Body() registroDto: RegistroDto): UsuarioResponseDto {
+  registrar(@Body() registroDto: RegistroDto): Promise<UsuarioResponseDto> {
     return this.registroService.registrar(registroDto);
   }
 }

@@ -1,19 +1,28 @@
-import { TipoConservacion } from 'src/productos/enums/tipo-conservacion.enum';
-import { TipoEntrega } from '../enum/tipos-entrega.enum';
+import {
+  Column,
+  Entity,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+  Check,
+} from 'typeorm';
 
+@Entity('metodos_entrega')
 export class MetodosEntrega {
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  id!: number;
 
-    public id: number;
-    public nombre: string;
-    public descripcion: string | null;
-    public tipo: TipoEntrega;
-    public costo: number;
-    public costoGratisDesde: number | null;
-    public diasEstimadosMin: number;
-    public diasEstimadosMax: number;
-    public tiposConservacionPermitidos: TipoConservacion[];
-    public comunasCobertura: string[] | null;
-    public activo: boolean;
-    public creadoEn: Date;
-    public actualizadoEn: Date | null;
+  @Column({ type: 'varchar', length: 120, nullable: false, unique: true })
+  nombre!: string;
+
+  @Column({
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    nullable: false,
+    default: 0,
+  })
+  precio!: string;
 }

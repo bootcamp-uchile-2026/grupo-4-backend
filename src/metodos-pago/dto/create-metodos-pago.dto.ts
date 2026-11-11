@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 const trim = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.trim() : value;
@@ -14,7 +20,9 @@ export class CreateMetodoPagoDto {
   })
   @IsString({ message: 'tokenPasarela debe ser un texto' })
   @IsNotEmpty({ message: 'tokenPasarela es obligatorio' })
-  @MaxLength(255, { message: 'tokenPasarela no puede superar los 255 caracteres' })
+  @MaxLength(255, {
+    message: 'tokenPasarela no puede superar los 255 caracteres',
+  })
   tokenPasarela: string;
 
   @ApiPropertyOptional({

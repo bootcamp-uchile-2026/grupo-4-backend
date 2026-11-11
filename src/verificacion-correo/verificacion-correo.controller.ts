@@ -39,7 +39,7 @@ export class VerificacionCorreoController {
   @Post()
   solicitar(
     @Body() solicitarVerificacionDto: SolicitarVerificacionDto,
-  ): VerificacionCorreoResponseDto {
+  ): Promise<VerificacionCorreoResponseDto> {
     return this.verificacionCorreoService.solicitar(solicitarVerificacionDto);
   }
 
@@ -68,7 +68,7 @@ export class VerificacionCorreoController {
   @Post('confirmar')
   confirmar(
     @Body() confirmarVerificacionDto: ConfirmarVerificacionDto,
-  ): EstadoVerificacionResponseDto {
+  ): Promise<EstadoVerificacionResponseDto> {
     return this.verificacionCorreoService.confirmar(confirmarVerificacionDto);
   }
 
@@ -92,7 +92,7 @@ export class VerificacionCorreoController {
   @Get('estado')
   estado(
     @Query() query: EstadoVerificacionQueryDto,
-  ): EstadoVerificacionResponseDto {
+  ): Promise<EstadoVerificacionResponseDto> {
     return this.verificacionCorreoService.estado(query.email);
   }
 }

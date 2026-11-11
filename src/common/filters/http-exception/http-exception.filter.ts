@@ -1,4 +1,3 @@
-
 import {
   ArgumentsHost,
   Catch,
@@ -15,9 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
     const context = host.switchToHttp();
     const response = context.getResponse<Response>();
-    const request = context.getRequest<
-      Request & { requestId?: string }
-    >();
+    const request = context.getRequest<Request & { requestId?: string }>();
 
     let statusCode = 500;
     let error = 'INTERNAL_SERVER_ERROR';

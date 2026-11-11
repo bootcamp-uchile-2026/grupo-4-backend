@@ -1,11 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, DefaultValuePipe, ParseIntPipe, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+  HttpCode,
+} from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { ProductoResponseDto } from './dto/producto-response.dto';
 import { ProductoQueryDto } from './dto/producto-query.dto';
 
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 @ApiTags('Productos')
 @Controller('productos')
 export class ProductosController {
@@ -26,13 +44,10 @@ export class ProductosController {
     description: 'Los parámetros de búsqueda no son válidos.',
   })
   @Get()
-  findAll(
-    @Query() query: ProductoQueryDto,
-  ): ProductoResponseDto[] {
-    return this.productosService.findAll( query );
+  findAll(@Query() query: ProductoQueryDto): Promise<ProductoResponseDto[]> {
+    return this.productosService.findAll(query);
   }
 
-  
   @ApiOperation({
     summary: 'Obtener productos más vendidos',
     description: 'Obtiene los productos con mayor cantidad de ventas.',
@@ -58,11 +73,10 @@ export class ProductosController {
   findTopVentas(
     @Query('limite', new DefaultValuePipe(5), ParseIntPipe)
     limite: number,
-  ): ProductoResponseDto[] {
+  ): Promise<ProductoResponseDto[]> {
     return this.productosService.findTopVentas(limite);
   }
 
-  
   @ApiOperation({
     summary: 'Obtener producto por ID',
     description: 'Obtiene un producto específico mediante su identificador.',
@@ -87,14 +101,10 @@ export class ProductosController {
     description: 'Producto no encontrado.',
   })
   @Get(':id')
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): ProductoResponseDto {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<ProductoResponseDto> {
     return this.productosService.findOne(id);
   }
 
-
-  
   @ApiOperation({
     summary: 'Crear producto',
     description: 'Crea un nuevo producto.',
@@ -113,14 +123,10 @@ export class ProductosController {
     description: 'Ya existe un producto con los datos proporcionados.',
   })
   @Post()
-  create(
-    @Body() createProductoDto: CreateProductoDto,
-  ): ProductoResponseDto {
+  create(@Body() createProductoDto: CreateProductoDto): Promise<ProductoResponseDto> {
     return this.productosService.create(createProductoDto);
   }
 
-
-  
   @ApiOperation({
     summary: 'Actualizar producto',
     description: 'Actualiza parcialmente los datos de un producto existente.',
@@ -148,12 +154,10 @@ export class ProductosController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductoDto: UpdateProductoDto,
-  ): ProductoResponseDto {
+  ): Promise<ProductoResponseDto> {
     return this.productosService.update(id, updateProductoDto);
   }
 
-
-  
   @ApiOperation({
     summary: 'Eliminar producto',
     description: 'Elimina un producto mediante su identificador.',
@@ -178,7 +182,7 @@ export class ProductosController {
   })
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseIntPipe) id: number): void {
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.productosService.remove(id);
-}
+  }
 }

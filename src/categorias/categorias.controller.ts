@@ -1,8 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
+} from '@nestjs/common';
 import { CategoriasService } from './categorias.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CategoriaResponseDto } from './dto/categoria-response.dto';
 
 @ApiTags('Categorias')
@@ -12,7 +29,8 @@ export class CategoriasController {
 
   @ApiOperation({
     summary: 'Obtener categorías',
-    description: 'Obtiene una lista de categorías, opcionalmente filtradas por nombre.',
+    description:
+      'Obtiene una lista de categorías, opcionalmente filtradas por nombre.',
   })
   @ApiQuery({
     name: 'nombre',
@@ -28,12 +46,9 @@ export class CategoriasController {
     isArray: true,
   })
   @Get()
-  findAll(
-    @Query('nombre') nombre?: string,
-  ): CategoriaResponseDto[] {
+  findAll(@Query('nombre') nombre?: string): CategoriaResponseDto[] {
     return [];
   }
-
 
   @ApiOperation({
     summary: 'Obtener categorías más utilizadas',
@@ -59,7 +74,6 @@ export class CategoriasController {
   ): CategoriaResponseDto[] {
     return [];
   }
-  
 
   @ApiOperation({
     summary: 'Obtener categoría por ID',
@@ -85,12 +99,9 @@ export class CategoriasController {
     description: 'Categoría no encontrada.',
   })
   @Get(':id')
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): CategoriaResponseDto {
+  findOne(@Param('id', ParseIntPipe) id: number): CategoriaResponseDto {
     return {} as CategoriaResponseDto;
   }
-
 
   @ApiOperation({
     summary: 'Crear categoría',
@@ -110,9 +121,7 @@ export class CategoriasController {
     description: 'Ya existe una categoría con el nombre indicado.',
   })
   @Post()
-  create(
-    @Body() createCategoriaDto: CreateCategoriaDto,
-  ): CategoriaResponseDto {
+  create(@Body() createCategoriaDto: CreateCategoriaDto): CategoriaResponseDto {
     return {} as CategoriaResponseDto;
   }
 
@@ -151,8 +160,7 @@ export class CategoriasController {
     return {} as CategoriaResponseDto;
   }
 
-
-   @ApiOperation({
+  @ApiOperation({
     summary: 'Eliminar categoría',
     description: 'Elimina una categoría mediante su identificador.',
   })
@@ -175,9 +183,5 @@ export class CategoriasController {
     description: 'Categoría no encontrada.',
   })
   @Delete(':id')
-  remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): void {}
-
-  
+  remove(@Param('id', ParseIntPipe) id: number): void {}
 }

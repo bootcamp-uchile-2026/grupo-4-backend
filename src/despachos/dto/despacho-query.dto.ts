@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsUUID } from 'class-validator';
+import { IsEnum, IsOptional, IsInt } from 'class-validator';
+import { Type } from 'class-transformer';
 import { EstadoDespacho } from '../enums/estado-despacho.enum';
 
 export class DespachoQueryDto {
@@ -8,8 +9,9 @@ export class DespachoQueryDto {
     description: 'Filtrar despachos por ID del pedido',
   })
   @IsOptional()
-  @IsUUID('all', { message: 'pedidoId debe ser un UUID válido' })
-  pedidoId?: string;
+  @Type(() => Number)
+  @IsInt({ message: 'pedidoId debe ser un entero' })
+  pedidoId?: number;
 
   @ApiPropertyOptional({
     enum: EstadoDespacho,
