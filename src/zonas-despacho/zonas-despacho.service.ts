@@ -3,92 +3,50 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Not } from 'typeorm';
 import { CreateZonaDespachoDto } from './dto/create-zona-despacho.dto';
 import { UpdateZonaDespachoDto } from './dto/update-zona-despacho.dto';
 import { ZonaDespachoQueryDto } from './dto/zona-despacho-query.dto';
 import { ZonaDespacho } from './entities/zona-despacho.entity';
-
 @Injectable()
 export class ZonasDespachoService {
-  private zonas: ZonaDespacho[] = [];
-
-  constructor() {
-    this.create({
-      nombre: 'Santiago Centro',
-      comunas: ['Santiago', 'Providencia', 'Ñuñoa'],
-      costoEnvio: 3990,
-    });
-    this.create({
-      nombre: 'Valparaíso',
-      comunas: ['Valparaíso', 'Viña del Mar'],
-      costoEnvio: 5990,
-    });
-  }
-
-  create(createZonaDespachoDto: CreateZonaDespachoDto) {
-    const existe = this.zonas.find(
-      (z) => z.nombre === createZonaDespachoDto.nombre,
-    );
-    if (existe) {
+  constructor(
+    @InjectRepository(ZonaDespacho)
+    private readonly repo: Repository<ZonaDespacho>,
+  ) {}
+  async create(dto: CreateZonaDespachoDto) {
+    if (await this.repo.existsBy({ nombre: dto.nombre }))
       throw new ConflictException(
         'Ya existe una zona de despacho con ese nombre.',
       );
-    }
-
-    const zona = new ZonaDespacho(
-      randomUUID(),
-      createZonaDespachoDto.nombre,
-      createZonaDespachoDto.comunas,
-      createZonaDespachoDto.costoEnvio,
-      true,
-    );
-    this.zonas.push(zona);
-    return zona;
+    return this.repo.save(this.repo.create({ nombre: dto.nombre }));
   }
-
-  findAll(query: ZonaDespachoQueryDto) {
-    if (query.activa === undefined) {
-      return this.zonas;
-    }
-    return this.zonas.filter((z) => z.activa === query.activa);
+  async findAll(_q: ZonaDespachoQueryDto) {
+    return this.repo.find();
   }
-
-  findOne(id: string) {
-    const zona = this.zonas.find((z) => z.id === id);
-    if (!zona) {
-      throw new NotFoundException('Zona de despacho no encontrada.');
-    }
-    return zona;
+  private async buscar(id: number) {
+    const z = await this.repo.findOneBy({ id });
+    if (!z) throw new NotFoundException('Zona de despacho no encontrada.');
+    return z;
   }
-
-  update(id: string, updateZonaDespachoDto: UpdateZonaDespachoDto) {
-    const zona = this.findOne(id);
-
-    if (updateZonaDespachoDto.nombre) {
-      const existe = this.zonas.find(
-        (z) => z.nombre === updateZonaDespachoDto.nombre && z.id !== id,
-      );
-      if (existe) {
+  async findOne(id: number) {
+    return this.buscar(id);
+  }
+  async update(id: number, dto: UpdateZonaDespachoDto) {
+    const z = await this.buscar(id);
+    if (dto.nombre !== undefined) {
+      if (await this.repo.existsBy({ nombre: dto.nombre, id: Not(id) }))
         throw new ConflictException(
           'Ya existe una zona de despacho con ese nombre.',
         );
-      }
+      z.nombre = dto.nombre;
     }
-
-    for (const campo in updateZonaDespachoDto) {
-      const valor = updateZonaDespachoDto[campo];
-      if (valor !== undefined && valor !== null) {
-        zona[campo] = valor;
-      }
-    }
-
-    return zona;
+    return this.repo.save(z);
   }
-
-  remove(id: string) {
-    const zona = this.findOne(id);
-    zona.activa = false;
-    return zona;
+  async remove(id: number) {
+    const z = await this.buscar(id);
+    await this.repo.remove(z);
+    return z;
   }
 }

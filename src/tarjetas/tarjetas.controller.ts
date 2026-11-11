@@ -1,13 +1,5 @@
-import {
-  Body,
-  Controller,
-  Post,
-} from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TarjetasService } from './tarjetas.service';
 import { CreateTarjetaDto } from './dto/create-tarjeta.dto';
 import { TarjetaResponseDto } from './dto/tarjeta-response.dto';
@@ -26,9 +18,7 @@ export class TarjetasController {
     description: 'Tarjeta procesada en modo simulación',
     type: TarjetaResponseDto,
   })
-  create(
-    @Body() createTarjetaDto: CreateTarjetaDto,
-  ): TarjetaResponseDto {
+  create(@Body() createTarjetaDto: CreateTarjetaDto): TarjetaResponseDto {
     return this.tarjetasService.create(createTarjetaDto);
   }
 }

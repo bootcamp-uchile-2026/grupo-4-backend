@@ -1,13 +1,20 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateNested, } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
 import { CreatePedidoItemDto } from 'src/pedidos/dto/create-pedido-item.dto';
 
-
 export class CotizarEntregaDto {
-  @ApiProperty({ 
-    type: () => [CreatePedidoItemDto], 
-    description: 'Productos a despachar' 
+  @ApiProperty({
+    type: () => [CreatePedidoItemDto],
+    description: 'Productos a despachar',
   })
   @IsArray({ message: 'items debe ser un arreglo' })
   @ArrayNotEmpty({ message: 'Debes incluir al menos un producto' })

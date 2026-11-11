@@ -1,7 +1,21 @@
+
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TipoConservacion } from '../enums/tipo-conservacion.enum';
-import { IsDate, IsEnum, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUrl, Matches, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
+
+import { TipoConservacion } from '../enums/tipo-conservacion.enum';
 
 export class CreateProductoDto {
   @ApiProperty({
@@ -31,7 +45,7 @@ export class CreateProductoDto {
     description: 'Ingredientes del producto',
   })
   @IsString({ message: 'ingredientes debe ser un texto' })
-  @IsNotEmpty({ message: 'ingredientes no puede estar vacío' })
+  @IsNotEmpty({ message: 'ingredientes no puede estar vacía' })
   @Matches(/\S/, {
     message: 'ingredientes no puede contener solo espacios',
   })
@@ -109,9 +123,12 @@ export class CreateProductoDto {
     description: 'URL de la imagen del producto',
   })
   @IsOptional()
-  @IsUrl({}, {
-    message: 'imagen debe ser una URL válida',
-  })
+  @IsUrl(
+    {},
+    {
+      message: 'imagen debe ser una URL válida',
+    },
+  )
   imagen?: string;
 
   @ApiProperty({
@@ -124,4 +141,14 @@ export class CreateProductoDto {
       'tipoConservacion debe ser AMBIENTE, REFRIGERADO o CONGELADO',
   })
   tipoConservacion: TipoConservacion;
+
+  @ApiPropertyOptional({
+    example: false,
+    description: 'Indica si el producto está destacado por la tienda',
+  })
+  @IsOptional()
+  @IsBoolean({
+    message: 'favorito debe ser un booleano',
+  })
+  favorito?: boolean;
 }

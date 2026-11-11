@@ -1,14 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsUUID, Min } from 'class-validator';
+import { IsInt, Min } from 'class-validator';
 
 export class CreateStockDto {
   @ApiProperty({
-    example: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
+    example: 1,
     description: 'ID del producto asociado al stock',
   })
-  @IsUUID('all', { message: 'productoId debe ser un UUID válido' })
-  productoId: string;
+  @Type(() => Number)
+  @IsInt({ message: 'productoId debe ser entero' })
+  @Min(1)
+  productoId: number;
 
   @ApiProperty({
     example: 50,

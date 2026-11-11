@@ -3,16 +3,16 @@ import { EstadoSeguimiento } from '../enums/estado-seguimiento.enum';
 
 export class SeguimientoDespachoResponseDto {
   @ApiProperty({
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    example: 1,
     description: 'Identificador único del seguimiento',
   })
-  id: string;
+  id: number;
 
   @ApiProperty({
-    example: 'a3bb189e-8bf9-4888-9912-ace4e6543002',
+    example: 1,
     description: 'ID del despacho al que pertenece el seguimiento',
   })
-  despachoId: string;
+  despachoId: number;
 
   @ApiProperty({
     enum: EstadoSeguimiento,

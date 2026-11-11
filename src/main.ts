@@ -10,9 +10,7 @@ async function bootstrap() {
 
   app.enableCors();
 
-  app.useGlobalInterceptors(
-    new LoggingInterceptor(),
-  );
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,9 +20,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalFilters(
-    new HttpExceptionFilter()
-  );
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('LaSobremesa API')

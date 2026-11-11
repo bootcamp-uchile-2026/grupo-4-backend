@@ -34,7 +34,7 @@ export class RecuperacionPasswordController {
   @Post()
   solicitar(
     @Body() solicitarRecuperacionDto: SolicitarRecuperacionDto,
-  ): SolicitudRecuperacionResponseDto {
+  ): Promise<SolicitudRecuperacionResponseDto> {
     return this.recuperacionPasswordService.solicitar(solicitarRecuperacionDto);
   }
 
@@ -61,7 +61,7 @@ export class RecuperacionPasswordController {
   @Post('confirmar')
   confirmar(
     @Body() confirmarRecuperacionDto: ConfirmarRecuperacionDto,
-  ): MensajeResponseDto {
+  ): Promise<MensajeResponseDto> {
     return this.recuperacionPasswordService.confirmar(confirmarRecuperacionDto);
   }
 }

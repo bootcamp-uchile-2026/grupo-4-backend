@@ -1,4 +1,3 @@
-
 import { Injectable } from '@nestjs/common';
 import { CreateProveedorDto } from './dto/create-proveedor.dto';
 import { UpdateProveedorDto } from './dto/update-proveedor.dto';
@@ -42,10 +41,7 @@ export class ProveedoresService {
     return { ...this.proveedores[0] };
   }
 
-  update(
-    id: number,
-    dto: UpdateProveedorDto,
-  ): ProveedorResponseDto {
+  update(id: number, dto: UpdateProveedorDto): ProveedorResponseDto {
     return { ...this.proveedores[0] };
   }
 

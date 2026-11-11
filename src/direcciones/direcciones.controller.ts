@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { DireccionesService } from './direcciones.service';
 import { CreateDireccionDto } from './dto/create-direccion.dto';
 import { UpdateDireccionDto } from './dto/update-direccion.dto';
@@ -11,8 +20,8 @@ export class DireccionesController {
   constructor(private readonly direccionesService: DireccionesService) {}
 
   @ApiOperation({
-  summary: 'Obtener direcciones',
-  description: 'Obtiene una lista de direcciones.',
+    summary: 'Obtener direcciones',
+    description: 'Obtiene una lista de direcciones.',
   })
   @ApiResponse({
     status: 200,
@@ -24,8 +33,6 @@ export class DireccionesController {
   findAll(): DireccionResponseDto[] {
     return [];
   }
-  
-
 
   @ApiOperation({
     summary: 'Obtener dirección por ID',
@@ -51,12 +58,9 @@ export class DireccionesController {
     description: 'Dirección no encontrada.',
   })
   @Get(':id')
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): DireccionResponseDto {
+  findOne(@Param('id', ParseIntPipe) id: number): DireccionResponseDto {
     return {} as DireccionResponseDto;
   }
-
 
   @ApiOperation({
     summary: 'Crear dirección',
@@ -72,12 +76,9 @@ export class DireccionesController {
     description: 'Los datos de la dirección no son válidos.',
   })
   @Post()
-  create(
-    @Body() createDireccionDto: CreateDireccionDto,
-  ): DireccionResponseDto {
+  create(@Body() createDireccionDto: CreateDireccionDto): DireccionResponseDto {
     return {} as DireccionResponseDto;
   }
-
 
   @ApiOperation({
     summary: 'Actualizar dirección',
@@ -110,8 +111,6 @@ export class DireccionesController {
     return {} as DireccionResponseDto;
   }
 
-
-
   @ApiOperation({
     summary: 'Eliminar dirección',
     description: 'Elimina una dirección mediante su identificador.',
@@ -135,9 +134,5 @@ export class DireccionesController {
     description: 'Dirección no encontrada.',
   })
   @Delete(':id')
-  remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): void {}
-
-
+  remove(@Param('id', ParseIntPipe) id: number): void {}
 }

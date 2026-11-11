@@ -1,10 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { DetallePedidosService } from './detalle-pedidos.service';
 import { CreateDetallePedidoDto } from './dto/create-detalle-pedido.dto';
 import { UpdateDetallePedidoDto } from './dto/update-detalle-pedido.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CreatePedidoItemDto } from 'src/pedidos/dto/create-pedido-item.dto';
-
 
 @ApiTags('Detalle de pedidos')
 @Controller('pedidos/:pedidoId/items')

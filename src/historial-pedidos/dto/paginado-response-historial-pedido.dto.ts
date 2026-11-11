@@ -9,7 +9,7 @@ export class HistorialPedidosPaginadoResponseDto {
     type: () => [HistorialPedidoResumenResponseDto],
     description: 'Pedidos de la página actual',
   })
-  @IsArray( { message: 'El data debe ser un arreglo' })
+  @IsArray({ message: 'El data debe ser un arreglo' })
   @ValidateNested({ each: true })
   @Type(() => HistorialPedidoResumenResponseDto)
   data: HistorialPedidoResumenResponseDto[];
@@ -24,7 +24,11 @@ export class HistorialPedidosPaginadoResponseDto {
   @Min(1, { message: 'El límite debe ser al menos 1' })
   limit: number;
 
-  @ApiProperty({ example: 25, minimum: 0, description: 'Total de pedidos que cumplen el filtro' })
+  @ApiProperty({
+    example: 25,
+    minimum: 0,
+    description: 'Total de pedidos que cumplen el filtro',
+  })
   @IsInt({ message: 'El total debe ser un número entero' })
   @Min(0, { message: 'El total no puede ser negativo' })
   total: number;

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  HttpCode,
+} from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -21,10 +31,9 @@ export class UsuariosController {
     isArray: true,
   })
   @Get()
-  findAll(): UsuarioResponseDto[] {
+  findAll(): Promise<UsuarioResponseDto[]> {
     return this.usuariosService.findAll();
   }
-
 
   @ApiOperation({
     summary: 'Obtener usuario por ID',
@@ -32,8 +41,8 @@ export class UsuariosController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del usuario',
   })
   @ApiResponse({
@@ -50,12 +59,9 @@ export class UsuariosController {
     description: 'Usuario no encontrado.',
   })
   @Get(':id')
-  findOne(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): UsuarioResponseDto {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<UsuarioResponseDto> {
     return this.usuariosService.findOne(id);
   }
-
 
   @ApiOperation({
     summary: 'Crear usuario',
@@ -77,10 +83,9 @@ export class UsuariosController {
   @Post()
   create(
     @Body() createUsuarioDto: CreateUsuarioDto,
-  ): UsuarioResponseDto {
+  ): Promise<UsuarioResponseDto> {
     return this.usuariosService.create(createUsuarioDto);
   }
-
 
   @ApiOperation({
     summary: 'Actualizar usuario',
@@ -88,8 +93,8 @@ export class UsuariosController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del usuario',
   })
   @ApiResponse({
@@ -111,9 +116,9 @@ export class UsuariosController {
   })
   @Patch(':id')
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateUsuarioDto: UpdateUsuarioDto,
-  ): UsuarioResponseDto {
+  ): Promise<UsuarioResponseDto> {
     return this.usuariosService.update(id, updateUsuarioDto);
   }
 
@@ -123,8 +128,8 @@ export class UsuariosController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del usuario',
   })
   @ApiResponse({
@@ -141,11 +146,7 @@ export class UsuariosController {
   })
   @HttpCode(204)
   @Delete(':id')
-  remove(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): void {
-    this.usuariosService.remove(id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.usuariosService.remove(id);
   }
-
-
 }

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { CarritoService } from './carrito.service';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CartResponseDto } from './dto/cart-response.dto';
@@ -24,7 +34,6 @@ export class CarritoController {
   findCart(): CartResponseDto {
     return {} as CartResponseDto;
   }
-  
 
   @ApiOperation({
     summary: 'Agregar producto al carrito',
@@ -44,16 +53,14 @@ export class CarritoController {
     description: 'El producto no existe.',
   })
   @Post('items')
-  addItem(
-    @Body() addCartItemDto: AddCartItemDto,
-  ): CartItemResponseDto {
+  addItem(@Body() addCartItemDto: AddCartItemDto): CartItemResponseDto {
     return {} as CartItemResponseDto;
   }
 
-
   @ApiOperation({
     summary: 'Actualizar cantidad de producto',
-    description: 'Actualiza la cantidad de un producto existente en el carrito.',
+    description:
+      'Actualiza la cantidad de un producto existente en el carrito.',
   })
   @ApiParam({
     name: 'itemId',
@@ -82,7 +89,6 @@ export class CarritoController {
     return {} as CartItemResponseDto;
   }
 
-
   @ApiOperation({
     summary: 'Eliminar producto del carrito',
     description: 'Elimina un producto específico del carrito.',
@@ -106,10 +112,7 @@ export class CarritoController {
     description: 'El producto no existe en el carrito.',
   })
   @Delete('items/:itemId')
-  removeItem(
-    @Param('itemId', ParseIntPipe) itemId: number,
-  ): void {}
-
+  removeItem(@Param('itemId', ParseIntPipe) itemId: number): void {}
 
   @ApiOperation({
     summary: 'Vaciar carrito',
@@ -125,6 +128,4 @@ export class CarritoController {
   })
   @Delete()
   removeCart(): void {}
-
-
 }

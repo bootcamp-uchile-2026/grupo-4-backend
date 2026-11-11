@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseIntPipe,
+  HttpCode,
+} from '@nestjs/common';
 import { ResenasService } from './resenas.service';
 import { CreateResenaDto } from './dto/create-resena.dto';
 import { UpdateResenaDto } from './dto/update-resena.dto';
@@ -8,7 +19,7 @@ import { ResenaQueryDto } from './dto/resena-query.dto';
 
 @Controller('resenas')
 export class ResenasController {
-  constructor(private readonly resenasService: ResenasService) { }
+  constructor(private readonly resenasService: ResenasService) {}
 
   @ApiOperation({
     summary: 'Crear reseña',
@@ -32,7 +43,6 @@ export class ResenasController {
     return this.resenasService.create(createResenaDto);
   }
 
-
   @ApiOperation({
     summary: 'Obtener reseñas',
     description: 'Obtiene una lista de reseñas, con filtros opcionales.',
@@ -44,7 +54,7 @@ export class ResenasController {
     isArray: true,
   })
   @Get()
-  findAll( @Query() query: ResenaQueryDto ) {
+  findAll(@Query() query: ResenaQueryDto) {
     return this.resenasService.findAll(query);
   }
 
@@ -72,13 +82,14 @@ export class ResenasController {
     description: 'Reseña no encontrada.',
   })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe ) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.resenasService.findOne(id);
   }
 
   @ApiOperation({
     summary: 'Modificar reseña',
-    description: 'Actualiza parcial o completamente datos de una reseña existente.',
+    description:
+      'Actualiza parcial o completamente datos de una reseña existente.',
   })
   @ApiParam({
     name: 'id',
@@ -105,8 +116,8 @@ export class ResenasController {
   })
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number, 
-    @Body() updateResenaDto: UpdateResenaDto
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateResenaDto: UpdateResenaDto,
   ) {
     return this.resenasService.update(id, updateResenaDto);
   }
