@@ -1,45 +1,39 @@
-
 services:
-  app:
-    image: ${DOCKER_IMAGE}
-    container_name: lasobremesa-api
-    env_file:
-      - .env
-    environment:
-      PORT: 3000
-      MYSQL_HOST: mysql
-    ports:
-      - "3000:3000"
-    depends_on:
-      mysql:
-        condition: service_healthy
-    restart: unless-stopped
-
-  mysql:
-    image: mysql:8
-    container_name: lasobremesa-mysql
+  db:
+    image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Define DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME:-lasobremesa}
+      MYSQL_USER: ${DB_USER:-lasobremesa}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_prod_data:/var/lib/mysql
     healthcheck:
-      test:
-        - CMD
-        - mysqladmin
-        - ping
-        - -h
-        - localhost
-        - -u
-        - root
-        - -p$${MYSQL_ROOT_PASSWORD}
-      interval: 10s
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 20
       start_period: 20s
 
+  api:
+    image: "${DOCKERHUB_IMAGE:?Define DOCKERHUB_IMAGE}:${DOCKERHUB_TAG:-1.0.0}"
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-lasobremesa}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-lasobremesa}
+    ports:
+      - "${API_HOST_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >-
+      sh -c "node node_modules/typeorm/cli.js migration:run -d dist/db/typeorm.config.js && node dist/src/main.js"
+
 volumes:
-  mysql_data:
+  mysql_prod_data:

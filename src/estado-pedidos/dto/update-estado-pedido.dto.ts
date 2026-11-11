@@ -1,16 +1,23 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { EstadoPedido } from '../../pedidos/enums/estado-pedido.enum';
-export class UpdateEstadoPedidoDto {
-
+export class ActualizarEstadoPedidoDto {
   @ApiProperty({
     enum: EstadoPedido,
     example: EstadoPedido.EN_PREPARACION,
     description: 'Nuevo estado del pedido',
   })
   @IsNotEmpty({ message: 'estado es obligatorio' })
-  @IsEnum(EstadoPedido, { message: `estado debe ser uno de: ${Object.values(EstadoPedido).join(', ')}`, })
+  @IsEnum(EstadoPedido, {
+    message: `estado debe ser uno de: ${Object.values(EstadoPedido).join(', ')}`,
+  })
   estado: EstadoPedido;
 
   @ApiPropertyOptional({

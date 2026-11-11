@@ -1,95 +1,91 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Not } from 'typeorm';
 import { CreateSuscripcionDto } from './dto/create-suscripcion.dto';
 import { UpdateSuscripcionDto } from './dto/update-suscripcion.dto';
 import { Suscripcion } from './entities/suscripcion.entity';
-
+import { SuscripcionProducto } from './entities/suscripcion-producto.entity';
 @Injectable()
 export class SuscripcionesService {
-
-  private suscripciones: Suscripcion[] = [];
-
-  constructor() {
-    this.suscripciones.push(
-      new Suscripcion(
-        'Selección mensual de vinos tintos y blancos de viñas boutique.',
-        'Caja Básica - Vinos',
-        19990,
-        [
-          '7c9e6679-7425-40de-944b-e07fc1f90ae7',
-          '550e8400-e29b-41d4-a716-446655440000',
-        ],
-      ),
-      new Suscripcion(
-        'Quesos artesanales y charcutería para compartir en la sobremesa.',
-        'Caja Premium - Quesos y Charcutería',
-        34990,
-        [
-          '9b2d5c1a-3e4f-4a6b-8c7d-0e1f2a3b4c5d',
-          '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d',
-          '6f1e2d3c-4b5a-4c6d-9e8f-7a6b5c4d3e2f',
-        ],
-      ),
-    );
+  constructor(
+    @InjectRepository(Suscripcion)
+    private readonly repo: Repository<Suscripcion>,
+    @InjectRepository(SuscripcionProducto)
+    private readonly items: Repository<SuscripcionProducto>,
+  ) {}
+  private async response(s: Suscripcion) {
+    const links = await this.items.findBy({ suscripcion_id: s.id });
+    return {
+      id: s.id,
+      nombre: s.nombre,
+      descripcion: s.descripcion ?? '',
+      precio: Number(s.precio),
+      activa: s.activa,
+      productosId: links.map((x) => x.producto_id),
+    };
   }
-
-  create(createSuscripcionDto: CreateSuscripcionDto) {
-    const existe = this.suscripciones.find(
-      (s) => s.nombre === createSuscripcionDto.nombre,
-    );
-    if (existe) {
+  async create(dto: CreateSuscripcionDto) {
+    if (await this.repo.existsBy({ nombre: dto.nombre }))
       throw new ConflictException('Ya existe una suscripción con ese nombre.');
-    }
-
-    const suscripcion = new Suscripcion(
-      createSuscripcionDto.descripcion,
-      createSuscripcionDto.nombre,
-      createSuscripcionDto.precio,
-      createSuscripcionDto.productosId,
+    const s = await this.repo.save(
+      this.repo.create({
+        nombre: dto.nombre,
+        descripcion: dto.descripcion,
+        precio: String(dto.precio),
+        activa: true,
+      }),
     );
-    this.suscripciones.push(suscripcion);
-    return suscripcion;
+    await this.items.save(
+      dto.productosId.map((producto_id) =>
+        this.items.create({ suscripcion_id: s.id, producto_id }),
+      ),
+    );
+    return this.response(s);
   }
-
-  findAll(activa: boolean) {
-    if (activa === undefined) {
-      return this.suscripciones;
+  async findAll(activa?: boolean) {
+    const all = await this.repo.find({
+      where: activa === undefined ? {} : { activa },
+    });
+    return Promise.all(all.map((s) => this.response(s)));
+  }
+  private async buscar(id: number) {
+    const s = await this.repo.findOneBy({ id });
+    if (!s) throw new NotFoundException('Suscripción no encontrada.');
+    return s;
+  }
+  async findOne(id: number) {
+    return this.response(await this.buscar(id));
+  }
+  async update(id: number, dto: UpdateSuscripcionDto) {
+    const s = await this.buscar(id);
+    if (dto.nombre !== undefined) {
+      if (await this.repo.existsBy({ nombre: dto.nombre, id: Not(id) }))
+        throw new ConflictException(
+          'Ya existe una suscripción con ese nombre.',
+        );
+      s.nombre = dto.nombre;
     }
-    return this.suscripciones.filter((s) => s.activa === activa)
-  }
-
-  findOne(id: string) {
-    const suscripcion = this.suscripciones.find((s) => s.id === id);
-    if (!suscripcion) {
-      throw new NotFoundException('Suscripción no encontrada.');
-    }
-    return suscripcion;
-  }
-
-  update(id: string, updateSuscripcionDto: UpdateSuscripcionDto) {
-    const suscripcion = this.findOne(id);
-
-    if (updateSuscripcionDto.nombre) {
-      const existe = this.suscripciones.find(
-        (s) => s.nombre === updateSuscripcionDto.nombre && s.id !== id,
+    if (dto.descripcion !== undefined) s.descripcion = dto.descripcion;
+    if (dto.precio !== undefined) s.precio = String(dto.precio);
+    if (dto.activa !== undefined) s.activa = dto.activa;
+    await this.repo.save(s);
+    if (dto.productosId !== undefined) {
+      await this.items.delete({ suscripcion_id: id });
+      await this.items.save(
+        dto.productosId.map((producto_id) =>
+          this.items.create({ suscripcion_id: id, producto_id }),
+        ),
       );
-      if (existe) {
-        throw new ConflictException('Ya existe una suscripción con ese nombre.');
-      }
     }
-
-    for (const campo in updateSuscripcionDto) {
-      const valor = updateSuscripcionDto[campo];
-      if (valor !== undefined && valor !== null) {
-        suscripcion[campo] = valor;
-      }
-    }
-
-    return suscripcion;
+    return this.response(s);
   }
-
-  remove(id: string) {
-    const suscripcion = this.findOne(id);
-    suscripcion.activa = false;
-    return suscripcion;
+  async remove(id: number) {
+    const s = await this.buscar(id);
+    s.activa = false;
+    return this.response(await this.repo.save(s));
   }
 }

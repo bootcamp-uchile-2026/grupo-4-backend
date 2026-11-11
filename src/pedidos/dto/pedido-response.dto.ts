@@ -1,7 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EstadoPedido } from '../enums/estado-pedido.enum';
 import { PedidoItemResponseDto } from './pedido-item-response.dto';
-import { IsInt, IsPositive, Min, IsArray, ValidateNested, ArrayNotEmpty, IsNumber, IsEnum, IsDate } from 'class-validator';
+import {
+  IsInt,
+  IsPositive,
+  Min,
+  IsArray,
+  ValidateNested,
+  ArrayNotEmpty,
+  IsNumber,
+  IsEnum,
+  IsDate,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class PedidoResponseDto {
@@ -58,7 +68,9 @@ export class PedidoResponseDto {
     example: EstadoPedido.PENDIENTE,
     description: 'Estado actual del pedido',
   })
-  @IsEnum(EstadoPedido, { message: 'estado debe ser un valor válido de EstadoPedido' }) // Validar que sea un valor del enum EstadoPedido
+  @IsEnum(EstadoPedido, {
+    message: 'estado debe ser un valor válido de EstadoPedido',
+  }) // Validar que sea un valor del enum EstadoPedido
   estado: EstadoPedido;
 
   @ApiProperty({

@@ -1,6 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, MaxLength, } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { CreateDireccionDto } from '../../direcciones/dto/create-direccion.dto';
 
 const trim = ({ value }: { value: unknown }) =>
@@ -26,7 +33,9 @@ export class CreateDatoDespachoDto extends CreateDireccionDto {
   @Transform(trim)
   @IsString({ message: 'nombreReceptor debe ser un texto' })
   @IsNotEmpty({ message: 'nombreReceptor no puede estar vacío' })
-  @MaxLength(100, { message: 'nombreReceptor no puede superar los 100 caracteres' })
+  @MaxLength(100, {
+    message: 'nombreReceptor no puede superar los 100 caracteres',
+  })
   nombreReceptor: string;
 
   @ApiProperty({
@@ -35,7 +44,9 @@ export class CreateDatoDespachoDto extends CreateDireccionDto {
     maxLength: 20,
   })
   @Transform(trim)
-  @IsPhoneNumber('CL', { message: 'telefono debe ser un número chileno válido' })
+  @IsPhoneNumber('CL', {
+    message: 'telefono debe ser un número chileno válido',
+  })
   @MaxLength(20, { message: 'telefono no puede superar los 20 caracteres' })
   telefono: string;
 
@@ -44,10 +55,12 @@ export class CreateDatoDespachoDto extends CreateDireccionDto {
     description: 'Indicaciones para el repartidor',
     maxLength: 255,
   })
-  @IsOptional( { message: 'instrucciones es opcional' })
+  @IsOptional({ message: 'instrucciones es opcional' })
   @Transform(trim)
   @IsString({ message: 'instrucciones debe ser un texto' })
-  @MaxLength(255, { message: 'instrucciones no puede superar los 255 caracteres' })
+  @MaxLength(255, {
+    message: 'instrucciones no puede superar los 255 caracteres',
+  })
   instrucciones?: string;
 
   @ApiPropertyOptional({
@@ -55,7 +68,7 @@ export class CreateDatoDespachoDto extends CreateDireccionDto {
     default: false,
     description: 'Marca esta dirección como la predeterminada del usuario',
   })
-  @IsOptional( { message: 'esPredeterminado es opcional' })
+  @IsOptional({ message: 'esPredeterminado es opcional' })
   @IsBoolean({ message: 'esPredeterminado debe ser verdadero o falso' })
   esPredeterminado?: boolean;
 }

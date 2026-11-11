@@ -11,7 +11,9 @@ describe('DatosFacturacionController', () => {
       providers: [DatosFacturacionService],
     }).compile();
 
-    controller = module.get<DatosFacturacionController>(DatosFacturacionController);
+    controller = module.get<DatosFacturacionController>(
+      DatosFacturacionController,
+    );
   });
 
   it('should be defined', () => {

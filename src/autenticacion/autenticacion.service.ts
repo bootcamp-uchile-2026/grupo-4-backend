@@ -5,11 +5,9 @@ import { UsuarioResponseDto } from '../usuarios/dto/usuarios-response.dto';
 
 @Injectable()
 export class AutenticacionService {
-  registro(
-    createAutenticacionDto: CreateAutenticacionDto,
-  ): UsuarioResponseDto {
+  registro(createAutenticacionDto: CreateAutenticacionDto): UsuarioResponseDto {
     return {
-      id: '1',
+      id: 1,
       nombre: createAutenticacionDto.nombre,
       apellido: createAutenticacionDto.apellido,
       email: createAutenticacionDto.email,
@@ -17,9 +15,7 @@ export class AutenticacionService {
     };
   }
 
-  login(
-    loginAutenticacionDto: LoginAutenticacionDto,
-  ): { mensaje: string } {
+  login(loginAutenticacionDto: LoginAutenticacionDto): { mensaje: string } {
     return {
       mensaje: 'Inicio de sesión simulado correctamente',
     };

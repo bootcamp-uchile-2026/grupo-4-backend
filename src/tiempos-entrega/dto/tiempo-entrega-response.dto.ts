@@ -8,7 +8,7 @@ export class TiempoEntregaResponseDto {
   id: string;
 
   @ApiProperty({
-    example: '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d',
+    example: 1,
     description: 'ID de la zona de despacho a la que aplica el tiempo',
   })
   zonaId: string;

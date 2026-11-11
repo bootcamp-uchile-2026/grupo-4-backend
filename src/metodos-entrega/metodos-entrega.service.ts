@@ -25,6 +25,21 @@ export class MetodosEntregaService {
     return `This action removes a #${id} metodosEntrega`;
   }
   cotizar(dto: CotizarEntregaDto) {
-    return { subtotalProductos: 0, metodos: [{ id: 1, nombre: 'Entrega a domicilio (simulación)', tipo: 'DOMICILIO', costo: 4990, gratis: false, diasEstimadosMin: 2, diasEstimadosMax: 4, disponible: true, motivoNoDisponible: null }] };
+    return {
+      subtotalProductos: 0,
+      metodos: [
+        {
+          id: 1,
+          nombre: 'Entrega a domicilio (simulación)',
+          tipo: 'DOMICILIO',
+          costo: 4990,
+          gratis: false,
+          diasEstimadosMin: 2,
+          diasEstimadosMax: 4,
+          disponible: true,
+          motivoNoDisponible: null,
+        },
+      ],
+    };
   }
 }

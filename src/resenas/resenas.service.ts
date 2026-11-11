@@ -1,4 +1,3 @@
-
 import { Injectable } from '@nestjs/common';
 import { CreateResenaDto } from './dto/create-resena.dto';
 import { UpdateResenaDto } from './dto/update-resena.dto';
@@ -46,10 +45,7 @@ export class ResenasService {
     return { ...this.resenas[0] };
   }
 
-  update(
-    id: number,
-    dto: UpdateResenaDto,
-  ): ResenaResponseDto {
+  update(id: number, dto: UpdateResenaDto): ResenaResponseDto {
     return { ...this.resenas[0] };
   }
 

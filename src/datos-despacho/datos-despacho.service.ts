@@ -24,10 +24,24 @@ export class DatosDespachoService {
     return `This action removes a #${id} datosDespacho`;
   }
   findPredeterminada() {
-    return { id: 1, alias: 'Casa de prueba', nombreReceptor: 'Usuario de prueba', telefono: '+56911111111', instrucciones: null, esPredeterminado: true };
+    return {
+      id: 1,
+      alias: 'Casa de prueba',
+      nombreReceptor: 'Usuario de prueba',
+      telefono: '+56911111111',
+      instrucciones: null,
+      esPredeterminado: true,
+    };
   }
 
   updatePredeterminada(dto: UpdateDatosDespachoDto) {
-    return { id: 1, alias: dto.alias ?? 'Casa de prueba', nombreReceptor: dto.nombreReceptor ?? 'Usuario de prueba', telefono: dto.telefono ?? '+56911111111', instrucciones: dto.instrucciones ?? null, esPredeterminado: true };
+    return {
+      id: 1,
+      alias: dto.alias ?? 'Casa de prueba',
+      nombreReceptor: dto.nombreReceptor ?? 'Usuario de prueba',
+      telefono: dto.telefono ?? '+56911111111',
+      instrucciones: dto.instrucciones ?? null,
+      esPredeterminado: true,
+    };
   }
 }

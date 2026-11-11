@@ -1,9 +1,24 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsEnum, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min, } from 'class-validator';
+import {
+  IsEnum,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+} from 'class-validator';
 import { TipoConservacion } from '../../productos/enums/tipo-conservacion.enum';
 
-export const CAMPOS_ORDENABLES = ['itemName', 'unitPrice', 'quantity', 'subtotal'] as const;
+export const CAMPOS_ORDENABLES = [
+  'itemName',
+  'unitPrice',
+  'quantity',
+  'subtotal',
+] as const;
 export type CampoOrdenable = (typeof CAMPOS_ORDENABLES)[number];
 
 export class ItemsCarritoQueryDto {
@@ -44,7 +59,9 @@ export class ItemsCarritoQueryDto {
     description: 'Dirección del orden',
   })
   @IsOptional({ message: 'order es opcional' })
-  @Transform(({ value }) => (typeof value === 'string' ? value.toUpperCase() : value))
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.toUpperCase() : value,
+  )
   @IsIn(['ASC', 'DESC'], { message: 'order debe ser ASC o DESC' })
   order?: 'ASC' | 'DESC' = 'ASC';
 

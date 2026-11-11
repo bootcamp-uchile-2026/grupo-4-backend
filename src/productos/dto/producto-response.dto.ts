@@ -101,7 +101,8 @@ export class ProductoResponseDto {
 
   @ApiProperty({
     example: false,
-    description: 'Indica si el producto está destacado como favorito de la tienda',
+    description:
+      'Indica si el producto está destacado como favorito de la tienda',
   })
   favorito: boolean;
 }

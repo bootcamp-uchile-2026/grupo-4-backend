@@ -11,7 +11,9 @@ describe('HistorialPedidosController', () => {
       providers: [HistorialPedidosService],
     }).compile();
 
-    controller = module.get<HistorialPedidosController>(HistorialPedidosController);
+    controller = module.get<HistorialPedidosController>(
+      HistorialPedidosController,
+    );
   });
 
   it('should be defined', () => {

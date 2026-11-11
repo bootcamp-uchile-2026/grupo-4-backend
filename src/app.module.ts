@@ -13,6 +13,7 @@ import { StockModule } from './stock/stock.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { RequestIdMiddleware } from './common/middleware/request-id/request-id.middleware';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsCarritoModule } from './items-carrito/items-carrito.module';
 import { DetallePedidosModule } from './detalle-pedidos/detalle-pedidos.module';
 import { EstadoPedidosModule } from './estado-pedidos/estado-pedidos.module';
@@ -33,15 +34,46 @@ import { ZonasDespachoModule } from './zonas-despacho/zonas-despacho.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    RegistroModule, RecuperacionPasswordModule, VerificacionCorreoModule, DespachosModule, TiemposEntregaModule, SeguimientosDespachoModule, ZonasDespachoModule,
-    ProductosModule, CategoriasModule, DireccionesModule, UsuariosModule, ProveedoresModule, SuscripcionesModule, ResenasModule, CarritoModule, StockModule, PedidosModule, ItemsCarritoModule, DetallePedidosModule, EstadoPedidosModule, HistorialPedidosModule, DatosDespachoModule, MetodosPagoModule, MetodosEntregaModule],
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST ?? 'localhost',
+      port: Number(process.env.DB_PORT ?? 3306),
+      username: process.env.DB_USER ?? 'root',
+      password: process.env.DB_PASSWORD ?? '',
+      database: process.env.DB_NAME ?? 'lasobremesa',
+      autoLoadEntities: true,
+      synchronize: false,
+    }),
+    RegistroModule,
+    RecuperacionPasswordModule,
+    VerificacionCorreoModule,
+    DespachosModule,
+    TiemposEntregaModule,
+    SeguimientosDespachoModule,
+    ZonasDespachoModule,
+    ProductosModule,
+    CategoriasModule,
+    DireccionesModule,
+    UsuariosModule,
+    ProveedoresModule,
+    SuscripcionesModule,
+    ResenasModule,
+    CarritoModule,
+    StockModule,
+    PedidosModule,
+    ItemsCarritoModule,
+    DetallePedidosModule,
+    EstadoPedidosModule,
+    HistorialPedidosModule,
+    DatosDespachoModule,
+    MetodosPagoModule,
+    MetodosEntregaModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer
-    .apply(RequestIdMiddleware)
-    .forRoutes('*');
+    consumer.apply(RequestIdMiddleware).forRoutes('*');
   }
 }

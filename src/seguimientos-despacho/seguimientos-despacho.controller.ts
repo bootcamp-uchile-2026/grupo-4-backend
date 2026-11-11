@@ -5,7 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
-  ParseUUIDPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -41,7 +41,7 @@ export class SeguimientosDespachoController {
   @Post()
   create(
     @Body() createSeguimientoDespachoDto: CreateSeguimientoDespachoDto,
-  ): SeguimientoDespachoResponseDto {
+  ): Promise<SeguimientoDespachoResponseDto> {
     return this.seguimientosDespachoService.create(
       createSeguimientoDespachoDto,
     );
@@ -65,7 +65,7 @@ export class SeguimientosDespachoController {
   @Get()
   findAll(
     @Query() query: SeguimientoDespachoQueryDto,
-  ): SeguimientoDespachoResponseDto[] {
+  ): Promise<SeguimientoDespachoResponseDto[]> {
     return this.seguimientosDespachoService.findAll(query);
   }
 
@@ -75,8 +75,8 @@ export class SeguimientosDespachoController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del seguimiento',
   })
   @ApiResponse({
@@ -94,8 +94,8 @@ export class SeguimientosDespachoController {
   })
   @Get(':id')
   findOne(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): SeguimientoDespachoResponseDto {
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SeguimientoDespachoResponseDto> {
     return this.seguimientosDespachoService.findOne(id);
   }
 
@@ -106,8 +106,8 @@ export class SeguimientosDespachoController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del seguimiento',
   })
   @ApiResponse({
@@ -125,9 +125,9 @@ export class SeguimientosDespachoController {
   })
   @Patch(':id')
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateSeguimientoDespachoDto: UpdateSeguimientoDespachoDto,
-  ): SeguimientoDespachoResponseDto {
+  ): Promise<SeguimientoDespachoResponseDto> {
     return this.seguimientosDespachoService.update(
       id,
       updateSeguimientoDespachoDto,
@@ -140,8 +140,8 @@ export class SeguimientosDespachoController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único del seguimiento',
   })
   @ApiResponse({
@@ -158,7 +158,7 @@ export class SeguimientosDespachoController {
   })
   @HttpCode(204)
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string): void {
-    this.seguimientosDespachoService.remove(id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.seguimientosDespachoService.remove(id);
   }
 }
