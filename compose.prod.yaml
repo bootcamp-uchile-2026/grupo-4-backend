@@ -17,7 +17,7 @@ services:
       start_period: 20s
 
   api:
-    image: "${DOCKERHUB_IMAGE:?Define DOCKERHUB_IMAGE}:${DOCKERHUB_TAG:-1.0.0}"
+    image: "${DOCKER_IMAGE:?Define DOCKER_IMAGE}"
     restart: unless-stopped
     environment:
       NODE_ENV: production
