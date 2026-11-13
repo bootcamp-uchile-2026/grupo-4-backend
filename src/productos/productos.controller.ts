@@ -11,8 +11,9 @@ import {
   ParseIntPipe,
   HttpCode,
   UseGuards,
+  Req,
 } from '@nestjs/common';
-
+import type { AuthenticatedRequest } from '../autenticacion/guards/auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -116,7 +117,8 @@ export class ProductosController {
 
   @ApiOperation({
     summary: 'Crear producto',
-    description: 'Crea un nuevo producto. Requiere rol ADMIN.',
+    description:
+      'ADMIN puede crear cualquier producto. PROVEEDOR crea productos asociados a su cuenta.',
   })
   @ApiResponse({
     status: 201,
@@ -141,18 +143,19 @@ export class ProductosController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(RolUsuario.ADMIN)
+  @Roles(RolUsuario.ADMIN, RolUsuario.PROVEEDOR)
   @Post()
   create(
     @Body() createProductoDto: CreateProductoDto,
+    @Req() request: AuthenticatedRequest,
   ): Promise<ProductoResponseDto> {
-    return this.productosService.create(createProductoDto);
+    return this.productosService.create(createProductoDto, request.user!);
   }
 
   @ApiOperation({
     summary: 'Actualizar producto',
     description:
-      'Actualiza parcialmente los datos de un producto existente. Requiere rol ADMIN.',
+      'ADMIN puede actualizar cualquier producto. PROVEEDOR solo puede actualizar sus propios productos.',
   })
   @ApiParam({
     name: 'id',
@@ -175,7 +178,7 @@ export class ProductosController {
   })
   @ApiResponse({
     status: 403,
-    description: 'No tienes permisos para actualizar productos.',
+    description: 'No tienes permisos para actualizar este producto.',
   })
   @ApiResponse({
     status: 404,
@@ -183,19 +186,20 @@ export class ProductosController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(RolUsuario.ADMIN)
+  @Roles(RolUsuario.ADMIN, RolUsuario.PROVEEDOR)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductoDto: UpdateProductoDto,
+    @Req() request: AuthenticatedRequest,
   ): Promise<ProductoResponseDto> {
-    return this.productosService.update(id, updateProductoDto);
+    return this.productosService.update(id, updateProductoDto, request.user!);
   }
 
   @ApiOperation({
     summary: 'Eliminar producto',
     description:
-      'Desactiva un producto mediante su identificador. Requiere rol ADMIN.',
+      'ADMIN puede desactivar cualquier producto. PROVEEDOR solo puede desactivar sus propios productos.',
   })
   @ApiParam({
     name: 'id',
@@ -217,7 +221,7 @@ export class ProductosController {
   })
   @ApiResponse({
     status: 403,
-    description: 'No tienes permisos para eliminar productos.',
+    description: 'No tienes permisos para eliminar este producto.',
   })
   @ApiResponse({
     status: 404,
@@ -225,10 +229,13 @@ export class ProductosController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(RolUsuario.ADMIN)
+  @Roles(RolUsuario.ADMIN, RolUsuario.PROVEEDOR)
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.productosService.remove(id);
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() request: AuthenticatedRequest,
+  ): Promise<void> {
+    return this.productosService.remove(id, request.user!);
   }
 }

@@ -71,15 +71,17 @@ export class CreateProductoDto {
   @Min(1, { message: 'categoriaId debe ser un número positivo' })
   categoriaId: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 1,
     minimum: 1,
-    description: 'ID del proveedor del producto',
+    description:
+      'ID del proveedor. Obligatorio para ADMIN; se asigna automáticamente para PROVEEDOR.',
   })
+  @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'proveedorId debe ser un número entero' })
   @Min(1, { message: 'proveedorId debe ser un número positivo' })
-  proveedorId: number;
+  proveedorId?: number;
 
   @ApiProperty({
     example: 5990,
