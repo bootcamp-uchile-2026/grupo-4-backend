@@ -4,261 +4,348 @@
   <img src="./docs/logo.svg" alt="LaSobremesa" width="250">
 </p>
 
-API REST desarrollada con **NestJS y TypeScript** para el ecommerce LaSobremesa, orientado a la comercialización de productos artesanales de proveedores locales.
+API REST desarrollada con **NestJS y TypeScript** para el ecommerce **LaSobremesa**, orientado a la comercialización de productos artesanales de proveedores locales.
 
-El backend se organiza en módulos de negocio que contemplan productos, categorías, proveedores, stock, usuarios, direcciones, carrito, pedidos, reseñas y suscripciones.
+El proyecto se organiza en módulos de negocio, utiliza **MySQL 8 y TypeORM** para la persistencia, **JWT** para autenticación y controles de acceso por roles y propiedad de recursos.
 
 ## Contenidos
 
-1. [Tecnologías](#tecnologías)
-2. [Requisitos previos](#requisitos-previos)
-3. [Instalación](#instalación)
-4. [Configuración](#configuración)
-5. [Ejecución en desarrollo](#ejecución-en-desarrollo)
-6. [Ejecución en producción](#ejecución-en-producción)
-7. [Documentación de la API](#documentación-de-la-api)
-8. [Estructura del proyecto](#estructura-del-proyecto)
-9. [Flujo de trabajo](#flujo-de-trabajo)
-10. [Estado del proyecto](#estado-del-proyecto)
-11. [Contacto](#contacto)
+1. [Tecnologías](#1-tecnologías)
+2. [Requisitos previos](#2-requisitos-previos)
+3. [Instalación y configuración](#3-instalación-y-configuración)
+4. [Ejecución en desarrollo](#4-ejecución-en-desarrollo)
+5. [Base de datos, migraciones y seeds](#5-base-de-datos-migraciones-y-seeds)
+6. [Autenticación y autorización](#6-autenticación-y-autorización)
+7. [Documentación de la API](#7-documentación-de-la-api)
+8. [Ejecución en producción](#8-ejecución-en-producción)
+9. [Estructura del proyecto](#9-estructura-del-proyecto)
+10. [Flujo de trabajo](#10-flujo-de-trabajo)
+11. [Estado del proyecto](#11-estado-del-proyecto)
+12. [Contacto](#12-contacto)
 
 ## 1. Tecnologías
 
-- **Node.js:** entorno de ejecución de JavaScript.
-- **TypeScript:** lenguaje utilizado para desarrollar la aplicación.
-- **NestJS:** framework para construir la API REST.
-- **Swagger:** documentación interactiva de los endpoints.
-- **Docker:** contenedorización de la aplicación.
-- **Docker Compose:** orquestación de la API y MySQL.
-- **MySQL 8:** motor de base de datos previsto para el proyecto.
+- **Node.js y TypeScript:** entorno y lenguaje de desarrollo.
+- **NestJS 11:** framework de la API REST.
+- **MySQL 8:** base de datos relacional.
+- **TypeORM:** entidades, repositorios y migraciones.
+- **JWT (`@nestjs/jwt`):** autenticación basada en tokens.
+- **Argon2:** hash de contraseñas.
+- **class-validator y class-transformer:** validación y transformación de datos de entrada.
+- **Swagger (`@nestjs/swagger`):** documentación interactiva de la API.
+- **Docker y Docker Compose:** ejecución de la API y MySQL en contenedores.
 
 ## 2. Requisitos previos
 
-Antes de ejecutar el proyecto, asegúrate de contar con las siguientes herramientas, según la modalidad de ejecución que utilices.
+Para trabajar **con Docker**:
 
-### Herramientas para ejecución local
+- Git.
+- Docker Engine o Docker Desktop.
+- Docker Compose.
 
-- [Git](https://git-scm.com/): para clonar el repositorio y gestionar las versiones del código.
-- [Node.js](https://nodejs.org/): entorno de ejecución necesario para la aplicación NestJS.
-- [npm](https://www.npmjs.com/): gestor de paquetes utilizado para instalar las dependencias del proyecto. Se incluye con Node.js.
-- [NestJS CLI](https://docs.nestjs.com/cli/overview): interfaz de línea de comandos para generar módulos, controladores, servicios y otros componentes de NestJS.
+Para ejecutar la API **directamente en el equipo**:
 
-Para instalar NestJS CLI globalmente, ejecuta:
+- Git.
+- Node.js y npm.
+- Una instancia de MySQL accesible.
 
-    npm install -g @nestjs/cli
+NestJS CLI está disponible como dependencia de desarrollo; no es obligatorio instalarlo globalmente.
 
-Puedes comprobar que está disponible con:
+## 3. Instalación y configuración
 
-    nest --version
+Clona el repositorio:
 
-### Herramientas para ejecución con Docker
+```bash
+git clone https://github.com/bootcamp-uchile-2026/grupo-4-backend.git
+cd grupo-4-backend
+```
 
-- [Docker Engine o Docker Desktop](https://docs.docker.com/get-docker/): para construir y ejecutar los contenedores.
-- [Docker Compose](https://docs.docker.com/compose/): para gestionar los servicios definidos en los archivos Compose.
+Crea el archivo de entorno:
 
-Para la ejecución local no es necesario tener Docker instalado. Si ejecutas la aplicación mediante Docker, no necesitas instalar Node.js, npm ni NestJS CLI directamente en tu equipo para ejecutar la API.
+```bash
+cp .env.example .env
+```
 
-Se recomienda verificar que las herramientas correspondientes estén instaladas y funcionando antes de continuar con la instalación.
-
-## 3. Instalación
-
-Clona el repositorio y accede al directorio del proyecto:
-
-    git clone https://github.com/bootcamp-uchile-2026/grupo-4-backend.git
-    cd grupo-4-backend
-
-Crea el archivo de variables de entorno a partir de la plantilla:
-
-    .env.example
-
-Revisa el archivo `.env` y configura los valores correspondientes antes de iniciar los servicios.
-
-## 4. Configuración
-
-La aplicación utiliza variables de entorno para configurar el puerto de la API, la imagen Docker y los parámetros de MySQL.
+Edita `.env` antes de iniciar la aplicación. Las variables disponibles en la plantilla son:
 
 | Variable | Descripción |
-|---|---|
-| `PORT` | Puerto interno de la API. |
-| `DOCKER_IMAGE` | Nombre y etiqueta de la imagen publicada en Docker Hub. |
-| `MYSQL_HOST` | Host de MySQL. En Docker Compose se utiliza `mysql`. |
-| `MYSQL_PORT` | Puerto de MySQL para conexiones desde el entorno local. |
-| `MYSQL_DATABASE` | Nombre de la base de datos. |
-| `MYSQL_USER` | Usuario de la base de datos. |
-| `MYSQL_PASSWORD` | Contraseña del usuario de la base de datos. |
-| `MYSQL_ROOT_PASSWORD` | Contraseña del usuario administrador de MySQL. |
+| --- | --- |
+| `PORT` | Puerto de la aplicación en ejecución local. |
+| `API_HOST_PORT` | Puerto del host para acceder a la API con Docker. |
+| `DB_HOST` | Host de MySQL para ejecución local. |
+| `DB_PORT` | Puerto de MySQL para ejecución local. |
+| `DB_HOST_PORT` | Puerto de MySQL publicado en el host por Docker Compose. |
+| `DB_NAME` | Nombre de la base de datos. |
+| `DB_USER` | Usuario de MySQL. |
+| `DB_PASSWORD` | Contraseña del usuario de MySQL. |
+| `DB_ROOT_PASSWORD` | Contraseña de `root` en el contenedor MySQL. |
+| `JWT_SECRET` | Clave secreta utilizada para firmar y verificar tokens JWT. |
+| `ADMIN_EMAILS` | Lista de correos para el seed de administradores. |
+| `ADMIN_PASSWORD` | Contraseña configurada para los administradores del seed. |
+| `DOCKER_IMAGE` | Imagen utilizada por la configuración de despliegue. |
 
-Completa las variables utilizando `.env.example` como referencia. Utiliza contraseñas seguras y diferentes para el usuario de aplicación y el administrador.
+**Importante:** el archivo `.env` no debe subirse al repositorio. Mantén credenciales reales y secretos fuera del control de versiones. Los valores de `.env.example` son ejemplos y deben reemplazarse.
 
-**Importante:** el archivo `.env` contiene configuración local y no debe subirse al repositorio. Solo se debe versionar `.env.example`, sin contraseñas reales, tokens ni otros datos sensibles.
+En `compose.dev.yaml`, el servicio `api` se conecta a MySQL mediante el nombre de servicio `db` y el puerto interno `3306`, independientemente de `DB_HOST` y `DB_PORT` del entorno local.
 
-## 5. Ejecución en desarrollo
+## 4. Ejecución en desarrollo
 
-### 5.1. Ejecución local con NestJS
+### 4.1. Con Docker Compose (recomendado)
 
-Para ejecutar NestJS directamente en el entorno local, instala las dependencias:
+Desde la raíz del proyecto:
 
-    npm install
+```bash
+docker compose -f compose.dev.yaml up -d --build
+```
 
-Luego, utiliza uno de los siguientes comandos:
+Esta configuración inicia MySQL 8 y la API. El servicio de la API espera a que MySQL esté saludable y luego ejecuta **automáticamente las migraciones** antes de iniciar NestJS en modo desarrollo.
 
-    # Desarrollo con recarga automática
-    npm run start:dev
+Consulta el estado de los servicios:
 
-    # Ejecución normal
-    npm run start
+```bash
+docker compose -f compose.dev.yaml ps
+```
 
-    # Compilar y ejecutar en modo producción
-    npm run build
-    npm run start:prod
+Consulta los logs de la API:
 
-Antes de iniciar la aplicación, asegúrate de tener configuradas las variables de entorno necesarias y de que cualquier servicio externo requerido esté disponible.
+```bash
+docker compose -f compose.dev.yaml logs -f api
+```
 
-### 5.2. Ejecución con Docker Compose
+Detén los contenedores sin eliminar los datos:
 
-Desde la raíz del proyecto, ejecuta:
+```bash
+docker compose -f compose.dev.yaml down
+```
 
-    docker compose up --build -d
+**Reiniciar desde cero (destructivo):**
 
-Este comando construye la imagen de la API a partir del código local e inicia los servicios definidos en `compose.yaml`, incluyendo MySQL.
+```bash
+docker compose -f compose.dev.yaml down -v
+docker compose -f compose.dev.yaml up -d --build
+```
 
-Para revisar el estado de los contenedores:
+`down -v` elimina el volumen de MySQL y **borra los datos de desarrollo**. No lo utilices si necesitas conservarlos.
 
-    docker compose ps
+La API queda disponible por defecto en `http://localhost:3000` y MySQL se publica únicamente en `127.0.0.1` mediante el puerto indicado en `DB_HOST_PORT`.
 
-Para consultar los registros de la aplicación:
+### 4.2. Ejecución local sin contenedor de API
 
-    docker compose logs -f app
+Instala las dependencias:
 
-Para detener los servicios:
+```bash
+npm install
+```
 
-    docker compose down
+Asegúrate de que MySQL esté disponible, de que las variables de `.env` sean correctas y de que el esquema esté migrado. Después ejecuta:
 
-Los datos de MySQL se almacenan en un volumen de Docker para conservarlos al detener y volver a crear los contenedores.
+```bash
+npm run migration:run
+npm run start:dev
+```
 
-## 6. Ejecución en producción
+Para comprobar la compilación:
 
-La configuración `compose.prod.yaml` permite ejecutar la aplicación utilizando una imagen publicada en Docker Hub, sin necesidad de construirla desde el código fuente en el servidor de producción.
+```bash
+npm run build
+```
 
-### 6.1. Construir y publicar la imagen en Docker Hub
+## 5. Base de datos, migraciones y seeds
 
-Para publicar una versión de la API, primero debes tener una cuenta en [Docker Hub](https://hub.docker.com/) e iniciar sesión desde la terminal:
+El proyecto utiliza **TypeORM** con configuración en `db/typeorm.config.ts`.
 
-    docker login
+### 5.1. Migraciones
 
-Construye la imagen desde la raíz del proyecto. Reemplaza `usuario-dockerhub` por tu usuario de Docker Hub y utiliza el nombre del repositorio que quieras publicar:
+Las migraciones están en `db/migrations/` y permiten construir el esquema sin depender de sincronización automática de entidades.
 
-    docker build -t usuario-dockerhub/nombre-imagen:latest .
+En desarrollo con Docker, se ejecutan automáticamente al iniciar el servicio `api`.
 
-Publica la imagen:
+Para ejecutarlas manualmente desde un entorno local configurado:
 
-    docker push usuario-dockerhub/nombre-imagen:latest
+```bash
+npm run migration:run
+```
 
-Asegúrate de que el repositorio de Docker Hub tenga la visibilidad apropiada para el entorno donde se ejecutará. Si la imagen es privada, será necesario autenticarse desde el servidor de producción.
+Para revertir la última migración:
 
-### 6.2. Configurar la imagen
+```bash
+npm run migration:revert
+```
 
-En el archivo `.env`, configura la variable `DOCKER_IMAGE` con el nombre completo de la imagen que publicaste:
+La generación de nuevas migraciones utiliza el script `migration:generate` y requiere indicar una ruta de salida según la modificación realizada.
 
-    DOCKER_IMAGE=usuario-dockerhub/nombre-imagen:latest
+### 5.2. Datos de desarrollo
 
-Sustituye el ejemplo por el nombre real de tu imagen y su etiqueta.
+El archivo `db/seeds/datos-desarrollo.sql` contiene datos de prueba para una **base de desarrollo vacía**, incluidos usuarios de prueba, categorías, proveedores y productos.
 
-No es necesario incluir credenciales de Docker Hub en esta variable.
+Después de iniciar los contenedores y confirmar que terminaron las migraciones, puede cargarse desde la raíz del proyecto:
 
-### 6.3. Descargar y ejecutar la imagen
+```bash
+docker compose -f compose.dev.yaml exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < db/seeds/datos-desarrollo.sql
+```
 
-Con Docker y Docker Compose instalados en el servidor, copia al entorno de producción los archivos `compose.prod.yaml` y `.env`. Configura las variables necesarias en `.env` y ejecuta:
+**No ejecutes este seed repetidamente** sobre una base que ya contiene esos registros: está pensado para una carga inicial y puede provocar duplicados o conflictos de claves únicas.
 
-    docker compose -f compose.prod.yaml pull
+Los usuarios incluidos en el seed son **exclusivos para pruebas**. Antes de depender de sus credenciales, verifica el inicio de sesión mediante la API; los hashes de contraseñas deben corresponder al algoritmo Argon2 utilizado por la aplicación.
 
-Este comando descarga la imagen indicada en `DOCKER_IMAGE`.
+### 5.3. Administradores
 
-A continuación, inicia los servicios:
+El proyecto incluye `db/seeds/seed-admins.ts`, destinado a crear administradores a partir de `ADMIN_EMAILS` y `ADMIN_PASSWORD`.
 
-    docker compose -f compose.prod.yaml up -d
+Para ejecutarlo desde un entorno local con acceso a la base de datos y las variables de entorno configuradas:
 
-Comprueba el estado de los contenedores:
+```bash
+npx ts-node db/seeds/seed-admins.ts
+```
 
-    docker compose -f compose.prod.yaml ps
+Este seed es independiente del SQL de desarrollo. No publiques contraseñas de administradores en el repositorio.
 
-Consulta los registros de la API:
+## 6. Autenticación y autorización
 
-    docker compose -f compose.prod.yaml logs -f app
+La API utiliza autenticación con **JWT** y autorización por roles.
 
-Para detener los servicios:
+- **ADMIN:** puede gestionar productos de cualquier proveedor.
+- **PROVEEDOR:** puede crear productos asociados a su propio proveedor y modificar o eliminar únicamente los suyos.
+- **CLIENTE:** no tiene permisos para crear, modificar o eliminar productos.
+- **Consultas públicas:** los endpoints GET de productos pueden utilizarse sin autenticación.
 
-    docker compose -f compose.prod.yaml down
+La protección de rutas utiliza `AuthGuard`, `RolesGuard` y el decorador `@Roles`. La comprobación de propiedad de los productos se realiza en la capa de servicio.
 
-La configuración de producción no publica el puerto de MySQL en el host. La API y la base de datos se comunican mediante la red interna creada por Docker Compose.
-
-**Importante:** el archivo `.env` contiene configuración local y credenciales; no debe publicarse en el repositorio. Solo debe versionarse `.env.example`, sin contraseñas reales ni otros datos sensibles.
+En la creación de productos, un usuario **PROVEEDOR** no necesita indicar `proveedorId`: el sistema lo determina a partir de la asociación del usuario autenticado. Para **ADMIN**, `proveedorId` debe indicarse en la solicitud.
 
 ## 7. Documentación de la API
 
-La documentación interactiva de Swagger está disponible después de iniciar la aplicación:
+Con la aplicación iniciada, Swagger UI está disponible por defecto en:
 
-- **Swagger UI:** [http://localhost:3000/api](http://localhost:3000/api)
+**http://localhost:3000/api**
 
-Si la aplicación se ejecuta en otro servidor, sustituye `localhost` por el nombre de host o la dirección correspondiente.
+Si cambias `API_HOST_PORT`, ajusta el puerto de la URL.
 
-Swagger permite consultar los endpoints documentados, revisar los parámetros y visualizar los esquemas de solicitud y respuesta.
+Para probar endpoints protegidos:
 
-## 8. Estructura del proyecto
+1. Inicia sesión mediante el endpoint de autenticación para obtener un JWT.
+2. Selecciona **Authorize** en Swagger e introduce el token correspondiente.
+3. Ejecuta la solicitud con el rol que deseas verificar.
 
-La estructura principal del código fuente es la siguiente:
+Swagger permite revisar rutas, parámetros, DTO, respuestas y códigos HTTP.
 
-    src/
-    ├── app.controller.ts
-    ├── app.module.ts
-    ├── app.service.ts
-    ├── main.ts
-    ├── carrito/
-    ├── categorias/
-    ├── direcciones/
-    ├── pedidos/
-    ├── productos/
-    ├── proveedores/
-    ├── resenas/
-    ├── stock/
-    ├── suscripciones/
-    └── usuarios/
+## 8. Ejecución en producción
 
-## 9. Flujo de trabajo
+El repositorio contempla `compose.prod.yaml` para ejecutar una imagen publicada en Docker Hub.
 
-El equipo utiliza Git y GitHub para organizar el desarrollo mediante ramas y Pull Requests.
+### 8.1. Construir y publicar la imagen
 
-### Ramas principales
+Inicia sesión en Docker Hub:
+
+```bash
+docker login
+```
+
+Construye y publica una imagen (sustituye el nombre por el correspondiente):
+
+```bash
+docker build -t usuario-dockerhub/nombre-imagen:latest .
+docker push usuario-dockerhub/nombre-imagen:latest
+```
+
+Configura en `.env`:
+
+```dotenv
+DOCKER_IMAGE=usuario-dockerhub/nombre-imagen:latest
+```
+
+### 8.2. Iniciar los servicios
+
+En el servidor, con `compose.prod.yaml` y `.env` configurados:
+
+```bash
+docker compose -f compose.prod.yaml pull
+docker compose -f compose.prod.yaml up -d
+docker compose -f compose.prod.yaml ps
+```
+
+Para consultar logs:
+
+```bash
+docker compose -f compose.prod.yaml logs -f
+```
+
+Para detenerlos:
+
+```bash
+docker compose -f compose.prod.yaml down
+```
+
+**Importante:** no cargues los seeds de desarrollo en producción. Verifica el proceso de migraciones, las variables y los secretos del despliegue antes de publicar una versión.
+
+## 9. Estructura del proyecto
+
+```text
+.
+├── src/
+│   ├── autenticacion/
+│   ├── usuarios/
+│   ├── registro/
+│   ├── productos/
+│   ├── categorias/
+│   ├── proveedores/
+│   ├── stock/
+│   ├── favoritos/
+│   ├── carrito/
+│   ├── items-carrito/
+│   ├── pedidos/
+│   ├── checkout/
+│   ├── direcciones/
+│   ├── resenas/
+│   ├── suscripciones/
+│   ├── common/
+│   └── ...
+├── db/
+│   ├── migrations/
+│   ├── seeds/
+│   │   ├── datos-desarrollo.sql
+│   │   └── seed-admins.ts
+│   └── typeorm.config.ts
+├── docs/
+├── compose.dev.yaml
+├── compose.prod.yaml
+├── nest-cli.json
+└── package.json
+```
+
+El CLI de NestJS está configurado con `"generateOptions": { "spec": false }` para evitar la generación automática de archivos `*.spec.ts`. Esto no impide agregar pruebas manualmente cuando se requieran.
+
+## 10. Flujo de trabajo
+
+El equipo utiliza **Git y GitHub** con ramas y Pull Requests.
 
 - `main`: rama principal del proyecto.
-- `develop`: rama de integración de los cambios del equipo.
+- `develop`: rama de integración.
+- Ramas de trabajo: `feat/`, `fix/`, `docs/` y `chore/`, según la tarea.
 
-### Desarrollo de funcionalidades y tareas técnicas
+Flujo habitual:
 
-1. Actualiza tu rama local `develop`.
-2. Crea una rama de trabajo específica para la tarea.
-3. Implementa los cambios y realiza las verificaciones necesarias.
-4. Registra los cambios mediante commits descriptivos.
-5. Publica la rama en GitHub.
-6. Crea un Pull Request hacia `develop`.
-7. Solicita revisión y resuelve los comentarios antes de integrar los cambios.
+1. Actualizar `develop` desde el remoto.
+2. Crear una rama específica para la tarea.
+3. Implementar y verificar los cambios.
+4. Registrar commits descriptivos en español.
+5. Publicar la rama y abrir un Pull Request hacia `develop`.
+6. Revisar y resolver observaciones antes de integrar.
 
-Las ramas de trabajo deben seguir la nomenclatura acordada por el equipo, utilizando prefijos como `feature/`, `fix/`, `docs/` o `chore/`, según corresponda.
+No se deben incorporar cambios directamente a ramas protegidas fuera del proceso de revisión del equipo.
 
-No se deben integrar cambios directamente en las ramas protegidas sin seguir el proceso de revisión establecido.
+## 11. Estado del proyecto
 
-## 10. Estado del proyecto
+LaSobremesa continúa en desarrollo. Ya se dispone de una estructura modular, persistencia con MySQL/TypeORM, migraciones, autenticación JWT y autorización por roles y propiedad para la gestión de productos.
 
-LaSobremesa se encuentra en desarrollo. La implementación de los módulos, la lógica de negocio y la integración con la base de datos avanzan de forma incremental.
+Los módulos del proyecto evolucionan de forma incremental; la presencia de un módulo en el repositorio no implica que todas sus funcionalidades estén terminadas o validadas.
 
+## 12. Contacto
 
-## 11. Contacto
+Proyecto desarrollado por el equipo de LaSobremesa en el marco del bootcamp de backend de la Universidad de Chile.
 
-Proyecto desarrollado por el equipo de LaSobremesa en el marco del bootcamp.
+**Repositorio:** [bootcamp-uchile-2026/grupo-4-backend](https://github.com/bootcamp-uchile-2026/grupo-4-backend)
 
-- **Repositorio:** [bootcamp-uchile-2026/grupo-4-backend](https://github.com/bootcamp-uchile-2026/grupo-4-backend)
-
-
-- Camilo Díaz - Email: camilo.cdh.dev@gmail.com - GitHub: [camilo-cdh](https://github.com/camilo-cdh)
-- Joaquín Pérez - Email: jperezoyarce@gmail.com - GitHub: [jota-pe-ge](https://github.com/jota-pe-ge)
-- Ignacio Chávez - Email: ignacio.chr99@gmail.com - GitHub: [Ignaciochr99](https://github.com/Ignaciochr99)
+- **Camilo Díaz:** camilo.cdh.dev@gmail.com — [camilo-cdh](https://github.com/camilo-cdh)
+- **Joaquín Pérez:** jperezoyarce@gmail.com — [jota-pe-ge](https://github.com/jota-pe-ge)
+- **Ignacio Chávez:** ignacio.chr99@gmail.com — [Ignaciochr99](https://github.com/Ignaciochr99)
