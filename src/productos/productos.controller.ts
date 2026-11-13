@@ -10,20 +10,29 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
-import { ProductosService } from './productos.service';
-import { CreateProductoDto } from './dto/create-producto.dto';
-import { UpdateProductoDto } from './dto/update-producto.dto';
-import { ProductoResponseDto } from './dto/producto-response.dto';
-import { ProductoQueryDto } from './dto/producto-query.dto';
 
 import {
+  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+import { ProductosService } from './productos.service';
+import { CreateProductoDto } from './dto/create-producto.dto';
+import { UpdateProductoDto } from './dto/update-producto.dto';
+import { ProductoResponseDto } from './dto/producto-response.dto';
+import { ProductoQueryDto } from './dto/producto-query.dto';
+
+import { AuthGuard } from '../autenticacion/guards/auth.guard';
+import { RolesGuard } from '../autenticacion/guards/roles.guard';
+import { Roles } from '../autenticacion/decorators/roles.decorator';
+import { RolUsuario } from '../usuarios/enums/rol-usuario.enum';
+
 @ApiTags('Productos')
 @Controller('productos')
 export class ProductosController {
@@ -107,7 +116,7 @@ export class ProductosController {
 
   @ApiOperation({
     summary: 'Crear producto',
-    description: 'Crea un nuevo producto.',
+    description: 'Crea un nuevo producto. Requiere rol ADMIN.',
   })
   @ApiResponse({
     status: 201,
@@ -119,9 +128,20 @@ export class ProductosController {
     description: 'Los datos del producto no son válidos.',
   })
   @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para crear productos.',
+  })
+  @ApiResponse({
     status: 409,
     description: 'Ya existe un producto con los datos proporcionados.',
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN)
   @Post()
   create(
     @Body() createProductoDto: CreateProductoDto,
@@ -131,7 +151,8 @@ export class ProductosController {
 
   @ApiOperation({
     summary: 'Actualizar producto',
-    description: 'Actualiza parcialmente los datos de un producto existente.',
+    description:
+      'Actualiza parcialmente los datos de un producto existente. Requiere rol ADMIN.',
   })
   @ApiParam({
     name: 'id',
@@ -149,9 +170,20 @@ export class ProductosController {
     description: 'El ID o los datos del producto no son válidos.',
   })
   @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para actualizar productos.',
+  })
+  @ApiResponse({
     status: 404,
     description: 'Producto no encontrado.',
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -162,7 +194,8 @@ export class ProductosController {
 
   @ApiOperation({
     summary: 'Eliminar producto',
-    description: 'Elimina un producto mediante su identificador.',
+    description:
+      'Desactiva un producto mediante su identificador. Requiere rol ADMIN.',
   })
   @ApiParam({
     name: 'id',
@@ -179,9 +212,20 @@ export class ProductosController {
     description: 'El ID del producto no es válido.',
   })
   @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para eliminar productos.',
+  })
+  @ApiResponse({
     status: 404,
     description: 'Producto no encontrado.',
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN)
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
