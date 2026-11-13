@@ -33,7 +33,6 @@ services:
       db:
         condition: service_healthy
     command: >-
-      sh -c "node node_modules/typeorm/cli.js migration:run -d dist/db/typeorm.config.js && node dist/src/main.js"
-
+      sh -c "npm run migration:run:prod && npm run start:prod"
 volumes:
   mysql_prod_data:
