@@ -8,6 +8,7 @@ import {
   Unique,
   Check,
 } from 'typeorm';
+import { RolUsuario } from '../enums/rol-usuario.enum';
 
 @Entity('usuarios')
 export class Usuario {
@@ -35,7 +36,7 @@ export class Usuario {
     nullable: false,
     default: 'CLIENTE',
   })
-  rol!: string;
+  rol!: RolUsuario;
 
   @Column({ type: 'boolean', nullable: false, default: false })
   email_verificado!: boolean;
