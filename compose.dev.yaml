@@ -41,7 +41,7 @@ services:
       db:
         condition: service_healthy
     command: >-
-      sh -c "npx typeorm-ts-node-commonjs migration:run -d db/typeorm.config.ts && npm run start:dev"
+       sh -c "npm run migration:run && npm run start:dev"
 
 volumes:
   mysql_dev_data:
