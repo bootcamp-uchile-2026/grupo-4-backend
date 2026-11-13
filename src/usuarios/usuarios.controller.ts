@@ -8,14 +8,30 @@ import {
   Delete,
   ParseIntPipe,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+
 import { UsuariosService } from './usuarios.service';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { CreateUsuarioAdminDto } from './dto/create-usuario-admin.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsuarioResponseDto } from './dto/usuarios-response.dto';
 
+import { AuthGuard } from '../autenticacion/guards/auth.guard';
+import { RolesGuard } from '../autenticacion/guards/roles.guard';
+import { Roles } from '../autenticacion/decorators/roles.decorator';
+import { RolUsuario } from './enums/rol-usuario.enum';
+
 @ApiTags('Usuarios')
+@ApiBearerAuth()
+@UseGuards(AuthGuard, RolesGuard)
+@Roles(RolUsuario.ADMIN)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
@@ -30,6 +46,8 @@ export class UsuariosController {
     type: UsuarioResponseDto,
     isArray: true,
   })
+  @ApiResponse({ status: 401, description: 'No autenticado.' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado.' })
   @Get()
   findAll(): Promise<UsuarioResponseDto[]> {
     return this.usuariosService.findAll();
@@ -50,22 +68,21 @@ export class UsuariosController {
     description: 'Usuario obtenido correctamente.',
     type: UsuarioResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'El ID del usuario no es válido.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Usuario no encontrado.',
-  })
+  @ApiResponse({ status: 400, description: 'El ID del usuario no es válido.' })
+  @ApiResponse({ status: 401, description: 'No autenticado.' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado.' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<UsuarioResponseDto> {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<UsuarioResponseDto> {
     return this.usuariosService.findOne(id);
   }
 
   @ApiOperation({
     summary: 'Crear usuario',
-    description: 'Crea un nuevo usuario.',
+    description:
+      'Permite a un administrador crear usuarios y asignarles un rol.',
   })
   @ApiResponse({
     status: 201,
@@ -76,15 +93,17 @@ export class UsuariosController {
     status: 400,
     description: 'Los datos del usuario no son válidos.',
   })
+  @ApiResponse({ status: 401, description: 'No autenticado.' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado.' })
   @ApiResponse({
     status: 409,
     description: 'Ya existe un usuario con los datos proporcionados.',
   })
   @Post()
   create(
-    @Body() createUsuarioDto: CreateUsuarioDto,
+    @Body() dto: CreateUsuarioAdminDto,
   ): Promise<UsuarioResponseDto> {
-    return this.usuariosService.create(createUsuarioDto);
+    return this.usuariosService.createAdmin(dto);
   }
 
   @ApiOperation({
@@ -106,10 +125,9 @@ export class UsuariosController {
     status: 400,
     description: 'El ID o los datos del usuario no son válidos.',
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Usuario no encontrado.',
-  })
+  @ApiResponse({ status: 401, description: 'No autenticado.' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado.' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   @ApiResponse({
     status: 409,
     description: 'Ya existe un usuario con los datos proporcionados.',
@@ -136,14 +154,10 @@ export class UsuariosController {
     status: 204,
     description: 'Usuario eliminado correctamente.',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'El ID del usuario no es válido.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Usuario no encontrado.',
-  })
+  @ApiResponse({ status: 400, description: 'El ID del usuario no es válido.' })
+  @ApiResponse({ status: 401, description: 'No autenticado.' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado.' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   @HttpCode(204)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

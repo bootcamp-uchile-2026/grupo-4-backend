@@ -123,7 +123,9 @@ export class ProductosController {
     description: 'Ya existe un producto con los datos proporcionados.',
   })
   @Post()
-  create(@Body() createProductoDto: CreateProductoDto): Promise<ProductoResponseDto> {
+  create(
+    @Body() createProductoDto: CreateProductoDto,
+  ): Promise<ProductoResponseDto> {
     return this.productosService.create(createProductoDto);
   }
 

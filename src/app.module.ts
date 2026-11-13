@@ -28,6 +28,7 @@ import { DespachosModule } from './despachos/despachos.module';
 import { TiemposEntregaModule } from './tiempos-entrega/tiempos-entrega.module';
 import { SeguimientosDespachoModule } from './seguimientos-despacho/seguimientos-despacho.module';
 import { ZonasDespachoModule } from './zonas-despacho/zonas-despacho.module';
+import { AutenticacionModule } from './autenticacion/autenticacion.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ZonasDespachoModule } from './zonas-despacho/zonas-despacho.module';
       synchronize: false,
     }),
     RegistroModule,
+    AutenticacionModule,
     RecuperacionPasswordModule,
     VerificacionCorreoModule,
     DespachosModule,

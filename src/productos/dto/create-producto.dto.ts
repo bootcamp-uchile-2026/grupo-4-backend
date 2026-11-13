@@ -1,4 +1,3 @@
-
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -137,8 +136,7 @@ export class CreateProductoDto {
     description: 'Tipo de conservación del producto',
   })
   @IsEnum(TipoConservacion, {
-    message:
-      'tipoConservacion debe ser AMBIENTE, REFRIGERADO o CONGELADO',
+    message: 'tipoConservacion debe ser AMBIENTE, REFRIGERADO o CONGELADO',
   })
   tipoConservacion: TipoConservacion;
 

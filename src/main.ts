@@ -26,6 +26,7 @@ async function bootstrap() {
     .setTitle('LaSobremesa API')
     .setDescription('API Backend para el ecommerce LaSobremesa')
     .setVersion('1.0')
+    .addBearerAuth()
     .addGlobalParameters({
       in: 'header',
       name: 'x-request-id',
@@ -44,4 +45,5 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();
