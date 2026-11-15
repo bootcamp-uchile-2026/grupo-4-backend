@@ -1,9 +1,11 @@
+
 import 'reflect-metadata';
 import 'dotenv/config';
 import * as argon2 from 'argon2';
 
 import dataSource from '../typeorm.config';
 import { Usuario } from '../../src/usuarios/entities/usuario.entity';
+import { Rol } from '../../src/roles/entities/rol.entity';
 import { RolUsuario } from '../../src/usuarios/enums/rol-usuario.enum';
 
 async function seedAdmins() {
@@ -22,6 +24,17 @@ async function seedAdmins() {
 
   try {
     const repo = dataSource.getRepository(Usuario);
+    const rolesRepo = dataSource.getRepository(Rol);
+
+    const rolAdmin = await rolesRepo.findOneBy({
+      nombre: RolUsuario.ADMIN,
+    });
+
+    if (!rolAdmin) {
+      throw new Error(
+        'El rol ADMIN no existe. Ejecuta primero las migraciones.',
+      );
+    }
 
     const passwordHash = await argon2.hash(adminPassword, {
       type: argon2.argon2id,
@@ -40,7 +53,7 @@ async function seedAdmins() {
         apellido: 'LaSobremesa',
         email,
         password_hash: passwordHash,
-        rol: RolUsuario.ADMIN,
+        rol: rolAdmin,
       });
 
       await repo.save(admin);

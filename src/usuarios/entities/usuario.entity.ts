@@ -8,7 +8,7 @@ import {
   Unique,
   Check,
 } from 'typeorm';
-import { RolUsuario } from '../enums/rol-usuario.enum';
+import { Rol } from '../../roles/entities/rol.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -30,13 +30,14 @@ export class Usuario {
   @Column({ type: 'varchar', length: 255, nullable: false })
   password_hash!: string;
 
-  @Column({
-    type: 'enum',
-    enum: ['CLIENTE', 'ADMIN', 'PROVEEDOR'],
+  @Column({ type: 'int', unsigned: true, nullable: false })
+  rol_id!: number;
+
+  @ManyToOne(() => Rol, (rol) => rol.usuarios, {
     nullable: false,
-    default: 'CLIENTE',
   })
-  rol!: RolUsuario;
+  @JoinColumn({ name: 'rol_id' })
+  rol!: Rol;
 
   @Column({ type: 'boolean', nullable: false, default: false })
   email_verificado!: boolean;
