@@ -50,7 +50,6 @@ CREATE TABLE productos (
     fecha_vencimiento DATE NULL,
     precio DECIMAL(12,2) NOT NULL,
     descuento DECIMAL(5,2) NOT NULL DEFAULT 0,
-    imagen VARCHAR(500),
     stock_cantidad INT UNSIGNED NOT NULL DEFAULT 0,
     stock_minimo INT UNSIGNED NOT NULL DEFAULT 0,
     favorito BOOLEAN NOT NULL DEFAULT FALSE,
@@ -60,6 +59,37 @@ CREATE TABLE productos (
     CHECK (precio >= 0),
     CHECK (descuento BETWEEN 0 AND 100)
 );
+
+
+CREATE TABLE imagenes (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    producto_id INT UNSIGNED NULL,
+    proveedor_id INT UNSIGNED NULL,
+    nombre VARCHAR(255) NOT NULL,
+    ruta VARCHAR(500) NOT NULL,
+    mime_type VARCHAR(100) NULL,
+    tamano BIGINT UNSIGNED NULL,
+    es_principal BOOLEAN NOT NULL DEFAULT FALSE,
+    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT FK_imagenes_productos
+        FOREIGN KEY (producto_id)
+        REFERENCES productos(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_imagenes_proveedores
+        FOREIGN KEY (proveedor_id)
+        REFERENCES proveedores(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT CHK_imagenes_propietario
+        CHECK (
+            (producto_id IS NOT NULL AND proveedor_id IS NULL)
+            OR
+            (producto_id IS NULL AND proveedor_id IS NOT NULL)
+        )
+) ENGINE=InnoDB;
+
 
 CREATE TABLE direcciones (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

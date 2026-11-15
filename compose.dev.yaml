@@ -40,6 +40,7 @@ services:
     volumes:
       - ./src:/app/src
       - ./db:/app/db
+      - imagenes_dev:/app/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -48,3 +49,4 @@ services:
 
 volumes:
   mysql_dev_data:
+  imagenes_dev:

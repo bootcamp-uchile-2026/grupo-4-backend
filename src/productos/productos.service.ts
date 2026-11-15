@@ -5,10 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { Producto } from './entities/producto.entity';
 import { Proveedor } from '../proveedores/entities/proveedor.entity';
+import { Imagen } from '../archivos/entities/imagen.entity';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { ProductoQueryDto } from './dto/producto-query.dto';
@@ -16,6 +17,8 @@ import { ProductoResponseDto } from './dto/producto-response.dto';
 import { TipoConservacion } from './enums/tipo-conservacion.enum';
 import { RolUsuario } from '../usuarios/enums/rol-usuario.enum';
 import type { JwtPayload } from '../autenticacion/guards/auth.guard';
+import { ArchivosService } from '../archivos/archivos.service';
+import { ImagenResponseDto } from '../archivos/dto/imagen-response.dto';
 
 @Injectable()
 export class ProductosService {
@@ -25,6 +28,11 @@ export class ProductosService {
 
     @InjectRepository(Proveedor)
     private readonly proveedoresRepository: Repository<Proveedor>,
+
+    @InjectRepository(Imagen)
+    private readonly imagenesRepository: Repository<Imagen>,
+
+    private readonly archivosService: ArchivosService,
   ) {}
 
   private async obtenerProveedorId(usuario: JwtPayload): Promise<number> {
@@ -80,7 +88,11 @@ export class ProductosService {
         : null!,
       descuento,
       precioDescuento: Math.round(precio * (1 - descuento / 100) * 100) / 100,
-      imagen: producto.imagen ?? '',
+      imagenes: (producto.imagenes ?? []).map((imagen) => ({
+        id: imagen.id,
+        ruta: imagen.ruta,
+        esPrincipal: imagen.es_principal,
+      })),
       tipoConservacion: (producto.tipo_conservacion ??
         TipoConservacion.AMBIENTE) as TipoConservacion,
       valoracion,
@@ -94,6 +106,30 @@ export class ProductosService {
     if (productos.length === 0) return [];
 
     const ids = productos.map((producto) => producto.id);
+
+    const imagenes = await this.repository.manager.getRepository(Imagen).find({
+      where: {
+        producto_id: In(ids),
+      },
+      order: {
+        es_principal: 'DESC',
+        id: 'ASC',
+      },
+    });
+
+    const imagenesPorProducto = new Map<number, Imagen[]>();
+
+    for (const imagen of imagenes) {
+      if (imagen.producto_id === null) continue;
+
+      const grupo = imagenesPorProducto.get(imagen.producto_id) ?? [];
+      grupo.push(imagen);
+      imagenesPorProducto.set(imagen.producto_id, grupo);
+    }
+
+    for (const producto of productos) {
+      producto.imagenes = imagenesPorProducto.get(producto.id) ?? [];
+    }
 
     const valoraciones = await this.repository.manager
       .createQueryBuilder()
@@ -242,7 +278,6 @@ export class ProductosService {
       precio: String(dto.precio),
       descuento: String(dto.descuento ?? 0),
       fecha_vencimiento: dto.fechaVencimiento ?? null,
-      imagen: dto.imagen ?? null,
       tipo_conservacion: dto.tipoConservacion,
       favorito: dto.favorito ?? false,
       stock_cantidad: 0,
@@ -316,10 +351,6 @@ export class ProductosService {
       producto.fecha_vencimiento = dto.fechaVencimiento;
     }
 
-    if (dto.imagen !== undefined) {
-      producto.imagen = dto.imagen;
-    }
-
     if (dto.tipoConservacion !== undefined) {
       producto.tipo_conservacion = dto.tipoConservacion;
     }
@@ -347,4 +378,175 @@ export class ProductosService {
     producto.activo = false;
     await this.repository.save(producto);
   }
+
+
+
+  async subirImagen(
+    productoId: number,
+    archivo: Express.Multer.File,
+    usuario: JwtPayload,
+  ): Promise<ImagenResponseDto> {
+    const producto = await this.repository.findOne({
+      where: { id: productoId, activo: true },
+    });
+
+    if (!producto) {
+      throw new NotFoundException(`Producto con ID ${productoId} no encontrado`);
+    }
+
+    await this.validarPropiedad(producto, usuario);
+
+    const archivoGuardado = await this.archivosService.guardarImagen(
+      archivo,
+      'productos',
+    );
+
+    try {
+      return await this.repository.manager.transaction(async (manager) => {
+        const productoBloqueado = await manager.getRepository(Producto).findOne({
+          where: { id: productoId, activo: true },
+          lock: { mode: 'pessimistic_write' },
+        });
+
+        if (!productoBloqueado) {
+          throw new NotFoundException(
+            `Producto con ID ${productoId} no encontrado`,
+          );
+        }
+
+        await this.validarPropiedad(productoBloqueado, usuario);
+
+        const repositorioImagenes = manager.getRepository(Imagen);
+        const cantidadImagenes = await repositorioImagenes.count({
+          where: { producto_id: productoId },
+        });
+
+        const imagen = repositorioImagenes.create({
+          producto_id: productoId,
+          proveedor_id: null,
+          nombre: archivoGuardado.nombre,
+          ruta: archivoGuardado.ruta,
+          mime_type: archivoGuardado.mimeType,
+          tamano: String(archivoGuardado.tamano),
+          es_principal: cantidadImagenes === 0,
+        });
+
+        const guardada = await repositorioImagenes.save(imagen);
+
+        return {
+          id: guardada.id,
+          ruta: guardada.ruta,
+          esPrincipal: guardada.es_principal,
+        };
+      });
+    } catch (error) {
+      try {
+        await this.archivosService.eliminarImagen(archivoGuardado.ruta);
+      } catch {
+        // Conservamos el error original de la operación de base de datos.
+      }
+      throw error;
+    }
+  }
+
+  async establecerImagenPrincipal(
+    productoId: number,
+    imagenId: number,
+    usuario: JwtPayload,
+  ): Promise<ImagenResponseDto> {
+    return this.repository.manager.transaction(async (manager) => {
+      const producto = await manager.getRepository(Producto).findOne({
+        where: { id: productoId, activo: true },
+        lock: { mode: 'pessimistic_write' },
+      });
+
+      if (!producto) {
+        throw new NotFoundException(
+          `Producto con ID ${productoId} no encontrado`,
+        );
+      }
+
+      await this.validarPropiedad(producto, usuario);
+
+      const repositorioImagenes = manager.getRepository(Imagen);
+      const imagen = await repositorioImagenes.findOne({
+        where: { id: imagenId, producto_id: productoId },
+      });
+
+      if (!imagen) {
+        throw new NotFoundException(
+          `Imagen con ID ${imagenId} no encontrada para este producto`,
+        );
+      }
+
+      await repositorioImagenes.update(
+        { producto_id: productoId, es_principal: true },
+        { es_principal: false },
+      );
+
+      imagen.es_principal = true;
+      const guardada = await repositorioImagenes.save(imagen);
+
+      return {
+        id: guardada.id,
+        ruta: guardada.ruta,
+        esPrincipal: guardada.es_principal,
+      };
+    });
+  }
+
+
+  async eliminarImagen(
+    productoId: number,
+    imagenId: number,
+    usuario: JwtPayload,
+  ): Promise<void> {
+    const rutaImagen = await this.repository.manager.transaction(
+      async (manager) => {
+        const producto = await manager.getRepository(Producto).findOne({
+          where: { id: productoId, activo: true },
+          lock: { mode: 'pessimistic_write' },
+        });
+
+        if (!producto) {
+          throw new NotFoundException(
+            `Producto con ID ${productoId} no encontrado`,
+          );
+        }
+
+        await this.validarPropiedad(producto, usuario);
+
+        const repositorioImagenes = manager.getRepository(Imagen);
+
+        const imagen = await repositorioImagenes.findOne({
+          where: { id: imagenId, producto_id: productoId },
+        });
+
+        if (!imagen) {
+          throw new NotFoundException(
+            `Imagen con ID ${imagenId} no encontrada para este producto`,
+          );
+        }
+
+        await repositorioImagenes.remove(imagen);
+
+        if (imagen.es_principal) {
+          const siguienteImagen = await repositorioImagenes.findOne({
+            where: { producto_id: productoId },
+            order: { id: 'ASC' },
+          });
+
+          if (siguienteImagen) {
+            siguienteImagen.es_principal = true;
+            await repositorioImagenes.save(siguienteImagen);
+          }
+        }
+
+        return imagen.ruta;
+      },
+    );
+
+    await this.archivosService.eliminarImagen(rutaImagen);
+  }
+
 }

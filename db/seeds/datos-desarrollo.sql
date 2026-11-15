@@ -127,7 +127,6 @@ INSERT INTO productos (
   fecha_vencimiento,
   precio,
   descuento,
-  imagen,
   stock_cantidad,
   stock_minimo,
   favorito,
@@ -145,7 +144,6 @@ INSERT INTO productos (
   '2027-12-31',
   5000,
   10,
-  'https://placehold.co/600x400/png?text=Mermelada+de+frutilla',
   20, 5, TRUE, TRUE
 ),
 
@@ -160,7 +158,6 @@ INSERT INTO productos (
   '2027-12-31',
   7500,
   0,
-  'https://placehold.co/600x400/png?text=Queso+de+campo',
   20, 5, FALSE, TRUE
 ),
 
@@ -175,7 +172,6 @@ INSERT INTO productos (
   '2027-12-31',
   9000,
   0,
-  'https://placehold.co/600x400/png?text=Aceite+de+oliva',
   20, 5, FALSE, TRUE
 ),
 
@@ -190,7 +186,6 @@ INSERT INTO productos (
   '2027-12-31',
   6500,
   15,
-  'https://placehold.co/600x400/png?text=Miel+artesanal',
   20, 5, TRUE, TRUE
 ),
 
@@ -205,7 +200,6 @@ INSERT INTO productos (
   '2027-12-31',
   4500,
   0,
-  'https://placehold.co/600x400/png?text=Manjar+casero',
   20, 5, FALSE, TRUE
 ),
 
@@ -220,7 +214,6 @@ INSERT INTO productos (
   '2027-12-31',
   5500,
   5,
-  'https://placehold.co/600x400/png?text=Mermelada+de+mora',
   20, 5, FALSE, TRUE
 ),
 
@@ -235,7 +228,6 @@ INSERT INTO productos (
   '2027-12-31',
   8500,
   10,
-  'https://placehold.co/600x400/png?text=Queso+de+cabra',
   20, 5, TRUE, TRUE
 ),
 
@@ -250,7 +242,6 @@ INSERT INTO productos (
   '2027-12-31',
   12000,
   0,
-  'https://placehold.co/600x400/png?text=Aceite+de+oliva+extra+virgen',
   20, 5, FALSE, TRUE
 ),
 
@@ -265,7 +256,6 @@ INSERT INTO productos (
   '2027-12-31',
   8000,
   0,
-  'https://placehold.co/600x400/png?text=Miel+de+ulmo',
   20, 5, TRUE, TRUE
 ),
 
@@ -280,7 +270,6 @@ INSERT INTO productos (
   '2027-12-31',
   3500,
   0,
-  'https://placehold.co/600x400/png?text=Galletas+artesanales',
   20, 5, FALSE, TRUE
 ),
 
@@ -295,7 +284,6 @@ INSERT INTO productos (
   '2027-12-31',
   4000,
   20,
-  'https://placehold.co/600x400/png?text=Brownies+artesanales',
   20, 5, FALSE, TRUE
 ),
 
@@ -310,7 +298,6 @@ INSERT INTO productos (
   '2027-12-31',
   6000,
   0,
-  'https://placehold.co/600x400/png?text=Granola+artesanal',
   20, 5, TRUE, TRUE
 );
 

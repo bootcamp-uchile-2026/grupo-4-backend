@@ -3,10 +3,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { Categoria } from '../../categorias/entities/categoria.entity';
 import { Proveedor } from '../../proveedores/entities/proveedor.entity';
+import { Imagen } from '../../archivos/entities/imagen.entity';
 
 @Entity('productos')
 export class Producto {
@@ -53,9 +55,6 @@ export class Producto {
     default: 0,
   })
   descuento!: string;
-
-  @Column({ type: 'varchar', length: 500, nullable: true })
-  imagen?: string | null;
 
   @Column({
     type: 'int',
@@ -106,4 +105,7 @@ export class Producto {
     referencedColumnName: 'id',
   })
   rel_proveedor!: Proveedor;
+
+  @OneToMany(() => Imagen, (imagen) => imagen.rel_producto)
+  imagenes?: Imagen[];
 }

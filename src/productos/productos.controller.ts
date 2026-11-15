@@ -12,6 +12,11 @@ import {
   HttpCode,
   UseGuards,
   Req,
+  UploadedFile,
+  UseInterceptors,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import type { AuthenticatedRequest } from '../autenticacion/guards/auth.guard';
 import {
@@ -21,13 +26,17 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags,
+  ApiBody,
+  ApiConsumes,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { ProductoResponseDto } from './dto/producto-response.dto';
 import { ProductoQueryDto } from './dto/producto-query.dto';
+import { ImagenResponseDto } from '../archivos/dto/imagen-response.dto';
 
 import { AuthGuard } from '../autenticacion/guards/auth.guard';
 import { RolesGuard } from '../autenticacion/guards/roles.guard';
@@ -153,6 +162,188 @@ export class ProductosController {
   }
 
   @ApiOperation({
+    summary: 'Subir imagen de producto',
+    description:
+      'ADMIN puede subir imágenes a cualquier producto. PROVEEDOR solo puede subir imágenes a sus propios productos.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'Identificador del producto',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['archivo'],
+      properties: {
+        archivo: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Imagen subida correctamente.',
+    type: ImagenResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Archivo inválido o demasiado grande.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para modificar este producto.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Producto no encontrado.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN, RolUsuario.PROVEEDOR)
+  @UseInterceptors(
+    FileInterceptor('archivo', {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  @Post(':id/imagenes')
+  subirImagen(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 5 * 1024 * 1024,
+          }),
+          new FileTypeValidator({
+            fileType: /^image\/(jpeg|png|webp)$/,
+          }),
+        ],
+      }),
+    )
+    archivo: Express.Multer.File,
+    @Req() request: AuthenticatedRequest,
+  ): Promise<ImagenResponseDto> {
+    return this.productosService.subirImagen(id, archivo, request.user!);
+  }
+
+  @ApiOperation({
+    summary: 'Establecer imagen principal de un producto',
+    description:
+      'ADMIN puede modificar cualquier producto. PROVEEDOR solo puede modificar sus propios productos.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'Identificador del producto',
+  })
+  @ApiParam({
+    name: 'imagenId',
+    type: Number,
+    description: 'Identificador de la imagen',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Imagen principal actualizada correctamente.',
+    type: ImagenResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Identificador no válido.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para modificar este producto.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Producto o imagen no encontrado.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN, RolUsuario.PROVEEDOR)
+  @Patch(':id/imagenes/:imagenId/principal')
+  establecerImagenPrincipal(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('imagenId', ParseIntPipe) imagenId: number,
+    @Req() request: AuthenticatedRequest,
+  ): Promise<ImagenResponseDto> {
+    return this.productosService.establecerImagenPrincipal(
+      id,
+      imagenId,
+      request.user!,
+    );
+  }
+
+
+  @ApiOperation({
+    summary: 'Eliminar imagen de producto',
+    description:
+      'ADMIN puede eliminar imágenes de cualquier producto. PROVEEDOR solo puede eliminar imágenes de sus propios productos.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'Identificador del producto',
+  })
+  @ApiParam({
+    name: 'imagenId',
+    type: Number,
+    description: 'Identificador de la imagen',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Imagen eliminada correctamente.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Identificador no válido.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para modificar este producto.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Producto o imagen no encontrada.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN, RolUsuario.PROVEEDOR)
+  @Delete(':id/imagenes/:imagenId')
+  @HttpCode(204)
+  eliminarImagen(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('imagenId', ParseIntPipe) imagenId: number,
+    @Req() request: AuthenticatedRequest,
+  ): Promise<void> {
+    return this.productosService.eliminarImagen(
+      id,
+      imagenId,
+      request.user!,
+    );
+  }
+
+
+
+  @ApiOperation({
     summary: 'Actualizar producto',
     description:
       'ADMIN puede actualizar cualquier producto. PROVEEDOR solo puede actualizar sus propios productos.',
@@ -221,7 +412,7 @@ export class ProductosController {
   })
   @ApiResponse({
     status: 403,
-    description: 'No tienes permisos para eliminar este producto.',
+    description: 'No tienes permisos para modificar este producto.',
   })
   @ApiResponse({
     status: 404,

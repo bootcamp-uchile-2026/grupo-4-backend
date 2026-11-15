@@ -4,11 +4,13 @@ import {
   PrimaryColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
   Unique,
   Check,
 } from 'typeorm';
 import { Usuario } from '../../usuarios/entities/usuario.entity';
+import { Imagen } from '../../archivos/entities/imagen.entity';
 
 @Entity('proveedores')
 export class Proveedor {
@@ -33,4 +35,7 @@ export class Proveedor {
   @ManyToOne(() => Usuario, { nullable: true, onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'usuario_id', referencedColumnName: 'id' })
   rel_usuario?: Usuario | null;
+
+  @OneToMany(() => Imagen, (imagen) => imagen.rel_proveedor)
+  imagenes?: Imagen[];
 }
