@@ -1,4 +1,3 @@
-
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AutenticacionService } from './autenticacion.service';
@@ -7,9 +6,7 @@ import { LoginAutenticacionDto } from './dto/login-autenticacion.dto';
 @ApiTags('Autenticación')
 @Controller('autenticacion')
 export class AutenticacionController {
-  constructor(
-    private readonly autenticacionService: AutenticacionService,
-  ) {}
+  constructor(private readonly autenticacionService: AutenticacionService) {}
 
   @Post('login')
   @HttpCode(200)

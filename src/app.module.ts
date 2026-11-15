@@ -29,6 +29,7 @@ import { TiemposEntregaModule } from './tiempos-entrega/tiempos-entrega.module';
 import { SeguimientosDespachoModule } from './seguimientos-despacho/seguimientos-despacho.module';
 import { ZonasDespachoModule } from './zonas-despacho/zonas-despacho.module';
 import { AutenticacionModule } from './autenticacion/autenticacion.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { AutenticacionModule } from './autenticacion/autenticacion.module';
     DatosDespachoModule,
     MetodosPagoModule,
     MetodosEntregaModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
