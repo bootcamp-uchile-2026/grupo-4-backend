@@ -1,9 +1,14 @@
+
 # Modelo entidad-relación — LaSobremesa
 
-Modelo relacional del Hito 3. El diagrama refleja las tablas y claves foráneas definidas en `script.sql`.
+Modelo relacional del Hito 3. El diagrama refleja el esquema inicial definido en `script.sql` y la normalización de roles aplicada mediante migraciones TypeORM.
 
 ```mermaid
 erDiagram
+    roles {
+        INT id PK
+        VARCHAR_30 nombre
+    }
     usuarios {
         INT id PK
         VARCHAR_100 nombre
@@ -11,7 +16,7 @@ erDiagram
         VARCHAR_190 email
         VARCHAR_30 telefono
         VARCHAR_255 password_hash
-        ENUM rol
+        INT rol_id FK
         BOOLEAN email_verificado
         TIMESTAMP creado_en
     }
@@ -182,6 +187,8 @@ erDiagram
         DATETIME expira_en
         DATETIME usado_en
     }
+
+    roles ||--o{ usuarios : "rol_id"
     usuarios ||--o| proveedores : "usuario_id"
     categorias ||--o{ productos : "categoria_id"
     proveedores ||--o{ productos : "proveedor_id"
@@ -216,6 +223,10 @@ erDiagram
 ## Convenciones
 
 - Las relaciones se implementan mediante claves foráneas, no mediante listas de identificadores.
+- `roles` contiene los roles fijos `CLIENTE`, `ADMIN` y `PROVEEDOR`.
+- `usuarios.rol_id` es una clave foránea obligatoria que referencia `roles.id`.
+- Un rol puede estar asociado a múltiples usuarios, pero cada usuario tiene exactamente un rol.
+- `roles.nombre` tiene una restricción de unicidad.
 - `carrito_items` y `pedido_items` representan los productos asociados a carritos y pedidos.
 - `favoritos` representa favoritos por usuario y utiliza una clave primaria compuesta.
 - `productos.favorito` indica si la tienda destaca un producto; es independiente de la tabla `favoritos`.
@@ -223,3 +234,4 @@ erDiagram
 - Los métodos de pago almacenan referencias tokenizadas; no se guarda el CVV.
 - `resenas.estrellas` permite calcular la valoración promedio de cada producto.
 - Las cardinalidades representan las restricciones SQL, no necesariamente todas las reglas de negocio.
+```
