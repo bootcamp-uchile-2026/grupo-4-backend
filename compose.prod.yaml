@@ -28,6 +28,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD}
       DB_NAME: ${DB_NAME:-lasobremesa}
       JWT_SECRET: ${JWT_SECRET}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:?Define ADMIN_EMAILS}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Define ADMIN_PASSWORD}
     ports:
       - "${API_HOST_PORT:-3000}:3000"
     depends_on:
