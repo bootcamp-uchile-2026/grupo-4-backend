@@ -6,6 +6,7 @@
 
 START TRANSACTION;
 
+
 -- ============================================================
 -- 1. USUARIOS
 -- ============================================================
@@ -15,7 +16,7 @@ INSERT INTO usuarios (
   apellido,
   email,
   password_hash,
-  rol,
+  rol_id,
   email_verificado
 ) VALUES
 (
@@ -23,7 +24,7 @@ INSERT INTO usuarios (
   'Conservas',
   'proveedor.prueba@lasobremesa.cl',
   '$argon2id$v=19$m=65536,t=3,p=4$yNUO716wCajGzCeAgogqcw$1dn6i7/dYWsFmyC/iEwGntV2l+aYQLjoshjRS7EJ6Ps',
-  'PROVEEDOR',
+  (SELECT id FROM roles WHERE nombre = 'PROVEEDOR'),
   TRUE
 ),
 (
@@ -31,7 +32,7 @@ INSERT INTO usuarios (
   'Lacteos',
   'proveedor.dos@lasobremesa.cl',
   '$argon2id$v=19$m=65536,t=3,p=4$yNUO716wCajGzCeAgogqcw$1dn6i7/dYWsFmyC/iEwGntV2l+aYQLjoshjRS7EJ6Ps',
-  'PROVEEDOR',
+  (SELECT id FROM roles WHERE nombre = 'PROVEEDOR'),
   TRUE
 ),
 (
@@ -39,7 +40,7 @@ INSERT INTO usuarios (
   'Prueba',
   'cliente.prueba@lasobremesa.cl',
   '$argon2id$v=19$m=65536,t=3,p=4$LlA9jPWRASdmyXNZFaJYHw$AA7tHhFidRehPReB/SXB77DwLnzO915zxVpHsJRRklU',
-  'CLIENTE',
+  (SELECT id FROM roles WHERE nombre = 'CLIENTE'),
   TRUE
 ),
 (
@@ -47,9 +48,10 @@ INSERT INTO usuarios (
   'Prueba',
   'admin.prueba@lasobremesa.cl',
   '$argon2id$v=19$m=65536,t=3,p=4$yXJabzB/LDpcX6Yta2Oi7A$WowtOAfMN1EYzHYdfcqRU7d/wznx1ARsuW8UUK0mM2E',
-  'ADMIN',
+  (SELECT id FROM roles WHERE nombre = 'ADMIN'),
   TRUE
 );
+
 
 -- ============================================================
 -- 2. CATEGORÍAS
@@ -323,13 +325,15 @@ SELECT COUNT(*) AS total_categorias FROM categorias;
 SELECT COUNT(*) AS total_proveedores FROM proveedores;
 SELECT COUNT(*) AS total_productos FROM productos;
 
+
 SELECT
   u.id AS usuario_id,
   u.email,
-  u.rol,
+  r.nombre AS rol,
   p.id AS proveedor_id,
   p.nombre AS proveedor
 FROM usuarios u
+INNER JOIN roles r ON r.id = u.rol_id
 LEFT JOIN proveedores p ON p.usuario_id = u.id
 WHERE u.email IN (
   'proveedor.prueba@lasobremesa.cl',
