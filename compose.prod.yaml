@@ -32,6 +32,8 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Define ADMIN_PASSWORD}
     ports:
       - "${API_HOST_PORT:-3000}:3000"
+    volumes:
+      - imagenes_prod:/app/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -39,3 +41,4 @@ services:
       sh -c "npm run migration:run:prod && npm run start:prod"
 volumes:
   mysql_prod_data:
+  imagenes_prod:

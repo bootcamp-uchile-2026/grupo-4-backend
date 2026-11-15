@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-
 import { TipoConservacion } from '../enums/tipo-conservacion.enum';
+import { ImagenResponseDto } from '../../archivos/dto/imagen-response.dto';
 
 export class ProductoResponseDto {
   @ApiProperty({
@@ -79,10 +79,11 @@ export class ProductoResponseDto {
   precioDescuento: number;
 
   @ApiProperty({
-    example: 'https://ejemplo.com/mermelada-frutilla.jpg',
-    description: 'URL de la imagen del producto',
+    type: () => ImagenResponseDto,
+    isArray: true,
+    description: 'Imágenes asociadas al producto',
   })
-  imagen: string;
+  imagenes: ImagenResponseDto[];
 
   @ApiProperty({
     enum: TipoConservacion,

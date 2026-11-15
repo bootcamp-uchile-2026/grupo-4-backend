@@ -1,4 +1,9 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'node:path';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductosModule } from './productos/productos.module';
@@ -12,8 +17,6 @@ import { CarritoModule } from './carrito/carrito.module';
 import { StockModule } from './stock/stock.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { RequestIdMiddleware } from './common/middleware/request-id/request-id.middleware';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsCarritoModule } from './items-carrito/items-carrito.module';
 import { DetallePedidosModule } from './detalle-pedidos/detalle-pedidos.module';
 import { EstadoPedidosModule } from './estado-pedidos/estado-pedidos.module';
@@ -30,6 +33,7 @@ import { SeguimientosDespachoModule } from './seguimientos-despacho/seguimientos
 import { ZonasDespachoModule } from './zonas-despacho/zonas-despacho.module';
 import { AutenticacionModule } from './autenticacion/autenticacion.module';
 import { RolesModule } from './roles/roles.module';
+import { ArchivosModule } from './archivos/archivos.module';
 
 @Module({
   imports: [
@@ -45,6 +49,13 @@ import { RolesModule } from './roles/roles.module';
       database: process.env.DB_NAME ?? 'lasobremesa',
       autoLoadEntities: true,
       synchronize: false,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        fallthrough: false,
+      },
     }),
     RegistroModule,
     AutenticacionModule,
@@ -72,6 +83,7 @@ import { RolesModule } from './roles/roles.module';
     MetodosPagoModule,
     MetodosEntregaModule,
     RolesModule,
+    ArchivosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

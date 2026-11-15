@@ -1,7 +1,6 @@
-
 # Modelo entidad-relación — LaSobremesa
 
-Modelo relacional del Hito 3. El diagrama refleja el esquema inicial definido en `script.sql` y la normalización de roles aplicada mediante migraciones TypeORM.
+Modelo relacional de LaSobremesa. El diagrama refleja el esquema definido en `script.sql` y las modificaciones aplicadas mediante migraciones TypeORM, incluyendo la normalización de roles y la gestión de imágenes de productos y proveedores.
 
 ```mermaid
 erDiagram
@@ -44,11 +43,21 @@ erDiagram
         DATE fecha_vencimiento
         DECIMAL_12_2 precio
         DECIMAL_5_2 descuento
-        VARCHAR_500 imagen
         INT stock_cantidad
         INT stock_minimo
         BOOLEAN favorito
         BOOLEAN activo
+    }
+    imagenes {
+        INT id PK
+        INT producto_id FK
+        INT proveedor_id FK
+        VARCHAR_255 nombre
+        VARCHAR_500 ruta
+        VARCHAR_100 mime_type
+        BIGINT tamano
+        BOOLEAN es_principal
+        TIMESTAMP creado_en
     }
     direcciones {
         INT id PK
@@ -192,6 +201,8 @@ erDiagram
     usuarios ||--o| proveedores : "usuario_id"
     categorias ||--o{ productos : "categoria_id"
     proveedores ||--o{ productos : "proveedor_id"
+    productos |o--o{ imagenes : "producto_id"
+    proveedores |o--o{ imagenes : "proveedor_id"
     usuarios ||--o{ direcciones : "usuario_id"
     usuarios ||--o| carritos : "usuario_id"
     carritos ||--o{ carrito_items : "carrito_id"
@@ -233,5 +244,9 @@ erDiagram
 - `suscripcion_productos` utiliza una clave primaria compuesta.
 - Los métodos de pago almacenan referencias tokenizadas; no se guarda el CVV.
 - `resenas.estrellas` permite calcular la valoración promedio de cada producto.
+- `imagenes` almacena las rutas y los metadatos de las imágenes asociadas a productos y proveedores.
+- Un producto o proveedor puede tener múltiples imágenes.
+- Cada imagen pertenece exclusivamente a un producto o a un proveedor, mediante la restricción `CHK_imagenes_propietario`.
+- `imagenes.es_principal` identifica la imagen destacada. La aplicación controla que exista como máximo una imagen principal por producto.
+- Los archivos físicos se almacenan en `/uploads`, utilizando volúmenes persistentes de Docker.
 - Las cardinalidades representan las restricciones SQL, no necesariamente todas las reglas de negocio.
-```

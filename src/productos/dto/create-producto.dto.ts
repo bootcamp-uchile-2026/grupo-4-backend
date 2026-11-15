@@ -8,7 +8,6 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
   Matches,
   Max,
   Min,
@@ -118,19 +117,6 @@ export class CreateProductoDto {
   @Min(0, { message: 'descuento debe ser mayor o igual a 0' })
   @Max(100, { message: 'descuento debe ser menor o igual a 100' })
   descuento?: number;
-
-  @ApiPropertyOptional({
-    example: 'https://ejemplo.com/mermelada.jpg',
-    description: 'URL de la imagen del producto',
-  })
-  @IsOptional()
-  @IsUrl(
-    {},
-    {
-      message: 'imagen debe ser una URL válida',
-    },
-  )
-  imagen?: string;
 
   @ApiProperty({
     enum: TipoConservacion,
