@@ -1,9 +1,9 @@
-
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as argon2 from 'argon2';
+
 import { Usuario } from '../usuarios/entities/usuario.entity';
 import { LoginAutenticacionDto } from './dto/login-autenticacion.dto';
 
@@ -12,12 +12,14 @@ export class AutenticacionService {
   constructor(
     @InjectRepository(Usuario)
     private readonly usuariosRepository: Repository<Usuario>,
+
     private readonly jwtService: JwtService,
   ) {}
 
   async login(dto: LoginAutenticacionDto) {
-    const usuario = await this.usuariosRepository.findOneBy({
-      email: dto.email,
+    const usuario = await this.usuariosRepository.findOne({
+      where: { email: dto.email },
+      relations: { rol: true },
     });
 
     if (!usuario) {
@@ -36,7 +38,7 @@ export class AutenticacionService {
     const payload = {
       sub: usuario.id,
       email: usuario.email,
-      role: usuario.rol,
+      role: usuario.rol.nombre,
     };
 
     return {

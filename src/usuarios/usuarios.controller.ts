@@ -22,6 +22,7 @@ import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioAdminDto } from './dto/create-usuario-admin.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { UsuarioResponseDto } from './dto/usuarios-response.dto';
+import { AsignarRolDto } from './dto/asignar-rol.dto';
 
 import { AuthGuard } from '../autenticacion/guards/auth.guard';
 import { RolesGuard } from '../autenticacion/guards/roles.guard';
@@ -73,9 +74,7 @@ export class UsuariosController {
   @ApiResponse({ status: 403, description: 'Acceso denegado.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   @Get(':id')
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<UsuarioResponseDto> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<UsuarioResponseDto> {
     return this.usuariosService.findOne(id);
   }
 
@@ -89,20 +88,12 @@ export class UsuariosController {
     description: 'Usuario creado correctamente.',
     type: UsuarioResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Los datos del usuario no son válidos.',
-  })
+  @ApiResponse({ status: 400, description: 'Datos no válidos.' })
   @ApiResponse({ status: 401, description: 'No autenticado.' })
   @ApiResponse({ status: 403, description: 'Acceso denegado.' })
-  @ApiResponse({
-    status: 409,
-    description: 'Ya existe un usuario con los datos proporcionados.',
-  })
+  @ApiResponse({ status: 409, description: 'El usuario ya existe.' })
   @Post()
-  create(
-    @Body() dto: CreateUsuarioAdminDto,
-  ): Promise<UsuarioResponseDto> {
+  create(@Body() dto: CreateUsuarioAdminDto): Promise<UsuarioResponseDto> {
     return this.usuariosService.createAdmin(dto);
   }
 
@@ -121,23 +112,44 @@ export class UsuariosController {
     description: 'Usuario actualizado correctamente.',
     type: UsuarioResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'El ID o los datos del usuario no son válidos.',
-  })
+  @ApiResponse({ status: 400, description: 'Datos no válidos.' })
   @ApiResponse({ status: 401, description: 'No autenticado.' })
   @ApiResponse({ status: 403, description: 'Acceso denegado.' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
-  @ApiResponse({
-    status: 409,
-    description: 'Ya existe un usuario con los datos proporcionados.',
-  })
+  @ApiResponse({ status: 409, description: 'El email ya existe.' })
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUsuarioDto: UpdateUsuarioDto,
   ): Promise<UsuarioResponseDto> {
     return this.usuariosService.update(id, updateUsuarioDto);
+  }
+
+  @ApiOperation({
+    summary: 'Asignar un rol a un usuario',
+    description: 'Permite a un administrador asignar un rol existente.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'Identificador único del usuario',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Rol asignado correctamente.',
+    type: UsuarioResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Datos no válidos.' })
+  @ApiResponse({ status: 401, description: 'No autenticado.' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado.' })
+  @ApiResponse({ status: 404, description: 'Usuario o rol no encontrado.' })
+  @Patch(':id/rol')
+  asignarRol(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: AsignarRolDto,
+  ): Promise<UsuarioResponseDto> {
+    return this.usuariosService.asignarRol(id, dto.rol_id);
   }
 
   @ApiOperation({

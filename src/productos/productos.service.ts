@@ -1,4 +1,3 @@
-
 import {
   BadRequestException,
   ForbiddenException,
@@ -34,9 +33,7 @@ export class ProductosService {
     });
 
     if (!proveedor) {
-      throw new ForbiddenException(
-        'El usuario no tiene un proveedor asociado',
-      );
+      throw new ForbiddenException('El usuario no tiene un proveedor asociado');
     }
 
     return proveedor.id;
@@ -65,10 +62,7 @@ export class ProductosService {
     }
   }
 
-  private toResponse(
-    producto: Producto,
-    valoracion = 0,
-  ): ProductoResponseDto {
+  private toResponse(producto: Producto, valoracion = 0): ProductoResponseDto {
     const precio = Number(producto.precio);
     const descuento = Number(producto.descuento);
 
@@ -85,8 +79,7 @@ export class ProductosService {
         ? new Date(producto.fecha_vencimiento)
         : null!,
       descuento,
-      precioDescuento:
-        Math.round(precio * (1 - descuento / 100) * 100) / 100,
+      precioDescuento: Math.round(precio * (1 - descuento / 100) * 100) / 100,
       imagen: producto.imagen ?? '',
       tipoConservacion: (producto.tipo_conservacion ??
         TipoConservacion.AMBIENTE) as TipoConservacion,
@@ -126,9 +119,7 @@ export class ProductosService {
     );
   }
 
-  async findAll(
-    query: ProductoQueryDto,
-  ): Promise<ProductoResponseDto[]> {
+  async findAll(query: ProductoQueryDto): Promise<ProductoResponseDto[]> {
     const qb = this.repository
       .createQueryBuilder('producto')
       .where('producto.activo = :activo', { activo: true });
@@ -174,12 +165,9 @@ export class ProductosService {
     }
 
     if (query.tipoConservacion !== undefined) {
-      qb.andWhere(
-        'producto.tipo_conservacion = :tipoConservacion',
-        {
-          tipoConservacion: query.tipoConservacion,
-        },
-      );
+      qb.andWhere('producto.tipo_conservacion = :tipoConservacion', {
+        tipoConservacion: query.tipoConservacion,
+      });
     }
 
     if (query.tieneDescuento !== undefined) {
@@ -190,29 +178,19 @@ export class ProductosService {
       );
     }
 
-    const productos = await qb
-      .orderBy('producto.id', 'ASC')
-      .getMany();
+    const productos = await qb.orderBy('producto.id', 'ASC').getMany();
 
     return this.toResponses(productos);
   }
 
-  async findTopVentas(
-    limite: number,
-  ): Promise<ProductoResponseDto[]> {
+  async findTopVentas(limite: number): Promise<ProductoResponseDto[]> {
     if (!Number.isInteger(limite) || limite < 1) {
-      throw new BadRequestException(
-        'limite debe ser un entero mayor a 0',
-      );
+      throw new BadRequestException('limite debe ser un entero mayor a 0');
     }
 
     const productos = await this.repository
       .createQueryBuilder('producto')
-      .leftJoin(
-        'pedido_items',
-        'item',
-        'item.producto_id = producto.id',
-      )
+      .leftJoin('pedido_items', 'item', 'item.producto_id = producto.id')
       .where('producto.activo = :activo', { activo: true })
       .groupBy('producto.id')
       .orderBy('COALESCE(SUM(item.cantidad), 0)', 'DESC')
@@ -229,9 +207,7 @@ export class ProductosService {
     });
 
     if (!producto) {
-      throw new NotFoundException(
-        `Producto con ID ${id} no encontrado`,
-      );
+      throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
 
     const [respuesta] = await this.toResponses([producto]);
@@ -253,9 +229,7 @@ export class ProductosService {
         );
       }
     } else {
-      throw new ForbiddenException(
-        'No tienes permisos para crear productos',
-      );
+      throw new ForbiddenException('No tienes permisos para crear productos');
     }
 
     const producto = this.repository.create({
@@ -291,9 +265,7 @@ export class ProductosService {
     });
 
     if (!producto) {
-      throw new NotFoundException(
-        `Producto con ID ${id} no encontrado`,
-      );
+      throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
 
     await this.validarPropiedad(producto, usuario);
@@ -328,10 +300,7 @@ export class ProductosService {
       producto.categoria_id = dto.categoriaId;
     }
 
-    if (
-      dto.proveedorId !== undefined &&
-      usuario.role === RolUsuario.ADMIN
-    ) {
+    if (dto.proveedorId !== undefined && usuario.role === RolUsuario.ADMIN) {
       producto.proveedor_id = dto.proveedorId;
     }
 
@@ -364,18 +333,13 @@ export class ProductosService {
     return respuesta;
   }
 
-  async remove(
-    id: number,
-    usuario: JwtPayload,
-  ): Promise<void> {
+  async remove(id: number, usuario: JwtPayload): Promise<void> {
     const producto = await this.repository.findOne({
       where: { id, activo: true },
     });
 
     if (!producto) {
-      throw new NotFoundException(
-        `Producto con ID ${id} no encontrado`,
-      );
+      throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
 
     await this.validarPropiedad(producto, usuario);
