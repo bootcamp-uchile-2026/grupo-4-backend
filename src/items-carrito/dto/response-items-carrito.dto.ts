@@ -8,7 +8,7 @@ import {
   Min,
   IsEnum,
 } from 'class-validator';
-import { TipoConservacion } from 'src/productos/enums/tipo-conservacion.enum';
+import { TipoConservacion } from '../../productos/enums/tipo-conservacion.enum';
 
 export class ItemsCarritoResponseDto {
   @ApiProperty({
