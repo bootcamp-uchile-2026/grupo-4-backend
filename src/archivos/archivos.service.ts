@@ -66,12 +66,8 @@ export class ArchivosService {
 
     if (
       rutaRelativa === ruta ||
-      !['productos', 'proveedores'].includes(
-        rutaRelativa.split('/')[0],
-      ) ||
-      !['.jpg', '.png', '.webp'].includes(
-        extname(rutaRelativa).toLowerCase(),
-      )
+      !['productos', 'proveedores'].includes(rutaRelativa.split('/')[0]) ||
+      !['.jpg', '.png', '.webp'].includes(extname(rutaRelativa).toLowerCase())
     ) {
       throw new BadRequestException('Ruta de imagen no válida');
     }

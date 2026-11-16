@@ -18,7 +18,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
 } from '@nestjs/common';
-import type { AuthenticatedRequest } from '../autenticacion/guards/auth.guard';
+
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -29,6 +29,7 @@ import {
   ApiBody,
   ApiConsumes,
 } from '@nestjs/swagger';
+
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { ProductosService } from './productos.service';
@@ -39,6 +40,7 @@ import { ProductoQueryDto } from './dto/producto-query.dto';
 import { ImagenResponseDto } from '../archivos/dto/imagen-response.dto';
 
 import { AuthGuard } from '../autenticacion/guards/auth.guard';
+import type { AuthenticatedRequest } from '../autenticacion/guards/auth.guard';
 import { RolesGuard } from '../autenticacion/guards/roles.guard';
 import { Roles } from '../autenticacion/decorators/roles.decorator';
 import { RolUsuario } from '../usuarios/enums/rol-usuario.enum';
@@ -104,7 +106,7 @@ export class ProductosController {
     name: 'id',
     type: Number,
     example: 1,
-    description: 'Identificador único del producto',
+    description: 'ID del producto',
   })
   @ApiResponse({
     status: 200,
@@ -169,7 +171,8 @@ export class ProductosController {
   @ApiParam({
     name: 'id',
     type: Number,
-    description: 'Identificador del producto',
+    description: 'ID del producto',
+    example: 1,
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -244,12 +247,14 @@ export class ProductosController {
   @ApiParam({
     name: 'id',
     type: Number,
-    description: 'Identificador del producto',
+    description: 'ID del producto',
+    example: 1,
   })
   @ApiParam({
     name: 'imagenId',
     type: Number,
-    description: 'Identificador de la imagen',
+    description: 'ID de la imagen asociada al producto',
+    example: 5,
   })
   @ApiResponse({
     status: 200,
@@ -288,7 +293,6 @@ export class ProductosController {
     );
   }
 
-
   @ApiOperation({
     summary: 'Eliminar imagen de producto',
     description:
@@ -297,12 +301,14 @@ export class ProductosController {
   @ApiParam({
     name: 'id',
     type: Number,
-    description: 'Identificador del producto',
+    description: 'ID del producto',
+    example: 1,
   })
   @ApiParam({
     name: 'imagenId',
     type: Number,
-    description: 'Identificador de la imagen',
+    description: 'ID de la imagen asociada al producto',
+    example: 5,
   })
   @ApiResponse({
     status: 204,
@@ -334,14 +340,8 @@ export class ProductosController {
     @Param('imagenId', ParseIntPipe) imagenId: number,
     @Req() request: AuthenticatedRequest,
   ): Promise<void> {
-    return this.productosService.eliminarImagen(
-      id,
-      imagenId,
-      request.user!,
-    );
+    return this.productosService.eliminarImagen(id, imagenId, request.user!);
   }
-
-
 
   @ApiOperation({
     summary: 'Actualizar producto',
@@ -352,7 +352,7 @@ export class ProductosController {
     name: 'id',
     type: Number,
     example: 1,
-    description: 'Identificador único del producto',
+    description: 'ID del producto',
   })
   @ApiResponse({
     status: 200,
@@ -396,7 +396,7 @@ export class ProductosController {
     name: 'id',
     type: Number,
     example: 1,
-    description: 'Identificador único del producto',
+    description: 'ID del producto',
   })
   @ApiResponse({
     status: 204,

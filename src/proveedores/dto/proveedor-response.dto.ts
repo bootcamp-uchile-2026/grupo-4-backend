@@ -1,35 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ImagenResponseDto } from '../../archivos/dto/imagen-response.dto';
 
 export class ProveedorResponseDto {
-  @ApiProperty({
-    example: 1,
-    minimum: 1,
-    description: 'Identificador único del proveedor',
-  })
+  @ApiProperty({ example: 1 })
   id: number;
 
-  @ApiProperty({
-    example: 'Mermeladas del Valle',
-    description: 'Nombre del proveedor',
-  })
+  @ApiProperty({ example: 'Mermeladas del Valle' })
   nombre: string;
 
-  @ApiProperty({
-    example:
-      'Productor artesanal de mermeladas elaboradas con frutas de la zona central.',
-    description: 'Descripción del proveedor',
-  })
+  @ApiProperty({ example: 'Productor artesanal de mermeladas.' })
   descripcion: string;
 
-  @ApiProperty({
-    example: 'contacto@mermeladasdelvalle.cl',
-    description: 'Correo electrónico del proveedor',
-  })
+  @ApiProperty({ example: 'contacto@mermeladasdelvalle.cl' })
   email: string;
 
-  @ApiProperty({
-    example: '+56912345678',
-    description: 'Número de teléfono del proveedor',
-  })
+  @ApiProperty({ example: '+56912345678' })
   telefono: string;
+
+  @ApiProperty({ type: () => ImagenResponseDto, isArray: true })
+  imagenes: ImagenResponseDto[];
 }
