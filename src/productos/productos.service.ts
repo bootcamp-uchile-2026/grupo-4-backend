@@ -379,8 +379,6 @@ export class ProductosService {
     await this.repository.save(producto);
   }
 
-
-
   async subirImagen(
     productoId: number,
     archivo: Express.Multer.File,
@@ -391,7 +389,9 @@ export class ProductosService {
     });
 
     if (!producto) {
-      throw new NotFoundException(`Producto con ID ${productoId} no encontrado`);
+      throw new NotFoundException(
+        `Producto con ID ${productoId} no encontrado`,
+      );
     }
 
     await this.validarPropiedad(producto, usuario);
@@ -403,10 +403,12 @@ export class ProductosService {
 
     try {
       return await this.repository.manager.transaction(async (manager) => {
-        const productoBloqueado = await manager.getRepository(Producto).findOne({
-          where: { id: productoId, activo: true },
-          lock: { mode: 'pessimistic_write' },
-        });
+        const productoBloqueado = await manager
+          .getRepository(Producto)
+          .findOne({
+            where: { id: productoId, activo: true },
+            lock: { mode: 'pessimistic_write' },
+          });
 
         if (!productoBloqueado) {
           throw new NotFoundException(
@@ -495,7 +497,6 @@ export class ProductosService {
     });
   }
 
-
   async eliminarImagen(
     productoId: number,
     imagenId: number,
@@ -548,5 +549,4 @@ export class ProductosService {
 
     await this.archivosService.eliminarImagen(rutaImagen);
   }
-
 }
