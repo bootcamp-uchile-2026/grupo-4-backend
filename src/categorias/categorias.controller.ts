@@ -1,5 +1,6 @@
 import {
   Controller,
+  HttpCode,
   Get,
   Post,
   Body,
@@ -182,6 +183,7 @@ export class CategoriasController {
     status: 404,
     description: 'Categoría no encontrada.',
   })
+  @HttpCode(204)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number): void {}
 }

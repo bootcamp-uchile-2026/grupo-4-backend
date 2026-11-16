@@ -9,7 +9,7 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
-import { CreatePedidoItemDto } from 'src/pedidos/dto/create-pedido-item.dto';
+import { CreatePedidoItemDto } from '../../pedidos/dto/create-pedido-item.dto';
 
 export class CotizarEntregaDto {
   @ApiProperty({

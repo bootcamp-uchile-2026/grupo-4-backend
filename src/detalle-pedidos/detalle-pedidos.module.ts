@@ -3,7 +3,7 @@ import { DetallePedidosService } from './detalle-pedidos.service';
 import { DetallePedidosController } from './detalle-pedidos.controller';
 
 @Module({
-  controllers: [DetallePedidosController],
+  controllers: [],
   providers: [DetallePedidosService],
 })
 export class DetallePedidosModule {}

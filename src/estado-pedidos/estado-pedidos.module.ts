@@ -6,7 +6,7 @@ import { EstadoPedidosController } from './estado-pedidos.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([HistorialEstadoPedido])],
-  controllers: [EstadoPedidosController],
+  controllers: [],
   providers: [EstadoPedidosService],
 })
 export class EstadoPedidosModule {}

@@ -1,5 +1,6 @@
 import {
   Controller,
+  HttpCode,
   Get,
   Post,
   Body,
@@ -134,5 +135,6 @@ export class DireccionesController {
     description: 'Dirección no encontrada.',
   })
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id', ParseIntPipe) id: number): void {}
 }

@@ -1,12 +1,12 @@
 import {
   Controller,
+  HttpCode,
   Get,
   Post,
   Body,
   Patch,
   Param,
   Delete,
-  Put,
   ParseIntPipe,
 } from '@nestjs/common';
 import { CarritoService } from './carrito.service';
@@ -81,7 +81,7 @@ export class CarritoController {
     status: 404,
     description: 'El producto no existe en el carrito.',
   })
-  @Put('items/:itemId')
+  @Patch('items/:itemId')
   updateItem(
     @Param('itemId', ParseIntPipe) itemId: number,
     @Body() updateCartItemDto: UpdateCartItemDto,
@@ -112,6 +112,7 @@ export class CarritoController {
     description: 'El producto no existe en el carrito.',
   })
   @Delete('items/:itemId')
+  @HttpCode(204)
   removeItem(@Param('itemId', ParseIntPipe) itemId: number): void {}
 
   @ApiOperation({
@@ -127,5 +128,6 @@ export class CarritoController {
     description: 'Carrito no encontrado.',
   })
   @Delete()
+  @HttpCode(204)
   removeCart(): void {}
 }

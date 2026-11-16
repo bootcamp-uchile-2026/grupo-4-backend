@@ -55,48 +55,7 @@ export class ItemsCarritoController {
     description: 'Los parámetros de búsqueda no son válidos.',
   })
   @Get(':id')
-  findOne(@Param('id') id: string): ItemsCarritoResponseDto {
-    return {} as ItemsCarritoResponseDto;
-  }
-
-  @ApiOperation({
-    summary: 'Crear item en el carrito',
-    description: 'Crea un nuevo item en el carrito.',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Item del carrito creado correctamente.',
-    type: ItemsCarritoResponseDto,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Los datos proporcionados no son válidos.',
-  })
-  @Post()
-  create(
-    @Body() createItemsCarritoDto: CreateItemsCarritoDto,
-  ): ItemsCarritoResponseDto {
-    return {} as ItemsCarritoResponseDto;
-  }
-
-  @ApiOperation({
-    summary: 'Actualizar item en el carrito',
-    description: 'Actualiza un item existente en el carrito por su ID.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Item del carrito actualizado correctamente.',
-    type: ItemsCarritoResponseDto,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Los datos proporcionados no son válidos.',
-  })
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateItemsCarritoDto: UpdateItemsCarritoDto,
-  ): ItemsCarritoResponseDto {
+  findOne(@Param('id', ParseIntPipe) id: number): ItemsCarritoResponseDto {
     return {} as ItemsCarritoResponseDto;
   }
 
@@ -134,7 +93,7 @@ export class ItemsCarritoController {
     status: 400,
     description: 'Los parámetros de búsqueda no son válidos.',
   })
-  @Delete(':usuarioId')
+  @Delete('usuario/:usuarioId')
   removeAll(@Param('usuarioId', ParseIntPipe) usuarioId: number) {
     return this.itemsCarritoService.eliminarTodosLosItems(usuarioId);
   }

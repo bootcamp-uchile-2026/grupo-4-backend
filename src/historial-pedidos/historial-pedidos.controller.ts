@@ -35,8 +35,11 @@ export class HistorialPedidosController {
     description: 'Pedido de un usuario',
   })
   @Get(':id')
-  findOne(@Query() query: HistorialPedidosQueryDto, @Param('id') id: string) {
-    return this.historialPedidosService.findOne(+id);
+  findOne(
+    @Query() query: HistorialPedidosQueryDto,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.historialPedidosService.findOne(id);
   }
 
   @ApiOperation({
