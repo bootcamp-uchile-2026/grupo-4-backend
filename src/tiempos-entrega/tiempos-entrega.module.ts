@@ -3,7 +3,7 @@ import { TiemposEntregaController } from './tiempos-entrega.controller';
 import { TiemposEntregaService } from './tiempos-entrega.service';
 
 @Module({
-  controllers: [TiemposEntregaController],
+  controllers: [],
   providers: [TiemposEntregaService],
 })
 export class TiemposEntregaModule {}

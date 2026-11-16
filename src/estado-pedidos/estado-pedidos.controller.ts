@@ -1,5 +1,6 @@
 import {
   Controller,
+  HttpCode,
   Get,
   Post,
   Body,
@@ -28,21 +29,6 @@ export class EstadoPedidosController {
   }
 
   @ApiOperation({
-    summary: 'Actualizar el estado de un pedido',
-  })
-  @ApiOkResponse({
-    type: EstadoPedidoResponseDto,
-    description: 'Estado actualizado (solo admin)',
-  })
-  @Patch()
-  update(
-    @Param('pedidoId', ParseIntPipe) pedidoId: number,
-    @Body() updateEstadoPedidoDto: ActualizarEstadoPedidoDto,
-  ) {
-    return this.estadoPedidosService.update(pedidoId, updateEstadoPedidoDto);
-  }
-
-  @ApiOperation({
     summary: 'Cancelar un pedido',
   })
   @ApiOkResponse({
@@ -50,6 +36,7 @@ export class EstadoPedidosController {
     description: 'Pedido cancelado',
   })
   @Post('cancelar')
+  @HttpCode(200)
   cancelar(@Param('pedidoId', ParseIntPipe) pedidoId: number) {
     return this.estadoPedidosService.cancelar(pedidoId);
   }

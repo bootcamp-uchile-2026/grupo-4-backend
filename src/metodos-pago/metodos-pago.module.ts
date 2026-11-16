@@ -6,7 +6,7 @@ import { MetodosPagoController } from './metodos-pago.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MetodosPago])],
-  controllers: [MetodosPagoController],
+  controllers: [],
   providers: [MetodosPagoService],
 })
 export class MetodosPagoModule {}

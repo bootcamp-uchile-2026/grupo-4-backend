@@ -12,7 +12,6 @@ import { DetallePedidosService } from './detalle-pedidos.service';
 import { CreateDetallePedidoDto } from './dto/create-detalle-pedido.dto';
 import { UpdateDetallePedidoDto } from './dto/update-detalle-pedido.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { CreatePedidoItemDto } from '../pedidos/dto/create-pedido-item.dto';
 
 @ApiTags('Detalle de pedidos')
 @Controller('pedidos/:pedidoId/items')
@@ -35,7 +34,7 @@ export class DetallePedidosController {
   @Post()
   create(
     @Param('pedidoId', ParseIntPipe) pedidoId: number,
-    @Body() dto: CreatePedidoItemDto,
+    @Body() dto: CreateDetallePedidoDto,
   ) {
     return this.detallePedidosService.create(/*pedidoId,*/ dto);
   }
@@ -48,7 +47,7 @@ export class DetallePedidosController {
   update(
     @Param('pedidoId', ParseIntPipe) pedidoId: number,
     @Param('itemId', ParseIntPipe) itemId: number,
-    @Body() dto: CreatePedidoItemDto,
+    @Body() dto: UpdateDetallePedidoDto,
   ) {
     return this.detallePedidosService.update(/*pedidoId,*/ itemId, dto);
   }

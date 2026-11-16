@@ -36,7 +36,8 @@ export class VerificacionCorreoController {
     status: 409,
     description: 'El correo ya está verificado.',
   })
-  @Post()
+  // Endpoint pendiente de implementación
+  // @Post()
   solicitar(
     @Body() solicitarVerificacionDto: SolicitarVerificacionDto,
   ): Promise<VerificacionCorreoResponseDto> {
@@ -65,7 +66,8 @@ export class VerificacionCorreoController {
     description: 'El correo ya está verificado.',
   })
   @HttpCode(200)
-  @Post('confirmar')
+  // Endpoint pendiente de implementación
+  // @Post('confirmar')
   confirmar(
     @Body() confirmarVerificacionDto: ConfirmarVerificacionDto,
   ): Promise<EstadoVerificacionResponseDto> {

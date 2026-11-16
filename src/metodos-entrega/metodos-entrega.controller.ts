@@ -7,8 +7,14 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  HttpCode,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MetodoEntregaResponseDto } from './dto/response-metodos-entrega.dto';
 import { MetodosEntregaService } from './metodos-entrega.service';
 import { CreateMetodosEntregaDto } from './dto/create-metodos-entrega.dto';
@@ -41,6 +47,7 @@ export class MetodosEntregaController {
     description: 'Métodos evaluados para los productos y la comuna indicados',
   })
   @Post('cotizar')
+  @HttpCode(200)
   cotizar(@Body() cotizarEntregaDto: CotizarEntregaDto) {
     return this.metodosEntregaService.cotizar(cotizarEntregaDto);
   }
@@ -60,7 +67,7 @@ export class MetodosEntregaController {
   @ApiOperation({
     summary: 'Crear un nuevo método de entrega',
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: MetodoEntregaResponseDto,
     description: 'Método de entrega creado correctamente',
   })

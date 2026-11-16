@@ -8,7 +8,12 @@ import {
   ParseIntPipe,
   Delete,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiOkResponse,
+  ApiCreatedResponse,
+} from '@nestjs/swagger';
 import { DatosDespachoService } from './datos-despacho.service';
 import { CreateDatoDespachoDto } from './dto/create-datos-despacho.dto';
 import { UpdateDatosDespachoDto } from './dto/update-datos-despacho.dto';
@@ -58,13 +63,28 @@ export class DatosDespachoController {
   @ApiOperation({
     summary: 'Crear nueva dirección de despacho',
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: DatoDespachoResponseDto,
     description: 'Nueva dirección de despacho creada',
   })
   @Post()
   create(@Body() createDatosDespachoDto: CreateDatoDespachoDto) {
     return this.datosDespachoService.create(createDatosDespachoDto);
+  }
+
+  // Ruta fija antes de PATCH(':id')
+  @ApiOperation({
+    summary: 'Actualizar dirección de despacho predeterminada',
+  })
+  @ApiOkResponse({
+    type: DatoDespachoResponseDto,
+    description: 'Dirección de despacho predeterminada actualizada',
+  })
+  @Patch('predeterminada')
+  updatePredeterminada(@Body() updateDatosDespachoDto: UpdateDatosDespachoDto) {
+    return this.datosDespachoService.updatePredeterminada(
+      updateDatosDespachoDto,
+    );
   }
 
   @ApiOperation({
@@ -80,20 +100,6 @@ export class DatosDespachoController {
     @Body() updateDatosDespachoDto: UpdateDatosDespachoDto,
   ) {
     return this.datosDespachoService.update(id, updateDatosDespachoDto);
-  }
-
-  @ApiOperation({
-    summary: 'Actualizar dirección de despacho predeterminada',
-  })
-  @ApiOkResponse({
-    type: DatoDespachoResponseDto,
-    description: 'Dirección de despacho predeterminada actualizada',
-  })
-  @Patch('predeterminada')
-  updatePredeterminada(@Body() updateDatosDespachoDto: UpdateDatosDespachoDto) {
-    return this.datosDespachoService.updatePredeterminada(
-      updateDatosDespachoDto,
-    );
   }
 
   @ApiOperation({

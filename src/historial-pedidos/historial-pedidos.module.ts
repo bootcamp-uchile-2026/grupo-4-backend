@@ -3,7 +3,7 @@ import { HistorialPedidosService } from './historial-pedidos.service';
 import { HistorialPedidosController } from './historial-pedidos.controller';
 
 @Module({
-  controllers: [HistorialPedidosController],
+  controllers: [],
   providers: [HistorialPedidosService],
 })
 export class HistorialPedidosModule {}

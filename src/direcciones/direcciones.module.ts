@@ -6,7 +6,7 @@ import { DireccionesController } from './direcciones.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Direccion])],
-  controllers: [DireccionesController],
+  controllers: [],
   providers: [DireccionesService],
 })
 export class DireccionesModule {}

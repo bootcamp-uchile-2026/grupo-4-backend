@@ -6,7 +6,7 @@ import { MetodosEntregaController } from './metodos-entrega.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MetodosEntrega])],
-  controllers: [MetodosEntregaController],
+  controllers: [],
   providers: [MetodosEntregaService],
 })
 export class MetodosEntregaModule {}

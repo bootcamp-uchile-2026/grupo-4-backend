@@ -5,13 +5,18 @@ import {
   Body,
   Patch,
   Param,
+  ParseIntPipe,
   Delete,
 } from '@nestjs/common';
 import { MetodosPagoService } from './metodos-pago.service';
 import { CreateMetodoPagoDto } from './dto/create-metodos-pago.dto';
 import { UpdateMetodoPagoDto } from './dto/update-metodos-pago.dto';
-import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
-import { ApiOperation } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { MetodoPagoResponseDto } from './dto/response-metodos-pago.dto';
 
 @ApiTags('Métodos de pago')
@@ -51,14 +56,14 @@ export class MetodosPagoController {
     description: 'Método de pago encontrado',
   })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.metodosPagoService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.metodosPagoService.findOne(id);
   }
 
   @ApiOperation({
     summary: 'Crear un nuevo método de pago',
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: MetodoPagoResponseDto,
     description: 'Método de pago creado',
   })
@@ -67,21 +72,7 @@ export class MetodosPagoController {
     return this.metodosPagoService.create(createMetodosPagoDto);
   }
 
-  @ApiOperation({
-    summary: 'Actualizar un método de pago por su ID',
-  })
-  @ApiOkResponse({
-    type: MetodoPagoResponseDto,
-    description: 'Método de pago actualizado',
-  })
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateMetodosPagoDto: UpdateMetodoPagoDto,
-  ) {
-    return this.metodosPagoService.update(+id, updateMetodosPagoDto);
-  }
-
+  // Ruta fija antes de PATCH(':id')
   @ApiOperation({
     summary: 'Actualizar un método de pago predeterminado',
   })
@@ -95,6 +86,21 @@ export class MetodosPagoController {
   }
 
   @ApiOperation({
+    summary: 'Actualizar un método de pago por su ID',
+  })
+  @ApiOkResponse({
+    type: MetodoPagoResponseDto,
+    description: 'Método de pago actualizado',
+  })
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateMetodosPagoDto: UpdateMetodoPagoDto,
+  ) {
+    return this.metodosPagoService.update(id, updateMetodosPagoDto);
+  }
+
+  @ApiOperation({
     summary: 'Eliminar un método de pago por su ID',
   })
   @ApiOkResponse({
@@ -102,7 +108,7 @@ export class MetodosPagoController {
     description: 'Método de pago eliminado',
   })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.metodosPagoService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.metodosPagoService.remove(id);
   }
 }
