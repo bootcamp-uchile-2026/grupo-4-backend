@@ -173,10 +173,13 @@ export class UsuariosService {
     return this.publicUser(await this.repo.save(u));
   }
 
-  async asignarRol(id: number, rolId: number) {
+
+  async asignarRol(id: number, nombreRol: RolUsuario) {
     const usuario = await this.buscar(id);
 
-    const rol = await this.rolesRepo.findOneBy({ id: rolId });
+    const rol = await this.rolesRepo.findOneBy({
+      nombre: nombreRol,
+    });
 
     if (!rol) {
       throw new NotFoundException('Rol no encontrado.');
@@ -187,6 +190,7 @@ export class UsuariosService {
 
     return this.publicUser(await this.repo.save(usuario));
   }
+
 
   async remove(id: number) {
     await this.repo.remove(await this.buscar(id));
