@@ -10,6 +10,7 @@ import * as argon2 from 'argon2';
 
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { UpdateMiPerfilDto } from './dto/update-mi-perfil.dto';
 import { CreateUsuarioAdminDto } from './dto/create-usuario-admin.dto';
 import { Usuario } from './entities/usuario.entity';
 import { Rol } from '../roles/entities/rol.entity';
@@ -40,7 +41,9 @@ export class UsuariosService {
     const rol = await this.rolesRepo.findOneBy({ nombre });
 
     if (!rol) {
-      throw new BadRequestException(`El rol ${nombre} no está configurado.`);
+      throw new BadRequestException(
+        `El rol ${nombre} no está configurado.`,
+      );
     }
 
     return rol;
@@ -48,7 +51,9 @@ export class UsuariosService {
 
   async create(dto: CreateUsuarioDto) {
     if (await this.repo.existsBy({ email: dto.email })) {
-      throw new ConflictException('Ya existe un usuario con ese email.');
+      throw new ConflictException(
+        'Ya existe un usuario con ese email.',
+      );
     }
 
     const rol = await this.buscarRol(RolUsuario.CLIENTE);
@@ -71,7 +76,9 @@ export class UsuariosService {
 
   async createAdmin(dto: CreateUsuarioAdminDto) {
     if (await this.repo.existsBy({ email: dto.email })) {
-      throw new ConflictException('Ya existe un usuario con ese email.');
+      throw new ConflictException(
+        'Ya existe un usuario con ese email.',
+      );
     }
 
     const rol = await this.buscarRol(dto.rol);
@@ -102,6 +109,30 @@ export class UsuariosService {
     return this.publicUser(await this.buscar(id));
   }
 
+  async updateMe(id: number, dto: UpdateMiPerfilDto) {
+    const usuario = await this.buscar(id);
+
+    if (dto.nombre !== undefined) {
+      usuario.nombre = dto.nombre;
+    }
+
+    if (dto.apellido !== undefined) {
+      usuario.apellido = dto.apellido;
+    }
+
+    if (dto.telefono !== undefined) {
+      usuario.telefono = dto.telefono;
+    }
+
+    if (dto.password !== undefined) {
+      usuario.password_hash = await argon2.hash(dto.password, {
+        type: argon2.argon2id,
+      });
+    }
+
+    return this.publicUser(await this.repo.save(usuario));
+  }
+
   async update(id: number, dto: UpdateUsuarioDto) {
     const u = await this.buscar(id);
 
@@ -112,13 +143,26 @@ export class UsuariosService {
         id: Not(id),
       }))
     ) {
-      throw new ConflictException('Ya existe un usuario con ese email.');
+      throw new ConflictException(
+        'Ya existe un usuario con ese email.',
+      );
     }
 
-    if (dto.nombre !== undefined) u.nombre = dto.nombre;
-    if (dto.apellido !== undefined) u.apellido = dto.apellido;
-    if (dto.email !== undefined) u.email = dto.email;
-    if (dto.telefono !== undefined) u.telefono = dto.telefono;
+    if (dto.nombre !== undefined) {
+      u.nombre = dto.nombre;
+    }
+
+    if (dto.apellido !== undefined) {
+      u.apellido = dto.apellido;
+    }
+
+    if (dto.email !== undefined) {
+      u.email = dto.email;
+    }
+
+    if (dto.telefono !== undefined) {
+      u.telefono = dto.telefono;
+    }
 
     if (dto.password !== undefined) {
       u.password_hash = await argon2.hash(dto.password, {
