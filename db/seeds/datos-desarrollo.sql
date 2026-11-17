@@ -57,13 +57,7 @@ INSERT INTO usuarios (
 -- 2. CATEGORÍAS
 -- ============================================================
 
-INSERT INTO categorias (nombre) VALUES
-  ('Mermeladas'),
-  ('Lácteos'),
-  ('Aceites'),
-  ('Mieles'),
-  ('Repostería'),
-  ('Cereales');
+-- Las categorías se insertan mediante la migración SeedCategorias.
 
 -- ============================================================
 -- 3. PROVEEDORES
@@ -176,20 +170,6 @@ INSERT INTO productos (
 ),
 
 (
-  (SELECT id FROM categorias WHERE nombre = 'Mieles'),
-  (SELECT id FROM proveedores WHERE nombre = 'Apícola del Bosque' LIMIT 1),
-  'Miel artesanal',
-  'Miel natural',
-  'Miel de abeja',
-  'No informado',
-  'Ambiente',
-  '2027-12-31',
-  6500,
-  15,
-  20, 5, TRUE, TRUE
-),
-
-(
   (SELECT id FROM categorias WHERE nombre = 'Lácteos'),
   (SELECT id FROM proveedores WHERE nombre = 'Lácteos del Campo' LIMIT 1),
   'Manjar casero',
@@ -243,62 +223,6 @@ INSERT INTO productos (
   12000,
   0,
   20, 5, FALSE, TRUE
-),
-
-(
-  (SELECT id FROM categorias WHERE nombre = 'Mieles'),
-  (SELECT id FROM proveedores WHERE nombre = 'Apícola del Bosque' LIMIT 1),
-  'Miel de ulmo',
-  'Miel de ulmo',
-  'Miel de abeja',
-  'No informado',
-  'Ambiente',
-  '2027-12-31',
-  8000,
-  0,
-  20, 5, TRUE, TRUE
-),
-
-(
-  (SELECT id FROM categorias WHERE nombre = 'Repostería'),
-  (SELECT id FROM proveedores WHERE nombre = 'Dulces de la Abuela' LIMIT 1),
-  'Galletas artesanales',
-  'Galletas horneadas',
-  'Harina, mantequilla y azúcar',
-  'No informado',
-  'Ambiente',
-  '2027-12-31',
-  3500,
-  0,
-  20, 5, FALSE, TRUE
-),
-
-(
-  (SELECT id FROM categorias WHERE nombre = 'Repostería'),
-  (SELECT id FROM proveedores WHERE nombre = 'Dulces de la Abuela' LIMIT 1),
-  'Brownies artesanales',
-  'Brownies de chocolate',
-  'Harina, chocolate, huevos y mantequilla',
-  'No informado',
-  'Ambiente',
-  '2027-12-31',
-  4000,
-  20,
-  20, 5, FALSE, TRUE
-),
-
-(
-  (SELECT id FROM categorias WHERE nombre = 'Cereales'),
-  (SELECT id FROM proveedores WHERE nombre = 'Granos Naturales' LIMIT 1),
-  'Granola artesanal',
-  'Granola de avena',
-  'Avena, semillas y frutos secos',
-  'No informado',
-  'Ambiente',
-  '2027-12-31',
-  6000,
-  0,
-  20, 5, TRUE, TRUE
 );
 
 COMMIT;
