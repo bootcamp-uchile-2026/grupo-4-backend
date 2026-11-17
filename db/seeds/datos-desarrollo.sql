@@ -2,10 +2,13 @@
 -- ============================================================
 -- LaSobremesa - Datos de desarrollo
 -- ============================================================
+-- Requiere haber ejecutado previamente las migraciones.
+-- Ejecutar una sola vez sobre una base de datos limpia.
+-- ============================================================
 
+SET NAMES utf8mb4;
 
 START TRANSACTION;
-
 
 -- ============================================================
 -- 1. USUARIOS
@@ -52,12 +55,12 @@ INSERT INTO usuarios (
   TRUE
 );
 
-
 -- ============================================================
 -- 2. CATEGORÍAS
 -- ============================================================
-
--- Las categorías se insertan mediante la migración SeedCategorias.
+-- Insertadas mediante la migración SeedCategorias:
+-- Lácteos, Mermeladas y Aceites.
+-- No se insertan nuevamente.
 
 -- ============================================================
 -- 3. PROVEEDORES
@@ -88,21 +91,6 @@ INSERT INTO proveedores (
   'Oliva del Sur',
   'Aceites artesanales',
   NULL
-),
-(
-  'Apícola del Bosque',
-  'Mieles naturales',
-  NULL
-),
-(
-  'Dulces de la Abuela',
-  'Repostería artesanal',
-  NULL
-),
-(
-  'Granos Naturales',
-  'Cereales y granolas artesanales',
-  NULL
 );
 
 -- ============================================================
@@ -126,7 +114,6 @@ INSERT INTO productos (
   favorito,
   activo
 ) VALUES
-
 (
   (SELECT id FROM categorias WHERE nombre = 'Mermeladas'),
   (SELECT id FROM proveedores WHERE nombre = 'Conservas del Valle' LIMIT 1),
@@ -140,7 +127,6 @@ INSERT INTO productos (
   10,
   20, 5, TRUE, TRUE
 ),
-
 (
   (SELECT id FROM categorias WHERE nombre = 'Lácteos'),
   (SELECT id FROM proveedores WHERE nombre = 'Lácteos del Campo' LIMIT 1),
@@ -154,7 +140,6 @@ INSERT INTO productos (
   0,
   20, 5, FALSE, TRUE
 ),
-
 (
   (SELECT id FROM categorias WHERE nombre = 'Aceites'),
   (SELECT id FROM proveedores WHERE nombre = 'Oliva del Sur' LIMIT 1),
@@ -168,7 +153,6 @@ INSERT INTO productos (
   0,
   20, 5, FALSE, TRUE
 ),
-
 (
   (SELECT id FROM categorias WHERE nombre = 'Lácteos'),
   (SELECT id FROM proveedores WHERE nombre = 'Lácteos del Campo' LIMIT 1),
@@ -182,7 +166,6 @@ INSERT INTO productos (
   0,
   20, 5, FALSE, TRUE
 ),
-
 (
   (SELECT id FROM categorias WHERE nombre = 'Mermeladas'),
   (SELECT id FROM proveedores WHERE nombre = 'Conservas del Valle' LIMIT 1),
@@ -196,7 +179,6 @@ INSERT INTO productos (
   5,
   20, 5, FALSE, TRUE
 ),
-
 (
   (SELECT id FROM categorias WHERE nombre = 'Lácteos'),
   (SELECT id FROM proveedores WHERE nombre = 'Lácteos del Campo' LIMIT 1),
@@ -210,7 +192,6 @@ INSERT INTO productos (
   10,
   20, 5, TRUE, TRUE
 ),
-
 (
   (SELECT id FROM categorias WHERE nombre = 'Aceites'),
   (SELECT id FROM proveedores WHERE nombre = 'Oliva del Sur' LIMIT 1),
@@ -236,6 +217,13 @@ SELECT COUNT(*) AS total_categorias FROM categorias;
 SELECT COUNT(*) AS total_proveedores FROM proveedores;
 SELECT COUNT(*) AS total_productos FROM productos;
 
+SELECT
+  c.nombre AS categoria,
+  COUNT(p.id) AS total_productos
+FROM categorias c
+LEFT JOIN productos p ON p.categoria_id = c.id
+GROUP BY c.id, c.nombre
+ORDER BY c.id;
 
 SELECT
   u.id AS usuario_id,
