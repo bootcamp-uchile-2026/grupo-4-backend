@@ -203,13 +203,15 @@ export class UsuariosController {
     status: 404,
     description: 'Usuario o rol no encontrado.',
   })
+
   @Patch(':id/rol')
   asignarRol(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: AsignarRolDto,
   ): Promise<UsuarioResponseDto> {
-    return this.usuariosService.asignarRol(id, dto.rol_id);
+    return this.usuariosService.asignarRol(id, dto.rol);
   }
+
 
   @ApiOperation({
     summary: 'Eliminar usuario',

@@ -62,18 +62,22 @@ INSERT INTO usuarios (
 -- Lácteos, Mermeladas y Aceites.
 -- No se insertan nuevamente.
 
--- ============================================================
--- 3. PROVEEDORES
--- ============================================================
+-- ============================================
+-- PROVEEDORES
+-- ============================================
 
 INSERT INTO proveedores (
   nombre,
   descripcion,
+  email,
+  telefono,
   usuario_id
 ) VALUES
 (
   'Conservas del Valle',
   'Conservas y mermeladas artesanales',
+  'contacto@conservas.example',
+  '+56911111111',
   (
     SELECT id FROM usuarios
     WHERE email = 'proveedor.prueba@lasobremesa.cl'
@@ -82,6 +86,8 @@ INSERT INTO proveedores (
 (
   'Lácteos del Campo',
   'Quesos y lácteos artesanales',
+  'contacto@lacteos.example',
+  '+56922222222',
   (
     SELECT id FROM usuarios
     WHERE email = 'proveedor.dos@lasobremesa.cl'
@@ -90,6 +96,8 @@ INSERT INTO proveedores (
 (
   'Oliva del Sur',
   'Aceites artesanales',
+  'contacto@oliva.example',
+  '+56933333333',
   NULL
 );
 
