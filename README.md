@@ -343,13 +343,13 @@ docker login
 Construye la imagen desde la raíz del proyecto, utilizando una etiqueta de versión:
 
 ```bash
-docker build -t camilocdh/lasobremesa:1.0.9 .
+docker build -t camilocdh/lasobremesa:1.0.10 .
 ```
 
 Publica la imagen:
 
 ```bash
-docker push camilocdh/lasobremesa:1.0.9
+docker push camilocdh/lasobremesa:1.0.10
 ```
 
 La versión `1.0.9` corresponde al versionado preparado para el Hito 3. Antes de publicar o desplegar, verifica que la imagen se haya construido desde el commit definitivo y que la etiqueta coincida con `package.json` y el tag de Git.
@@ -357,7 +357,7 @@ La versión `1.0.9` corresponde al versionado preparado para el Hito 3. Antes de
 Configura en `.env` la imagen que deseas desplegar:
 
 ```dotenv
-DOCKER_IMAGE=camilocdh/lasobremesa:1.0.9
+DOCKER_IMAGE=camilocdh/lasobremesa:1.0.10
 ```
 
 Si el repositorio de Docker Hub es privado, el servidor de producción deberá contar con la autenticación correspondiente.
