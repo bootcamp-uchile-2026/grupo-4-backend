@@ -3,6 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsuarioResponseDto } from '../usuarios/dto/usuarios-response.dto';
 import { RegistroDto } from './dto/registro.dto';
 import { RegistroService } from './registro.service';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Registro')
 @Controller('registro')
@@ -29,6 +30,7 @@ export class RegistroController {
     description: 'Ya existe un usuario con ese email.',
   })
   @Post()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   registrar(@Body() registroDto: RegistroDto): Promise<UsuarioResponseDto> {
     return this.registroService.registrar(registroDto);
   }

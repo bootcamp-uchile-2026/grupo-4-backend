@@ -41,7 +41,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (statusCode >= 500) {
       this.logger.error(
-        `[${request.requestId ?? 'sin-id'}] ${request.method} ${request.originalUrl} - ${statusCode}`,
+        `[${request.requestId ?? 'sin-id'}] ${request.method} ${request.path} - ${statusCode}`,
         exception instanceof Error ? exception.stack : undefined,
       );
 
@@ -54,7 +54,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       error,
       message,
       timestamp: new Date().toISOString(),
-      path: request.originalUrl,
+      path: request.path,
       requestId: request.requestId,
     });
   }

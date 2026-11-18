@@ -18,6 +18,9 @@ export class CreateUsuarioDto {
   @Matches(/\S/, {
     message: 'nombre no puede contener solo espacios',
   })
+  @MaxLength(100, {
+    message: 'nombre no puede superar los 100 caracteres',
+  })
   nombre: string;
 
   @ApiProperty({
@@ -29,6 +32,9 @@ export class CreateUsuarioDto {
   @Matches(/\S/, {
     message: 'apellido no puede contener solo espacios',
   })
+  @MaxLength(100, {
+    message: 'apellido no puede superar los 100 caracteres',
+  })
   apellido: string;
 
   @ApiProperty({
@@ -37,6 +43,9 @@ export class CreateUsuarioDto {
   })
   @IsEmail({}, { message: 'email debe ser un correo electrónico válido' })
   @IsNotEmpty({ message: 'email no puede estar vacío' })
+  @MaxLength(190, {
+    message: 'email no puede superar los 190 caracteres',
+  })
   email: string;
 
   @ApiProperty({

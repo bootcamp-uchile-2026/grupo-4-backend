@@ -27,9 +27,10 @@ services:
       DB_USER: ${DB_USER:-lasobremesa}
       DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD}
       DB_NAME: ${DB_NAME:-lasobremesa}
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET}
       ADMIN_EMAILS: ${ADMIN_EMAILS:?Define ADMIN_EMAILS}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Define ADMIN_PASSWORD}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
     ports:
       - "${API_HOST_PORT:-3000}:3000"
     volumes:
