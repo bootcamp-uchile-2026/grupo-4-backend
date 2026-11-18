@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { Usuario } from '../usuarios/entities/usuario.entity';
 import { AutenticacionService } from './autenticacion.service';
 import { AutenticacionController } from './autenticacion.controller';
@@ -14,14 +15,28 @@ import { RolesGuard } from './guards/roles.guard';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.getOrThrow<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '15m' },
-      }),
+      useFactory: (config: ConfigService) => {
+        const secret = config.getOrThrow<string>('JWT_SECRET');
+
+        if (Buffer.byteLength(secret, 'utf8') < 32) {
+          throw new Error('JWT_SECRET debe tener al menos 32 bytes');
+        }
+
+        return {
+          secret,
+          signOptions: {
+            expiresIn: '15m',
+            algorithm: 'HS256',
+          },
+          verifyOptions: {
+            algorithms: ['HS256'],
+          },
+        };
+      },
     }),
   ],
   controllers: [AutenticacionController],
   providers: [AutenticacionService, AuthGuard, RolesGuard],
-  exports: [AuthGuard, RolesGuard, JwtModule],
+  exports: [AuthGuard, RolesGuard, JwtModule, TypeOrmModule],
 })
 export class AutenticacionModule {}

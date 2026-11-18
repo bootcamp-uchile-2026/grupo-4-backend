@@ -2,6 +2,8 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { join } from 'node:path';
 
 import { AppController } from './app.controller';
@@ -40,16 +42,25 @@ import { ArchivosModule } from './archivos/archivos.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
+
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST ?? 'localhost',
       port: Number(process.env.DB_PORT ?? 3306),
-      username: process.env.DB_USER ?? 'root',
-      password: process.env.DB_PASSWORD ?? '',
+      username: process.env.DB_USER!,
+      password: process.env.DB_PASSWORD!,
       database: process.env.DB_NAME ?? 'lasobremesa',
       autoLoadEntities: true,
       synchronize: false,
     }),
+
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
@@ -57,6 +68,7 @@ import { ArchivosModule } from './archivos/archivos.module';
         fallthrough: false,
       },
     }),
+
     RegistroModule,
     AutenticacionModule,
     RecuperacionPasswordModule,
@@ -85,8 +97,16 @@ import { ArchivosModule } from './archivos/archivos.module';
     RolesModule,
     ArchivosModule,
   ],
+
   controllers: [AppController],
-  providers: [AppService],
+
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer): void {

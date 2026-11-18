@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AutenticacionService } from './autenticacion.service';
 import { LoginAutenticacionDto } from './dto/login-autenticacion.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Autenticación')
 @Controller('autenticacion')
@@ -10,6 +11,7 @@ export class AutenticacionController {
 
   @Post('login')
   @HttpCode(200)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Iniciar sesión' })
   @ApiResponse({
     status: 200,

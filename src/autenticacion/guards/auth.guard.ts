@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { TokenExpiredError } from 'jsonwebtoken';
 import { RolUsuario } from '../../usuarios/enums/rol-usuario.enum';
 
 export interface JwtPayload {
@@ -26,16 +27,39 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
     const authorization = request.headers.authorization;
-    const [type, token] = authorization?.split(' ') ?? [];
 
-    if (type !== 'Bearer' || !token) {
-      throw new UnauthorizedException('Token no proporcionado');
+    if (!authorization) {
+      throw new UnauthorizedException('Header Authorization requerido');
     }
+
+    const parts = authorization.trim().split(/\s+/);
+
+    if (parts[0] !== 'Bearer') {
+      throw new UnauthorizedException(
+        'Esquema de autenticación inválido. Se requiere Bearer',
+      );
+    }
+
+    if (parts.length === 1) {
+      throw new UnauthorizedException('Token de acceso requerido');
+    }
+
+    if (parts.length !== 2) {
+      throw new UnauthorizedException(
+        'Formato del encabezado Authorization inválido',
+      );
+    }
+
+    const token = parts[1];
 
     try {
       request.user = await this.jwtService.verifyAsync<JwtPayload>(token);
-    } catch {
-      throw new UnauthorizedException('Token inválido o expirado');
+    } catch (error: unknown) {
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Token de acceso expirado');
+      }
+
+      throw new UnauthorizedException('Token de acceso inválido');
     }
 
     return true;
