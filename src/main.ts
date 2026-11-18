@@ -11,7 +11,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Cabeceras HTTP de seguridad
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          upgradeInsecureRequests: null,
+        },
+      },
+    }),
+  );
 
   const corsOrigins = process.env.CORS_ORIGINS ?? '*';
 
