@@ -1,8 +1,9 @@
-
 # LaSobremesa — Backend
 
 <p align="center">
-  <img src="./docs/logo.svg" alt="LaSobremesa" width="250">
+
+<img src="./docs/logo.svg" alt="LaSobremesa" width="250">
+
 </p>
 
 API REST desarrollada con **NestJS y TypeScript** para el ecommerce **LaSobremesa**, orientado a la comercialización de productos artesanales de proveedores locales.
@@ -93,7 +94,7 @@ Las variables `ADMIN_EMAILS` y `ADMIN_PASSWORD` son necesarias para la migració
 
 ## 4. Ejecución en desarrollo
 
-### 4.1. Con Docker Compose (recomendado)
+**### 4.1. Con Docker Compose (recomendado)**
 
 Desde la raíz del proyecto:
 
@@ -132,7 +133,7 @@ docker compose -f compose.dev.yaml up -d --build
 
 La API queda disponible por defecto en `http://localhost:3000` y MySQL se publica únicamente en `127.0.0.1` mediante el puerto indicado en `DB_HOST_PORT`.
 
-### 4.2. Ejecución local sin contenedor de API
+**### 4.2. Ejecución local sin contenedor de API**
 
 Instala las dependencias:
 
@@ -161,7 +162,16 @@ El proyecto utiliza **TypeORM** con configuración en `db/typeorm.config.ts`.
 
 El esquema de la base de datos se administra mediante migraciones, siguiendo un enfoque **database-first**.
 
-### 5.1. Migraciones
+**### Modelo de datos
+
+La documentación del esquema relacional se encuentra en:
+
+- [Modelo entidad-relación (MER)](docs/mer.md).
+- [Script SQL del esquema](docs/script.sql).
+
+El modelo debe mantenerse sincronizado con las migraciones de TypeORM y las entidades implementadas.
+
+### 5.1. Migraciones**
 
 Las migraciones están en `db/migrations/` y permiten construir y modificar el esquema sin depender de la sincronización automática de entidades.
 
@@ -189,7 +199,7 @@ Entre las migraciones implementadas se incluyen:
 
 TypeORM registra las migraciones ejecutadas en la tabla `migrations`, evitando volver a ejecutar las que ya fueron aplicadas.
 
-### 5.2. Datos de desarrollo
+**### 5.2. Datos de desarrollo**
 
 El archivo `db/seeds/datos-desarrollo.sql` contiene datos de prueba para una **base de desarrollo vacía**, incluidos usuarios de prueba, categorías, proveedores y productos.
 
@@ -205,7 +215,7 @@ Los usuarios incluidos en el seed son **exclusivos para pruebas**. Antes de depe
 
 **No cargues datos de desarrollo en producción.**
 
-### 5.3. Administradores iniciales
+**### 5.3. Administradores iniciales**
 
 Los administradores iniciales se crean mediante la migración de TypeORM `SeedInitialAdmins`.
 
@@ -251,7 +261,7 @@ En la creación de productos, un usuario **PROVEEDOR** no necesita indicar `prov
 
 Para **ADMIN**, `proveedorId` debe indicarse en la solicitud.
 
-### 6.1. Normalización de roles
+**### 6.1. Normalización de roles**
 
 Los roles se almacenan en una tabla independiente llamada `roles`.
 
@@ -269,7 +279,7 @@ La migración `NormalizeUserRoles` transforma el esquema anterior, reemplazando 
 
 Esta estructura permite mantener la integridad referencial y centralizar la definición de roles.
 
-### 6.2. Endpoints de roles
+**### 6.2. Endpoints de roles**
 
 La API dispone de los siguientes endpoints:
 
@@ -281,6 +291,17 @@ La API dispone de los siguientes endpoints:
 
 La modificación del rol de un usuario está restringida a usuarios autenticados con rol **ADMIN**.
 
+### 6.3. Gestión de imágenes
+
+La API contempla la gestión de imágenes asociadas a productos y proveedores, incluyendo la asociación de múltiples imágenes a un mismo recurso.
+
+- Los archivos se almacenan en el directorio `uploads/` del contenedor de la API.
+- Las referencias de las imágenes se almacenan en MySQL mediante TypeORM.
+- En producción, el volumen Docker `imagenes_prod` conserva los archivos al recrear el contenedor de la API.
+- Las rutas disponibles para cargar y consultar imágenes se documentan en Swagger.
+
+Para comprobar esta funcionalidad, utiliza los endpoints documentados y verifica tanto la respuesta HTTP como la persistencia de las referencias y los archivos.
+
 ## 7. Documentación de la API
 
 Con la aplicación iniciada, Swagger UI está disponible por defecto en:
@@ -288,6 +309,14 @@ Con la aplicación iniciada, Swagger UI está disponible por defecto en:
 **http://localhost:3000/api**
 
 Si cambias `API_HOST_PORT`, ajusta el puerto de la URL.
+
+### Swagger desplegado en AWS EC2
+
+La dirección configurada para la documentación del entorno desplegado es:
+
+**http://13.184.190.150:3000/api**
+
+Su disponibilidad depende de que la instancia y los contenedores estén en ejecución. Antes de la entrega, verifica que la URL responda y corresponda a la versión publicada.
 
 Para probar endpoints protegidos:
 
@@ -303,7 +332,7 @@ El repositorio contempla `compose.prod.yaml` para ejecutar una imagen publicada 
 
 La aplicación y MySQL se ejecutan en contenedores independientes, utilizando un volumen persistente para almacenar los datos de la base de datos.
 
-### 8.1. Construir y publicar la imagen
+**### 8.1. Construir y publicar la imagen**
 
 Inicia sesión en Docker Hub:
 
@@ -314,26 +343,26 @@ docker login
 Construye la imagen desde la raíz del proyecto, utilizando una etiqueta de versión:
 
 ```bash
-docker build -t camilocdh/lasobremesa:1.0.3 .
+docker build -t camilocdh/lasobremesa:1.0.9 .
 ```
 
 Publica la imagen:
 
 ```bash
-docker push camilocdh/lasobremesa:1.0.3
+docker push camilocdh/lasobremesa:1.0.9
 ```
 
-La versión `1.0.3` es un ejemplo de una imagen publicada. Para nuevas versiones, utiliza una etiqueta diferente.
+La versión `1.0.9` corresponde al versionado preparado para el Hito 3. Antes de publicar o desplegar, verifica que la imagen se haya construido desde el commit definitivo y que la etiqueta coincida con `package.json` y el tag de Git.
 
 Configura en `.env` la imagen que deseas desplegar:
 
 ```dotenv
-DOCKER_IMAGE=camilocdh/lasobremesa:1.0.3
+DOCKER_IMAGE=camilocdh/lasobremesa:1.0.9
 ```
 
 Si el repositorio de Docker Hub es privado, el servidor de producción deberá contar con la autenticación correspondiente.
 
-### 8.2. Iniciar los servicios
+**### 8.2. Iniciar los servicios**
 
 En el servidor de producción, con Docker y Docker Compose instalados, configura los archivos:
 
@@ -374,7 +403,7 @@ docker compose -f compose.prod.yaml down
 
 La configuración de producción no publica el puerto de MySQL en el host. La API y la base de datos se comunican mediante la red interna creada por Docker Compose.
 
-### 8.3. Migraciones en producción
+**### 8.3. Migraciones en producción**
 
 El servicio `api` ejecuta automáticamente las migraciones pendientes antes de iniciar NestJS.
 
@@ -411,7 +440,7 @@ El servicio MySQL utiliza el volumen persistente `mysql_prod_data`, por lo que a
 
 Antes de ejecutar migraciones que modifiquen estructuras o datos existentes, se recomienda contar con un respaldo de la base de datos.
 
-### 8.4. Verificación del despliegue
+**### 8.4. Verificación del despliegue**
 
 Después de actualizar la aplicación, comprueba el estado de los contenedores:
 
@@ -513,6 +542,12 @@ Actualmente cuenta con una estructura modular, persistencia mediante MySQL 8 y T
 El esquema de roles se encuentra normalizado mediante una tabla independiente y los administradores iniciales se crean a través de una migración.
 
 El proyecto también dispone de configuraciones Docker Compose diferenciadas para desarrollo y producción, con ejecución automática de migraciones antes del inicio de la API.
+
+### Alcance funcional
+
+Entre los componentes desarrollados se encuentran la gestión de productos, proveedores y categorías; la autenticación y autorización de usuarios; la administración de roles; y la gestión de imágenes. El alcance concreto de cada endpoint puede consultarse en Swagger.
+
+Los módulos de carrito, pedidos, checkout, favoritos, reseñas y suscripciones forman parte de la estructura del proyecto, pero **no deben considerarse flujos de comercio electrónico completos** sin verificar sus operaciones y su persistencia. Algunos endpoints pueden mantener respuestas simuladas o implementaciones parciales.
 
 Los módulos del proyecto evolucionan de forma incremental; la presencia de un módulo en el repositorio no implica que todas sus funcionalidades estén terminadas o validadas.
 
