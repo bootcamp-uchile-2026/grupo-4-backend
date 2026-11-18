@@ -12,14 +12,17 @@ async function bootstrap() {
 
   // Cabeceras HTTP de seguridad
   app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          upgradeInsecureRequests: null,
-        },
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        upgradeInsecureRequests: null,
       },
-    }),
-  );
+    },
+    crossOriginResourcePolicy: {
+      policy: 'cross-origin',
+    },
+  }),
+);
 
   const corsOrigins = process.env.CORS_ORIGINS ?? '*';
 

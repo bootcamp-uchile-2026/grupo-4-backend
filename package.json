@@ -1,6 +1,6 @@
 {
   "name": "grupo-4-backend",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "API REST del ecommerce LaSobremesa desarrollada con NestJS, TypeScript, TypeORM y MySQL.",
   "author": "Grupo 4 - Bootcamp Backend Universidad de Chile",
   "private": true,
