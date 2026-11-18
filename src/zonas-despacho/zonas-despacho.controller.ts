@@ -4,7 +4,7 @@ import {
   Delete,
   Get,
   Param,
-  ParseUUIDPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -41,7 +41,7 @@ export class ZonasDespachoController {
   @Post()
   create(
     @Body() createZonaDespachoDto: CreateZonaDespachoDto,
-  ): ZonaDespachoResponseDto {
+  ): Promise<ZonaDespachoResponseDto> {
     return this.zonasDespachoService.create(createZonaDespachoDto);
   }
 
@@ -61,7 +61,9 @@ export class ZonasDespachoController {
     description: 'Los parámetros de búsqueda no son válidos.',
   })
   @Get()
-  findAll(@Query() query: ZonaDespachoQueryDto): ZonaDespachoResponseDto[] {
+  findAll(
+    @Query() query: ZonaDespachoQueryDto,
+  ): Promise<ZonaDespachoResponseDto[]> {
     return this.zonasDespachoService.findAll(query);
   }
 
@@ -71,8 +73,8 @@ export class ZonasDespachoController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único de la zona de despacho',
   })
   @ApiResponse({
@@ -89,7 +91,9 @@ export class ZonasDespachoController {
     description: 'Zona de despacho no encontrada.',
   })
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): ZonaDespachoResponseDto {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ZonaDespachoResponseDto> {
     return this.zonasDespachoService.findOne(id);
   }
 
@@ -100,8 +104,8 @@ export class ZonasDespachoController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único de la zona de despacho',
   })
   @ApiResponse({
@@ -123,9 +127,9 @@ export class ZonasDespachoController {
   })
   @Patch(':id')
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateZonaDespachoDto: UpdateZonaDespachoDto,
-  ): ZonaDespachoResponseDto {
+  ): Promise<ZonaDespachoResponseDto> {
     return this.zonasDespachoService.update(id, updateZonaDespachoDto);
   }
 
@@ -136,8 +140,8 @@ export class ZonasDespachoController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único de la zona de despacho',
   })
   @ApiResponse({
@@ -154,7 +158,9 @@ export class ZonasDespachoController {
     description: 'Zona de despacho no encontrada.',
   })
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string): ZonaDespachoResponseDto {
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ZonaDespachoResponseDto> {
     return this.zonasDespachoService.remove(id);
   }
 }

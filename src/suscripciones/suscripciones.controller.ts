@@ -1,14 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { SuscripcionesService } from './suscripciones.service';
 import { CreateSuscripcionDto } from './dto/create-suscripcion.dto';
 import { UpdateSuscripcionDto } from './dto/update-suscripcion.dto';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SuscripcionResponseDTO } from './dto/suscripcion-response.dto';
 
 @ApiTags('Suscripciones')
 @Controller('suscripciones')
 export class SuscripcionesController {
-  constructor(private readonly suscripcionesService: SuscripcionesService) { }
+  constructor(private readonly suscripcionesService: SuscripcionesService) {}
 
   @Post()
   @ApiOperation({
@@ -26,7 +42,8 @@ export class SuscripcionesController {
   })
   @ApiResponse({
     status: 409,
-    description: 'Ya existe una suscripción con el nombre y/o productos indicados.',
+    description:
+      'Ya existe una suscripción con el nombre y/o productos indicados.',
   })
   create(@Body() createSuscripcionDto: CreateSuscripcionDto) {
     return this.suscripcionesService.create(createSuscripcionDto);
@@ -35,7 +52,8 @@ export class SuscripcionesController {
   @Get()
   @ApiOperation({
     summary: 'Obtener suscripciones',
-    description: 'Obtiene una lista de suscripciones aplicando filtros opcionales.',
+    description:
+      'Obtiene una lista de suscripciones aplicando filtros opcionales.',
   })
   @ApiResponse({
     status: 200,
@@ -61,8 +79,8 @@ export class SuscripcionesController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único de la suscripción',
   })
   @ApiResponse({
@@ -78,19 +96,20 @@ export class SuscripcionesController {
     status: 404,
     description: 'Suscripción no encontrada.',
   })
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.suscripcionesService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({
     summary: 'Modificar una suscripción',
-    description: 'Modifica total o parcialmente una suscripción que tenga el id dado.',
+    description:
+      'Modifica total o parcialmente una suscripción que tenga el id dado.',
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único de la suscripción',
   })
   @ApiResponse({
@@ -108,11 +127,13 @@ export class SuscripcionesController {
   })
   @ApiResponse({
     status: 409,
-    description: 'Ya existe una suscripción con el nombre y/o productos indicados.',
+    description:
+      'Ya existe una suscripción con el nombre y/o productos indicados.',
   })
   update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateSuscripcionDto: UpdateSuscripcionDto) {
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateSuscripcionDto: UpdateSuscripcionDto,
+  ) {
     return this.suscripcionesService.update(id, updateSuscripcionDto);
   }
 
@@ -123,8 +144,8 @@ export class SuscripcionesController {
   })
   @ApiParam({
     name: 'id',
-    type: String,
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    type: Number,
+    example: 1,
     description: 'Identificador único de la suscripción',
   })
   @ApiResponse({
@@ -139,7 +160,7 @@ export class SuscripcionesController {
     status: 404,
     description: 'Suscripción no encontrada.',
   })
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.suscripcionesService.remove(id);
   }
 }

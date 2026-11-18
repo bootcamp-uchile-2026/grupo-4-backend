@@ -3,7 +3,7 @@ import { IsInt, IsPositive, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class UpdateCartItemDto {
-@ApiProperty({
+  @ApiProperty({
     example: 2,
     minimum: 1,
     description: 'Identificador único del producto',

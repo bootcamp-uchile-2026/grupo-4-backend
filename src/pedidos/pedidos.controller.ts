@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { PedidosService } from './pedidos.service';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PedidoResponseDto } from './dto/pedido-response.dto';
@@ -49,15 +58,14 @@ export class PedidosController {
     description: 'Pedido no encontrado.',
   })
   @Get(':id')
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): PedidoResponseDto {
+  findOne(@Param('id', ParseIntPipe) id: number): PedidoResponseDto {
     return {} as PedidoResponseDto;
   }
 
   @ApiOperation({
     summary: 'Crear pedido',
-    description: 'Crea un nuevo pedido a partir de los productos seleccionados.',
+    description:
+      'Crea un nuevo pedido a partir de los productos seleccionados.',
   })
   @ApiResponse({
     status: 201,
@@ -73,9 +81,7 @@ export class PedidosController {
     description: 'El usuario o alguno de los productos no existe.',
   })
   @Post()
-  create(
-    @Body() createPedidoDto: CreatePedidoDto,
-  ): PedidoResponseDto {
+  create(@Body() createPedidoDto: CreatePedidoDto): PedidoResponseDto {
     return {} as PedidoResponseDto;
   }
 
@@ -109,5 +115,4 @@ export class PedidosController {
   ): PedidoResponseDto {
     return {} as PedidoResponseDto;
   }
-
 }

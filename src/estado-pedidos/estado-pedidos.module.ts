@@ -1,9 +1,12 @@
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { HistorialEstadoPedido } from './entities/historial-estado-pedido.entity';
 import { Module } from '@nestjs/common';
 import { EstadoPedidosService } from './estado-pedidos.service';
 import { EstadoPedidosController } from './estado-pedidos.controller';
 
 @Module({
-  controllers: [EstadoPedidosController],
+  imports: [TypeOrmModule.forFeature([HistorialEstadoPedido])],
+  controllers: [],
   providers: [EstadoPedidosService],
 })
 export class EstadoPedidosModule {}

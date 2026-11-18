@@ -2,16 +2,16 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class StockResponseDto {
   @ApiProperty({
-    example: '3f2b8c1e-9a4d-4e7b-8c5f-1d2e3a4b5c6d',
+    example: 1,
     description: 'Identificador único del registro de stock',
   })
-  id: string;
+  id: number;
 
   @ApiProperty({
-    example: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
+    example: 1,
     description: 'Identificador del producto asociado al stock',
   })
-  productoId: string;
+  productoId: number;
 
   @ApiProperty({
     example: 50,

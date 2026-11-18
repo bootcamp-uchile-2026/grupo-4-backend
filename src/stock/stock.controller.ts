@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  HttpCode,
+} from '@nestjs/common';
 import { StockService } from './stock.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
@@ -35,8 +45,8 @@ export class StockController {
   })
   @Get(':productoId')
   findOne(
-    @Param('productoId', ParseUUIDPipe) productoId: string,
-  ): StockResponseDto {
+    @Param('productoId', ParseIntPipe) productoId: number,
+  ): Promise<StockResponseDto> {
     return this.stockService.findOne(productoId);
   }
 
@@ -62,9 +72,7 @@ export class StockController {
     description: 'El producto ya tiene un registro de stock.',
   })
   @Post()
-  create(
-    @Body() createStockDto: CreateStockDto,
-  ): StockResponseDto {
+  create(@Body() createStockDto: CreateStockDto): Promise<StockResponseDto> {
     return this.stockService.create(createStockDto);
   }
 
@@ -93,9 +101,9 @@ export class StockController {
   })
   @Patch(':productoId')
   update(
-    @Param('productoId', ParseUUIDPipe) productoId: string,
+    @Param('productoId', ParseIntPipe) productoId: number,
     @Body() updateStockDto: UpdateStockDto,
-  ): StockResponseDto {
+  ): Promise<StockResponseDto> {
     return this.stockService.update(productoId, updateStockDto);
   }
 
@@ -123,11 +131,7 @@ export class StockController {
   })
   @HttpCode(204)
   @Delete(':productoId')
-  remove(
-    @Param('productoId', ParseUUIDPipe) productoId: string,
-  ): void {
-    this.stockService.remove(productoId);
+  remove(@Param('productoId', ParseIntPipe) productoId: number): Promise<void> {
+    return this.stockService.remove(productoId);
   }
-
-  
 }

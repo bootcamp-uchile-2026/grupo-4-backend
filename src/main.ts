@@ -1,18 +1,39 @@
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
+import { ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 import { LoggingInterceptor } from './common/interceptors/logging/logging.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
-
-  app.useGlobalInterceptors(
-    new LoggingInterceptor(),
+  // Cabeceras HTTP de seguridad
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          upgradeInsecureRequests: null,
+        },
+      },
+    }),
   );
+
+  const corsOrigins = process.env.CORS_ORIGINS ?? '*';
+
+  app.enableCors({
+    origin:
+      corsOrigins === '*'
+        ? '*'
+        : corsOrigins.split(',').map((origin) => origin.trim()),
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id'],
+    credentials: false,
+  });
+
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,14 +43,13 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalFilters(
-    new HttpExceptionFilter()
-  );
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('LaSobremesa API')
     .setDescription('API Backend para el ecommerce LaSobremesa')
     .setVersion('1.0')
+    .addBearerAuth()
     .addGlobalParameters({
       in: 'header',
       name: 'x-request-id',
@@ -48,4 +68,8 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+
+bootstrap().catch((error: unknown) => {
+  console.error('No se pudo iniciar la aplicación:', error);
+  process.exit(1);
+});

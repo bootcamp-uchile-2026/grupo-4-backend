@@ -1,105 +1,218 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Not } from 'typeorm';
+import * as argon2 from 'argon2';
+
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { UpdateMiPerfilDto } from './dto/update-mi-perfil.dto';
+import { CreateUsuarioAdminDto } from './dto/create-usuario-admin.dto';
 import { Usuario } from './entities/usuario.entity';
+import { Rol } from '../roles/entities/rol.entity';
+import { RolUsuario } from './enums/rol-usuario.enum';
 
 @Injectable()
 export class UsuariosService {
-  private usuarios: Usuario[] = [];
+  constructor(
+    @InjectRepository(Usuario)
+    private readonly repo: Repository<Usuario>,
 
-  constructor() {
-    this.create({
-      nombre: 'Camilo',
-      apellido: 'Díaz',
-      email: 'camilo@example.com',
-      telefono: '+56912345678',
-      password: 'MiPassword123!',
-    });
-    this.create({
-      nombre: 'Javiera',
-      apellido: 'Rojas',
-      email: 'javiera@example.com',
-      telefono: '+56987654321',
-      password: 'OtraPassword456!',
-    });
+    @InjectRepository(Rol)
+    private readonly rolesRepo: Repository<Rol>,
+  ) {}
+
+  private publicUser(u: Usuario) {
+    return {
+      id: u.id,
+      nombre: u.nombre,
+      apellido: u.apellido,
+      email: u.email,
+      telefono: u.telefono ?? null,
+      rol: u.rol.nombre,
+    };
   }
 
-  create(createUsuarioDto: CreateUsuarioDto) {
-    const existe = this.usuarios.find(
-      (u) => u.email === createUsuarioDto.email,
-    );
-    if (existe) {
-      throw new ConflictException('Ya existe un usuario con ese email.');
-    }
+  private async buscarRol(nombre: RolUsuario): Promise<Rol> {
+    const rol = await this.rolesRepo.findOneBy({ nombre });
 
-    const usuario = new Usuario(
-      randomUUID(),
-      createUsuarioDto.nombre,
-      createUsuarioDto.apellido,
-      createUsuarioDto.email,
-      createUsuarioDto.telefono,
-      createUsuarioDto.password,
-    );
-    this.usuarios.push(usuario);
-    return this.sinPassword(usuario);
-  }
-
-  findAll() {
-    return this.usuarios.map((u) => this.sinPassword(u));
-  }
-
-  findOne(id: string) {
-    const usuario = this.buscar(id);
-    return this.sinPassword(usuario);
-  }
-
-  update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
-    const usuario = this.buscar(id);
-
-    if (updateUsuarioDto.email) {
-      const existe = this.usuarios.find(
-        (u) => u.email === updateUsuarioDto.email && u.id !== id,
+    if (!rol) {
+      throw new BadRequestException(
+        `El rol ${nombre} no está configurado.`,
       );
-      if (existe) {
-        throw new ConflictException('Ya existe un usuario con ese email.');
-      }
     }
 
-    for (const campo in updateUsuarioDto) {
-      const valor = updateUsuarioDto[campo];
-      if (valor !== undefined && valor !== null) {
-        usuario[campo] = valor;
-      }
+    return rol;
+  }
+
+  async create(dto: CreateUsuarioDto) {
+    if (await this.repo.existsBy({ email: dto.email })) {
+      throw new ConflictException(
+        'Ya existe un usuario con ese email.',
+      );
     }
 
-    return this.sinPassword(usuario);
+    const rol = await this.buscarRol(RolUsuario.CLIENTE);
+
+    const u = await this.repo.save(
+      this.repo.create({
+        nombre: dto.nombre,
+        apellido: dto.apellido,
+        email: dto.email,
+        telefono: dto.telefono,
+        password_hash: await argon2.hash(dto.password, {
+          type: argon2.argon2id,
+        }),
+        rol,
+      }),
+    );
+
+    return this.publicUser(u);
   }
 
-  remove(id: string) {
-    this.buscar(id);
-    this.usuarios = this.usuarios.filter((u) => u.id !== id);
+  async createAdmin(dto: CreateUsuarioAdminDto) {
+    if (await this.repo.existsBy({ email: dto.email })) {
+      throw new ConflictException(
+        'Ya existe un usuario con ese email.',
+      );
+    }
+
+    const rol = await this.buscarRol(dto.rol);
+
+    const usuario = this.repo.create({
+      nombre: dto.nombre,
+      apellido: dto.apellido,
+      email: dto.email,
+      telefono: dto.telefono,
+      password_hash: await argon2.hash(dto.password, {
+        type: argon2.argon2id,
+      }),
+      rol,
+    });
+
+    return this.publicUser(await this.repo.save(usuario));
   }
 
-  private buscar(id: string) {
-    const usuario = this.usuarios.find((u) => u.id === id);
-    if (!usuario) {
+  async findAll() {
+    return (
+      await this.repo.find({
+        relations: { rol: true },
+      })
+    ).map((u) => this.publicUser(u));
+  }
+
+  async findOne(id: number) {
+    return this.publicUser(await this.buscar(id));
+  }
+
+  async updateMe(id: number, dto: UpdateMiPerfilDto) {
+    const usuario = await this.buscar(id);
+
+    if (dto.nombre !== undefined) {
+      usuario.nombre = dto.nombre;
+    }
+
+    if (dto.apellido !== undefined) {
+      usuario.apellido = dto.apellido;
+    }
+
+    if (dto.telefono !== undefined) {
+      usuario.telefono = dto.telefono;
+    }
+
+    if (dto.password !== undefined) {
+      usuario.password_hash = await argon2.hash(dto.password, {
+        type: argon2.argon2id,
+      });
+    }
+
+    return this.publicUser(await this.repo.save(usuario));
+  }
+
+  async update(id: number, dto: UpdateUsuarioDto) {
+    const u = await this.buscar(id);
+
+    if (
+      dto.email &&
+      (await this.repo.existsBy({
+        email: dto.email,
+        id: Not(id),
+      }))
+    ) {
+      throw new ConflictException(
+        'Ya existe un usuario con ese email.',
+      );
+    }
+
+    if (dto.nombre !== undefined) {
+      u.nombre = dto.nombre;
+    }
+
+    if (dto.apellido !== undefined) {
+      u.apellido = dto.apellido;
+    }
+
+    if (dto.email !== undefined) {
+      u.email = dto.email;
+    }
+
+    if (dto.telefono !== undefined) {
+      u.telefono = dto.telefono;
+    }
+
+    if (dto.password !== undefined) {
+      u.password_hash = await argon2.hash(dto.password, {
+        type: argon2.argon2id,
+      });
+    }
+
+    return this.publicUser(await this.repo.save(u));
+  }
+
+
+  async asignarRol(id: number, nombreRol: RolUsuario) {
+    const usuario = await this.buscar(id);
+
+    const rol = await this.rolesRepo.findOneBy({
+      nombre: nombreRol,
+    });
+
+    if (!rol) {
+      throw new NotFoundException('Rol no encontrado.');
+    }
+
+    usuario.rol = rol;
+    usuario.rol_id = rol.id;
+
+    return this.publicUser(await this.repo.save(usuario));
+  }
+
+
+  async remove(id: number) {
+    await this.repo.remove(await this.buscar(id));
+  }
+
+  private async buscar(id: number): Promise<Usuario> {
+    const u = await this.repo.findOne({
+      where: { id },
+      relations: { rol: true },
+    });
+
+    if (!u) {
       throw new NotFoundException('Usuario no encontrado.');
     }
-    return usuario;
+
+    return u;
   }
 
-  private sinPassword(usuario: Usuario) {
-    return {
-      id: usuario.id,
-      nombre: usuario.nombre,
-      apellido: usuario.apellido,
-      email: usuario.email,
-      telefono: usuario.telefono,
-    };
+  async findByEmail(email: string): Promise<Usuario | null> {
+    return this.repo.findOne({
+      where: { email },
+      relations: { rol: true },
+    });
   }
 }

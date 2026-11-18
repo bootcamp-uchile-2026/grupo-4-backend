@@ -1,27 +1,48 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAutenticacionDto } from './dto/create-autenticacion.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as argon2 from 'argon2';
+
+import { Usuario } from '../usuarios/entities/usuario.entity';
 import { LoginAutenticacionDto } from './dto/login-autenticacion.dto';
-import { UsuarioResponseDto } from '../usuarios/dto/usuarios-response.dto';
 
 @Injectable()
 export class AutenticacionService {
-  registro(
-    createAutenticacionDto: CreateAutenticacionDto,
-  ): UsuarioResponseDto {
-    return {
-      id: '1',
-      nombre: createAutenticacionDto.nombre,
-      apellido: createAutenticacionDto.apellido,
-      email: createAutenticacionDto.email,
-      telefono: createAutenticacionDto.telefono,
-    };
-  }
+  constructor(
+    @InjectRepository(Usuario)
+    private readonly usuariosRepository: Repository<Usuario>,
 
-  login(
-    loginAutenticacionDto: LoginAutenticacionDto,
-  ): { mensaje: string } {
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async login(dto: LoginAutenticacionDto) {
+    const usuario = await this.usuariosRepository.findOne({
+      where: { email: dto.email },
+      relations: { rol: true },
+    });
+
+    if (!usuario) {
+      throw new UnauthorizedException('Credenciales incorrectas');
+    }
+
+    const passwordValida = await argon2.verify(
+      usuario.password_hash,
+      dto.password,
+    );
+
+    if (!passwordValida) {
+      throw new UnauthorizedException('Credenciales incorrectas');
+    }
+
+    const payload = {
+      sub: usuario.id,
+      email: usuario.email,
+      role: usuario.rol.nombre,
+    };
+
     return {
-      mensaje: 'Inicio de sesión simulado correctamente',
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 }

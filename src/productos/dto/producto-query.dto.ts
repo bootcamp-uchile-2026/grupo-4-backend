@@ -92,8 +92,7 @@ export class ProductoQueryDto {
   })
   @IsOptional()
   @IsEnum(TipoConservacion, {
-    message:
-      'tipoConservacion debe ser AMBIENTE, REFRIGERADO o CONGELADO',
+    message: 'tipoConservacion debe ser AMBIENTE, REFRIGERADO o CONGELADO',
   })
   tipoConservacion?: TipoConservacion;
 

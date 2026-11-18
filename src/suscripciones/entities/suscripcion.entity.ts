@@ -1,25 +1,28 @@
-import { randomUUID } from "crypto";
+import {
+  Column,
+  Entity,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+  Check,
+} from 'typeorm';
 
+@Entity('suscripciones')
 export class Suscripcion {
-    id?: string;
-    descripcion: string;
-    nombre: string;
-    precio: number;
-    productosId: string[];
-    activa: boolean;
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  id!: number;
 
-    constructor(
-        descripcion: string,
-        nombre: string,
-        precio: number,
-        productosId: string[],
-    ) {
-        this.id = randomUUID();
-        this.descripcion = descripcion;
-        this.nombre = nombre;
-        this.precio = precio;
-        this.productosId = productosId;
-        this.activa = true;
+  @Column({ type: 'varchar', length: 150, nullable: false })
+  nombre!: string;
 
-    }
+  @Column({ type: 'text', nullable: true })
+  descripcion?: string | null;
+
+  @Column({ type: 'decimal', precision: 12, scale: 2, nullable: false })
+  precio!: string;
+
+  @Column({ type: 'boolean', nullable: false, default: true })
+  activa!: boolean;
 }

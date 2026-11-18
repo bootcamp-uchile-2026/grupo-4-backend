@@ -24,10 +24,30 @@ export class MetodosPagoService {
     return `This action removes a #${id} metodosPago`;
   }
   findPredeterminado() {
-    return { id: 1, alias: 'Tarjeta de prueba', marca: 'VISA', ultimosCuatro: '4242', mesExpiracion: 12, anioExpiracion: 2029, titular: 'USUARIO DEMO', esPredeterminado: true, vencida: false };
+    return {
+      id: 1,
+      alias: 'Tarjeta de prueba',
+      marca: 'VISA',
+      ultimosCuatro: '4242',
+      mesExpiracion: 12,
+      anioExpiracion: 2029,
+      titular: 'USUARIO DEMO',
+      esPredeterminado: true,
+      vencida: false,
+    };
   }
 
   updatePredeterminado(dto: UpdateMetodoPagoDto) {
-    return { id: 1, alias: dto.alias ?? 'Tarjeta de prueba', marca: 'VISA', ultimosCuatro: '4242', mesExpiracion: 12, anioExpiracion: 2029, titular: 'USUARIO DEMO', esPredeterminado: true, vencida: false };
+    return {
+      id: 1,
+      alias: dto.alias ?? 'Tarjeta de prueba',
+      marca: 'VISA',
+      ultimosCuatro: '4242',
+      mesExpiracion: 12,
+      anioExpiracion: 2029,
+      titular: 'USUARIO DEMO',
+      esPredeterminado: true,
+      vencida: false,
+    };
   }
 }

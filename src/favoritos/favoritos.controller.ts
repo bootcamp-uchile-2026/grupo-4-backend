@@ -1,4 +1,3 @@
-
 import {
   Controller,
   Get,
@@ -8,21 +7,14 @@ import {
   ParseIntPipe,
   HttpCode,
 } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FavoritosService } from './favoritos.service';
 import { FavoritoResponseDto } from './dto/favorito-response.dto';
 
 @ApiTags('Favoritos')
 @Controller('favoritos')
 export class FavoritosController {
-  constructor(
-    private readonly favoritosService: FavoritosService,
-  ) {}
+  constructor(private readonly favoritosService: FavoritosService) {}
 
   @ApiOperation({
     summary: 'Obtener productos favoritos',
@@ -85,9 +77,7 @@ export class FavoritosController {
   })
   @Delete(':productoId')
   @HttpCode(204)
-  remove(
-    @Param('productoId', ParseIntPipe) productoId: number,
-  ): void {
+  remove(@Param('productoId', ParseIntPipe) productoId: number): void {
     return this.favoritosService.remove(productoId);
   }
 }

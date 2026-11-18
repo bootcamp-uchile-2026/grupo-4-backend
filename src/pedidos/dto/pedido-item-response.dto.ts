@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, Min } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class PedidoItemResponseDto {
   @ApiProperty({
@@ -23,9 +30,10 @@ export class PedidoItemResponseDto {
   @ApiProperty({
     example: 5990,
     minimum: 0,
-    description: 'Precio unitario del producto al momento de realizar el pedido',
+    description:
+      'Precio unitario del producto al momento de realizar el pedido',
   })
-  @IsNumber({},{ message: 'precioUnitario debe ser un número' }) // Validar que sea un número
+  @IsNumber({}, { message: 'precioUnitario debe ser un número' }) // Validar que sea un número
   @Min(0, { message: 'precioUnitario debe ser al menos 0' }) // Validar que sea al menos 0
   precioUnitario: number;
 

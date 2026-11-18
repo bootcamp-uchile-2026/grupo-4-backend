@@ -1,29 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 import { EstadoPedido } from '../../pedidos/enums/estado-pedido.enum'; // ajusta la ruta
 
 export class HistorialEstadoResponseDto {
-  @ApiProperty({ 
-    enum: EstadoPedido, 
-    example: EstadoPedido.PENDIENTE, 
-    description: 'Estado anterior' 
+  @ApiProperty({
+    enum: EstadoPedido,
+    example: EstadoPedido.PENDIENTE,
+    description: 'Estado anterior',
   })
   @IsEnum(EstadoPedido)
   estadoAnterior: EstadoPedido;
 
-  @ApiProperty({ 
-    enum: EstadoPedido, 
-    example: EstadoPedido.EN_PREPARACION, 
-    description: 'Estado nuevo' 
+  @ApiProperty({
+    enum: EstadoPedido,
+    example: EstadoPedido.EN_PREPARACION,
+    description: 'Estado nuevo',
   })
   @IsEnum(EstadoPedido)
   estadoNuevo: EstadoPedido;
 
-  @ApiProperty({ 
-    example: 3, 
-    minimum: 1, 
-    description: 'Usuario que realizó el cambio' 
+  @ApiProperty({
+    example: 3,
+    minimum: 1,
+    description: 'Usuario que realizó el cambio',
   })
   @IsInt({ message: 'usuarioId debe ser un número entero' })
   @IsPositive({ message: 'usuarioId debe ser un número positivo' })

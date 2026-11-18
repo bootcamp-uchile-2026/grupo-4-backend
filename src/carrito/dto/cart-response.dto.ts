@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CartItemResponseDto } from './cart-item-response.dto';
-import { IsArray, IsInt, IsNumber, IsPositive, Min, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNumber,
+  IsPositive,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CartResponseDto {

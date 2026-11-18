@@ -7,7 +7,7 @@ export class MetodosEntregaQueryDto {
     default: false,
     description: 'Incluye los métodos desactivados (solo administradores)',
   })
-  @IsOptional( { message: 'incluirInactivos es opcional' })
+  @IsOptional({ message: 'incluirInactivos es opcional' })
   @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean({ message: 'incluirInactivos debe ser verdadero o falso' })
   incluirInactivos?: boolean;

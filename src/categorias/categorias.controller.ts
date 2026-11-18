@@ -1,9 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
+import {
+  Controller,
+  HttpCode,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+
 import { CategoriasService } from './categorias.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoriaResponseDto } from './dto/categoria-response.dto';
+
+import { AuthGuard } from '../autenticacion/guards/auth.guard';
+import { RolesGuard } from '../autenticacion/guards/roles.guard';
+import { Roles } from '../autenticacion/decorators/roles.decorator';
+import { RolUsuario } from '../usuarios/enums/rol-usuario.enum';
 
 @ApiTags('Categorias')
 @Controller('categorias')
@@ -12,7 +38,8 @@ export class CategoriasController {
 
   @ApiOperation({
     summary: 'Obtener categorías',
-    description: 'Obtiene una lista de categorías, opcionalmente filtradas por nombre.',
+    description:
+      'Obtiene una lista de categorías, opcionalmente filtradas por nombre.',
   })
   @ApiQuery({
     name: 'nombre',
@@ -28,12 +55,9 @@ export class CategoriasController {
     isArray: true,
   })
   @Get()
-  findAll(
-    @Query('nombre') nombre?: string,
-  ): CategoriaResponseDto[] {
-    return [];
+  findAll(@Query('nombre') nombre?: string): Promise<CategoriaResponseDto[]> {
+    return this.categoriasService.findAll(nombre);
   }
-
 
   @ApiOperation({
     summary: 'Obtener categorías más utilizadas',
@@ -56,10 +80,9 @@ export class CategoriasController {
   findTop(
     @Query('limite', new DefaultValuePipe(5), ParseIntPipe)
     limite: number,
-  ): CategoriaResponseDto[] {
-    return [];
+  ): Promise<CategoriaResponseDto[]> {
+    return this.categoriasService.findTop(limite);
   }
-  
 
   @ApiOperation({
     summary: 'Obtener categoría por ID',
@@ -87,14 +110,13 @@ export class CategoriasController {
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe) id: number,
-  ): CategoriaResponseDto {
-    return {} as CategoriaResponseDto;
+  ): Promise<CategoriaResponseDto> {
+    return this.categoriasService.findOne(id);
   }
-
 
   @ApiOperation({
     summary: 'Crear categoría',
-    description: 'Crea una nueva categoría.',
+    description: 'Solo los administradores pueden crear categorías.',
   })
   @ApiResponse({
     status: 201,
@@ -106,19 +128,31 @@ export class CategoriasController {
     description: 'Los datos de la categoría no son válidos.',
   })
   @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para crear categorías.',
+  })
+  @ApiResponse({
     status: 409,
     description: 'Ya existe una categoría con el nombre indicado.',
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN)
   @Post()
   create(
     @Body() createCategoriaDto: CreateCategoriaDto,
-  ): CategoriaResponseDto {
-    return {} as CategoriaResponseDto;
+  ): Promise<CategoriaResponseDto> {
+    return this.categoriasService.create(createCategoriaDto);
   }
 
   @ApiOperation({
     summary: 'Actualizar categoría',
-    description: 'Actualiza parcialmente los datos de una categoría existente.',
+    description:
+      'Solo los administradores pueden actualizar categorías existentes.',
   })
   @ApiParam({
     name: 'id',
@@ -136,6 +170,14 @@ export class CategoriasController {
     description: 'El ID o los datos de la categoría no son válidos.',
   })
   @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para actualizar categorías.',
+  })
+  @ApiResponse({
     status: 404,
     description: 'Categoría no encontrada.',
   })
@@ -143,18 +185,21 @@ export class CategoriasController {
     status: 409,
     description: 'Ya existe una categoría con el nombre indicado.',
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoriaDto: UpdateCategoriaDto,
-  ): CategoriaResponseDto {
-    return {} as CategoriaResponseDto;
+  ): Promise<CategoriaResponseDto> {
+    return this.categoriasService.update(id, updateCategoriaDto);
   }
 
-
-   @ApiOperation({
+  @ApiOperation({
     summary: 'Eliminar categoría',
-    description: 'Elimina una categoría mediante su identificador.',
+    description:
+      'Solo los administradores pueden eliminar categorías. No se pueden eliminar categorías asociadas a productos.',
   })
   @ApiParam({
     name: 'id',
@@ -171,13 +216,27 @@ export class CategoriasController {
     description: 'El ID de la categoría no es válido.',
   })
   @ApiResponse({
+    status: 401,
+    description: 'Token no proporcionado o inválido.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permisos para eliminar categorías.',
+  })
+  @ApiResponse({
     status: 404,
     description: 'Categoría no encontrada.',
   })
+  @ApiResponse({
+    status: 409,
+    description: 'No se puede eliminar una categoría asociada a productos.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RolUsuario.ADMIN)
+  @HttpCode(204)
   @Delete(':id')
-  remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): void {}
-
-  
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.categoriasService.remove(id);
+  }
 }

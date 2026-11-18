@@ -3,7 +3,11 @@ import { IsArray, IsEnum, IsInt, IsPositive } from 'class-validator';
 import { EstadoPedido } from '../../pedidos/enums/estado-pedido.enum';
 
 export class EstadoPedidoResponseDto {
-  @ApiProperty({ example: 1, minimum: 1, description: 'Identificador único del pedido' })
+  @ApiProperty({
+    example: 1,
+    minimum: 1,
+    description: 'Identificador único del pedido',
+  })
   @IsInt()
   @IsPositive()
   pedidoId: number;
@@ -20,7 +24,8 @@ export class EstadoPedidoResponseDto {
     enum: EstadoPedido,
     isArray: true,
     example: [EstadoPedido.EN_PREPARACION, EstadoPedido.CANCELADO],
-    description: 'Estados a los que el pedido puede pasar desde el estado actual',
+    description:
+      'Estados a los que el pedido puede pasar desde el estado actual',
   })
   @IsArray()
   @IsEnum(EstadoPedido, { each: true })

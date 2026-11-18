@@ -1,9 +1,12 @@
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MetodosEntrega } from './entities/metodos-entrega.entity';
 import { Module } from '@nestjs/common';
 import { MetodosEntregaService } from './metodos-entrega.service';
 import { MetodosEntregaController } from './metodos-entrega.controller';
 
 @Module({
-  controllers: [MetodosEntregaController],
+  imports: [TypeOrmModule.forFeature([MetodosEntrega])],
+  controllers: [],
   providers: [MetodosEntregaService],
 })
 export class MetodosEntregaModule {}

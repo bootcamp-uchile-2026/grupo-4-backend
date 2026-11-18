@@ -1,10 +1,5 @@
-
 import { Body, Controller, Post } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DatosFacturacionService } from './datos-facturacion.service';
 import { CreateDatosFacturacionDto } from './dto/create-datos-facturacion.dto';
 import { DatosFacturacionResponseDto } from './dto/datos-facturacion-response.dto';
@@ -31,9 +26,7 @@ export class DatosFacturacionController {
     status: 400,
     description: 'Los datos enviados no son válidos.',
   })
-  create(
-    @Body() dto: CreateDatosFacturacionDto,
-  ): DatosFacturacionResponseDto {
+  create(@Body() dto: CreateDatosFacturacionDto): DatosFacturacionResponseDto {
     return this.datosFacturacionService.create(dto);
   }
 }

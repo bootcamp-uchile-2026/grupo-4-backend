@@ -1,4 +1,3 @@
-
 import {
   ArgumentsHost,
   Catch,
@@ -15,9 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
     const context = host.switchToHttp();
     const response = context.getResponse<Response>();
-    const request = context.getRequest<
-      Request & { requestId?: string }
-    >();
+    const request = context.getRequest<Request & { requestId?: string }>();
 
     let statusCode = 500;
     let error = 'INTERNAL_SERVER_ERROR';
@@ -44,7 +41,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (statusCode >= 500) {
       this.logger.error(
-        `[${request.requestId ?? 'sin-id'}] ${request.method} ${request.originalUrl} - ${statusCode}`,
+        `[${request.requestId ?? 'sin-id'}] ${request.method} ${request.path} - ${statusCode}`,
         exception instanceof Error ? exception.stack : undefined,
       );
 
@@ -57,7 +54,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       error,
       message,
       timestamp: new Date().toISOString(),
-      path: request.originalUrl,
+      path: request.path,
       requestId: request.requestId,
     });
   }

@@ -1,15 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { DireccionResponseDto } from '../../direcciones/dto/direccion-response.dto'; 
+import { DireccionResponseDto } from '../../direcciones/dto/direccion-response.dto';
 
 export class DatoDespachoResponseDto extends DireccionResponseDto {
-  @ApiProperty({ example: 'Casa', description: 'Nombre para identificar esta dirección' })
-  @IsString( { message: 'alias debe ser un texto' })
+  @ApiProperty({
+    example: 'Casa',
+    description: 'Nombre para identificar esta dirección',
+  })
+  @IsString({ message: 'alias debe ser un texto' })
   @IsNotEmpty({ message: 'alias no puede estar vacío' })
   alias: string;
 
-  @ApiProperty({ example: 'María González', description: 'Nombre de quien recibe el pedido' })
+  @ApiProperty({
+    example: 'María González',
+    description: 'Nombre de quien recibe el pedido',
+  })
   @IsString({ message: 'nombreReceptor debe ser un texto' })
   @IsNotEmpty({ message: 'nombreReceptor no puede estar vacío' })
   nombreReceptor: string;
@@ -28,7 +34,10 @@ export class DatoDespachoResponseDto extends DireccionResponseDto {
   @IsString({ message: 'instrucciones debe ser un texto' })
   instrucciones: string | null;
 
-  @ApiProperty({ example: true, description: 'Indica si es la dirección predeterminada' })
+  @ApiProperty({
+    example: true,
+    description: 'Indica si es la dirección predeterminada',
+  })
   @IsBoolean({ message: 'esPredeterminado debe ser verdadero o falso' })
   esPredeterminado: boolean;
 }

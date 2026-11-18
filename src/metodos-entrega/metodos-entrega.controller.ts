@@ -1,5 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  HttpCode,
+} from '@nestjs/common';
+import {
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MetodoEntregaResponseDto } from './dto/response-metodos-entrega.dto';
 import { MetodosEntregaService } from './metodos-entrega.service';
 import { CreateMetodosEntregaDto } from './dto/create-metodos-entrega.dto';
@@ -12,31 +27,33 @@ import { CotizacionEntregaResponseDto } from './dto/response-cotizar-entrega.dto
 export class MetodosEntregaController {
   constructor(private readonly metodosEntregaService: MetodosEntregaService) {}
 
-  @ApiOperation({ 
-    summary: 'Obtener todos los métodos de entrega' 
+  @ApiOperation({
+    summary: 'Obtener todos los métodos de entrega',
   })
-  @ApiOkResponse({ 
-    description: 'Lista de métodos de entrega obtenida correctamente' 
+  @ApiOkResponse({
+    description: 'Lista de métodos de entrega obtenida correctamente',
   })
   @Get()
   findAll() {
     return this.metodosEntregaService.findAll();
   }
 
-  @ApiOperation({ 
-    summary: 'Cotizar métodos de entrega para los productos y la comuna indicados' 
+  @ApiOperation({
+    summary:
+      'Cotizar métodos de entrega para los productos y la comuna indicados',
   })
   @ApiOkResponse({
     type: CotizacionEntregaResponseDto,
     description: 'Métodos evaluados para los productos y la comuna indicados',
   })
   @Post('cotizar')
+  @HttpCode(200)
   cotizar(@Body() cotizarEntregaDto: CotizarEntregaDto) {
     return this.metodosEntregaService.cotizar(cotizarEntregaDto);
   }
 
   @ApiOperation({
-    summary: 'Obtener un método de entrega por su ID' 
+    summary: 'Obtener un método de entrega por su ID',
   })
   @ApiOkResponse({
     type: MetodoEntregaResponseDto,
@@ -48,9 +65,9 @@ export class MetodosEntregaController {
   }
 
   @ApiOperation({
-    summary: 'Crear un nuevo método de entrega'
+    summary: 'Crear un nuevo método de entrega',
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: MetodoEntregaResponseDto,
     description: 'Método de entrega creado correctamente',
   })
@@ -60,7 +77,7 @@ export class MetodosEntregaController {
   }
 
   @ApiOperation({
-    summary: 'Actualizar un método de entrega por su ID'
+    summary: 'Actualizar un método de entrega por su ID',
   })
   @ApiOkResponse({
     type: MetodoEntregaResponseDto,
@@ -73,9 +90,9 @@ export class MetodosEntregaController {
   ) {
     return this.metodosEntregaService.update(id, updateMetodosEntregaDto);
   }
-  
+
   @ApiOperation({
-    summary: 'Eliminar un método de entrega por su ID'
+    summary: 'Eliminar un método de entrega por su ID',
   })
   @ApiOkResponse({
     description: 'Método de entrega eliminado correctamente',

@@ -1,4 +1,3 @@
-
 import { Controller, Post, Body } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CheckoutService } from './checkout.service';
@@ -16,8 +15,7 @@ export class CheckoutController {
   })
   @ApiResponse({
     status: 201,
-    description:
-      'Proceso de checkout iniciado correctamente (simulación).',
+    description: 'Proceso de checkout iniciado correctamente (simulación).',
     schema: {
       example: {
         mensaje: 'Proceso de checkout iniciado correctamente (simulación)',

@@ -10,6 +10,8 @@ export class UpdateEstadoPedidoDto {
     description: 'Nuevo estado del pedido',
   })
   @IsNotEmpty({ message: 'estado no debe estar vacío' }) // Validar que no esté vacío
-  @IsEnum(EstadoPedido, { message: 'estado debe ser un valor válido de EstadoPedido' }) // Validar que sea un valor del enum EstadoPedido
+  @IsEnum(EstadoPedido, {
+    message: 'estado debe ser un valor válido de EstadoPedido',
+  }) // Validar que sea un valor del enum EstadoPedido
   estado: EstadoPedido;
 }

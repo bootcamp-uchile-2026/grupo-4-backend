@@ -1,0 +1,251 @@
+
+-- ============================================================
+-- LaSobremesa - Datos de desarrollo
+-- ============================================================
+-- Requiere haber ejecutado previamente las migraciones.
+-- Ejecutar una sola vez sobre una base de datos limpia.
+-- ============================================================
+
+SET NAMES utf8mb4;
+
+START TRANSACTION;
+
+-- ============================================================
+-- 1. USUARIOS
+-- ============================================================
+
+INSERT INTO usuarios (
+  nombre,
+  apellido,
+  email,
+  password_hash,
+  rol_id,
+  email_verificado
+) VALUES
+(
+  'Proveedor',
+  'Conservas',
+  'proveedor.prueba@lasobremesa.cl',
+  '$argon2id$v=19$m=65536,t=3,p=4$yNUO716wCajGzCeAgogqcw$1dn6i7/dYWsFmyC/iEwGntV2l+aYQLjoshjRS7EJ6Ps',
+  (SELECT id FROM roles WHERE nombre = 'PROVEEDOR'),
+  TRUE
+),
+(
+  'Proveedor',
+  'Lacteos',
+  'proveedor.dos@lasobremesa.cl',
+  '$argon2id$v=19$m=65536,t=3,p=4$yNUO716wCajGzCeAgogqcw$1dn6i7/dYWsFmyC/iEwGntV2l+aYQLjoshjRS7EJ6Ps',
+  (SELECT id FROM roles WHERE nombre = 'PROVEEDOR'),
+  TRUE
+),
+(
+  'Cliente',
+  'Prueba',
+  'cliente.prueba@lasobremesa.cl',
+  '$argon2id$v=19$m=65536,t=3,p=4$LlA9jPWRASdmyXNZFaJYHw$AA7tHhFidRehPReB/SXB77DwLnzO915zxVpHsJRRklU',
+  (SELECT id FROM roles WHERE nombre = 'CLIENTE'),
+  TRUE
+),
+(
+  'Administrador',
+  'Prueba',
+  'admin.prueba@lasobremesa.cl',
+  '$argon2id$v=19$m=65536,t=3,p=4$yXJabzB/LDpcX6Yta2Oi7A$WowtOAfMN1EYzHYdfcqRU7d/wznx1ARsuW8UUK0mM2E',
+  (SELECT id FROM roles WHERE nombre = 'ADMIN'),
+  TRUE
+);
+
+-- ============================================================
+-- 2. CATEGORÍAS
+-- ============================================================
+-- Insertadas mediante la migración SeedCategorias:
+-- Lácteos, Mermeladas y Aceites.
+-- No se insertan nuevamente.
+
+-- ============================================
+-- PROVEEDORES
+-- ============================================
+
+INSERT INTO proveedores (
+  nombre,
+  descripcion,
+  email,
+  telefono,
+  usuario_id
+) VALUES
+(
+  'Conservas del Valle',
+  'Conservas y mermeladas artesanales',
+  'contacto@conservas.example',
+  '+56911111111',
+  (
+    SELECT id FROM usuarios
+    WHERE email = 'proveedor.prueba@lasobremesa.cl'
+  )
+),
+(
+  'Lácteos del Campo',
+  'Quesos y lácteos artesanales',
+  'contacto@lacteos.example',
+  '+56922222222',
+  (
+    SELECT id FROM usuarios
+    WHERE email = 'proveedor.dos@lasobremesa.cl'
+  )
+),
+(
+  'Oliva del Sur',
+  'Aceites artesanales',
+  'contacto@oliva.example',
+  '+56933333333',
+  NULL
+);
+
+-- ============================================================
+-- 4. PRODUCTOS
+-- ============================================================
+-- Los IDs se obtienen por nombre, sin asumir valores fijos.
+
+INSERT INTO productos (
+  categoria_id,
+  proveedor_id,
+  nombre,
+  descripcion,
+  ingredientes,
+  valor_nutricional,
+  tipo_conservacion,
+  fecha_vencimiento,
+  precio,
+  descuento,
+  stock_cantidad,
+  stock_minimo,
+  favorito,
+  activo
+) VALUES
+(
+  (SELECT id FROM categorias WHERE nombre = 'Mermeladas'),
+  (SELECT id FROM proveedores WHERE nombre = 'Conservas del Valle' LIMIT 1),
+  'Mermelada de frutilla',
+  'Mermelada artesanal de frutillas',
+  'Frutillas, azúcar y limón',
+  'No informado',
+  'Ambiente',
+  '2027-12-31',
+  5000,
+  10,
+  20, 5, TRUE, TRUE
+),
+(
+  (SELECT id FROM categorias WHERE nombre = 'Lácteos'),
+  (SELECT id FROM proveedores WHERE nombre = 'Lácteos del Campo' LIMIT 1),
+  'Queso de campo',
+  'Queso artesanal',
+  'Leche, sal y cultivos lácticos',
+  'No informado',
+  'Refrigerado',
+  '2027-12-31',
+  7500,
+  0,
+  20, 5, FALSE, TRUE
+),
+(
+  (SELECT id FROM categorias WHERE nombre = 'Aceites'),
+  (SELECT id FROM proveedores WHERE nombre = 'Oliva del Sur' LIMIT 1),
+  'Aceite de oliva',
+  'Aceite artesanal',
+  'Aceitunas',
+  'No informado',
+  'Ambiente',
+  '2027-12-31',
+  9000,
+  0,
+  20, 5, FALSE, TRUE
+),
+(
+  (SELECT id FROM categorias WHERE nombre = 'Lácteos'),
+  (SELECT id FROM proveedores WHERE nombre = 'Lácteos del Campo' LIMIT 1),
+  'Manjar casero',
+  'Manjar artesanal',
+  'Leche y azúcar',
+  'No informado',
+  'Refrigerado',
+  '2027-12-31',
+  4500,
+  0,
+  20, 5, FALSE, TRUE
+),
+(
+  (SELECT id FROM categorias WHERE nombre = 'Mermeladas'),
+  (SELECT id FROM proveedores WHERE nombre = 'Conservas del Valle' LIMIT 1),
+  'Mermelada de mora',
+  'Mermelada artesanal de moras',
+  'Moras, azúcar y limón',
+  'No informado',
+  'Ambiente',
+  '2027-12-31',
+  5500,
+  5,
+  20, 5, FALSE, TRUE
+),
+(
+  (SELECT id FROM categorias WHERE nombre = 'Lácteos'),
+  (SELECT id FROM proveedores WHERE nombre = 'Lácteos del Campo' LIMIT 1),
+  'Queso de cabra',
+  'Queso de cabra artesanal',
+  'Leche de cabra, sal y cultivos',
+  'No informado',
+  'Refrigerado',
+  '2027-12-31',
+  8500,
+  10,
+  20, 5, TRUE, TRUE
+),
+(
+  (SELECT id FROM categorias WHERE nombre = 'Aceites'),
+  (SELECT id FROM proveedores WHERE nombre = 'Oliva del Sur' LIMIT 1),
+  'Aceite de oliva extra virgen',
+  'Aceite extra virgen',
+  'Aceitunas',
+  'No informado',
+  'Ambiente',
+  '2027-12-31',
+  12000,
+  0,
+  20, 5, FALSE, TRUE
+);
+
+COMMIT;
+
+-- ============================================================
+-- 5. VERIFICACIÓN
+-- ============================================================
+
+SELECT COUNT(*) AS total_usuarios FROM usuarios;
+SELECT COUNT(*) AS total_categorias FROM categorias;
+SELECT COUNT(*) AS total_proveedores FROM proveedores;
+SELECT COUNT(*) AS total_productos FROM productos;
+
+SELECT
+  c.nombre AS categoria,
+  COUNT(p.id) AS total_productos
+FROM categorias c
+LEFT JOIN productos p ON p.categoria_id = c.id
+GROUP BY c.id, c.nombre
+ORDER BY c.id;
+
+SELECT
+  u.id AS usuario_id,
+  u.email,
+  r.nombre AS rol,
+  p.id AS proveedor_id,
+  p.nombre AS proveedor
+FROM usuarios u
+INNER JOIN roles r ON r.id = u.rol_id
+LEFT JOIN proveedores p ON p.usuario_id = u.id
+WHERE u.email IN (
+  'proveedor.prueba@lasobremesa.cl',
+  'proveedor.dos@lasobremesa.cl',
+  'cliente.prueba@lasobremesa.cl',
+  'admin.prueba@lasobremesa.cl'
+)
+ORDER BY u.id;

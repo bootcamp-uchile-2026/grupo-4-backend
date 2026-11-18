@@ -5,6 +5,7 @@ import { MensajeResponseDto } from './dto/mensaje-response.dto';
 import { SolicitarRecuperacionDto } from './dto/solicitar-recuperacion.dto';
 import { SolicitudRecuperacionResponseDto } from './dto/solicitud-recuperacion-response.dto';
 import { RecuperacionPasswordService } from './recuperacion-password.service';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Recuperación de contraseña')
 @Controller('recuperacion-password')
@@ -32,9 +33,10 @@ export class RecuperacionPasswordController {
     description: 'No existe un usuario con ese email.',
   })
   @Post()
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   solicitar(
     @Body() solicitarRecuperacionDto: SolicitarRecuperacionDto,
-  ): SolicitudRecuperacionResponseDto {
+  ): Promise<SolicitudRecuperacionResponseDto> {
     return this.recuperacionPasswordService.solicitar(solicitarRecuperacionDto);
   }
 
@@ -59,9 +61,11 @@ export class RecuperacionPasswordController {
   })
   @HttpCode(200)
   @Post('confirmar')
+  @Post('confirmar')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   confirmar(
     @Body() confirmarRecuperacionDto: ConfirmarRecuperacionDto,
-  ): MensajeResponseDto {
+  ): Promise<MensajeResponseDto> {
     return this.recuperacionPasswordService.confirmar(confirmarRecuperacionDto);
   }
 }

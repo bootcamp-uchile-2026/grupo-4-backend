@@ -3,7 +3,7 @@ import { DatosDespachoService } from './datos-despacho.service';
 import { DatosDespachoController } from './datos-despacho.controller';
 
 @Module({
-  controllers: [DatosDespachoController],
+  controllers: [],
   providers: [DatosDespachoService],
 })
 export class DatosDespachoModule {}

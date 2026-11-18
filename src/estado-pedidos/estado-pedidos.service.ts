@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateEstadoPedidoDto } from './dto/update-estado-pedido.dto';
+import { ActualizarEstadoPedidoDto } from './dto/update-estado-pedido.dto';
 
 @Injectable()
 export class EstadoPedidosService {
-
   findAll(pedidoId?: number) {
     return `This action returns all estadoPedidos`;
   }
@@ -12,7 +11,7 @@ export class EstadoPedidosService {
     return `This action returns a #${id} estadoPedido`;
   }
 
-  update(id: number, updateEstadoPedidoDto: UpdateEstadoPedidoDto) {
+  update(id: number, updateEstadoPedidoDto: ActualizarEstadoPedidoDto) {
     return `This action updates a #${id} estadoPedido`;
   }
 

@@ -1,7 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TipoConservacion } from '../enums/tipo-conservacion.enum';
-import { IsDate, IsEnum, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUrl, Matches, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
+
+import { TipoConservacion } from '../enums/tipo-conservacion.enum';
 
 export class CreateProductoDto {
   @ApiProperty({
@@ -31,7 +43,7 @@ export class CreateProductoDto {
     description: 'Ingredientes del producto',
   })
   @IsString({ message: 'ingredientes debe ser un texto' })
-  @IsNotEmpty({ message: 'ingredientes no puede estar vacío' })
+  @IsNotEmpty({ message: 'ingredientes no puede estar vacía' })
   @Matches(/\S/, {
     message: 'ingredientes no puede contener solo espacios',
   })
@@ -58,15 +70,17 @@ export class CreateProductoDto {
   @Min(1, { message: 'categoriaId debe ser un número positivo' })
   categoriaId: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 1,
     minimum: 1,
-    description: 'ID del proveedor del producto',
+    description:
+      'ID del proveedor. Obligatorio para ADMIN; se asigna automáticamente para PROVEEDOR.',
   })
+  @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'proveedorId debe ser un número entero' })
   @Min(1, { message: 'proveedorId debe ser un número positivo' })
-  proveedorId: number;
+  proveedorId?: number;
 
   @ApiProperty({
     example: 5990,
@@ -104,24 +118,23 @@ export class CreateProductoDto {
   @Max(100, { message: 'descuento debe ser menor o igual a 100' })
   descuento?: number;
 
-  @ApiPropertyOptional({
-    example: 'https://ejemplo.com/mermelada.jpg',
-    description: 'URL de la imagen del producto',
-  })
-  @IsOptional()
-  @IsUrl({}, {
-    message: 'imagen debe ser una URL válida',
-  })
-  imagen?: string;
-
   @ApiProperty({
     enum: TipoConservacion,
     example: TipoConservacion.REFRIGERADO,
     description: 'Tipo de conservación del producto',
   })
   @IsEnum(TipoConservacion, {
-    message:
-      'tipoConservacion debe ser AMBIENTE, REFRIGERADO o CONGELADO',
+    message: 'tipoConservacion debe ser AMBIENTE, REFRIGERADO o CONGELADO',
   })
   tipoConservacion: TipoConservacion;
+
+  @ApiPropertyOptional({
+    example: false,
+    description: 'Indica si el producto está destacado por la tienda',
+  })
+  @IsOptional()
+  @IsBoolean({
+    message: 'favorito debe ser un booleano',
+  })
+  favorito?: boolean;
 }

@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, IsUUID, Matches } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsInt, Matches } from 'class-validator';
 import { EstadoSeguimiento } from '../enums/estado-seguimiento.enum';
 
 export class CreateSeguimientoDespachoDto {
   @ApiProperty({
-    example: 'a3bb189e-8bf9-4888-9912-ace4e6543002',
+    example: 1,
     description: 'ID del despacho al que pertenece el seguimiento',
   })
-  @IsUUID('all', { message: 'despachoId debe ser un UUID válido' })
-  despachoId: string;
+  @IsInt({ message: 'despachoId debe ser un entero' })
+  despachoId: number;
 
   @ApiProperty({
     enum: EstadoSeguimiento,

@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CreatePedidoItemDto } from './create-pedido-item.dto';
-import { ArrayNotEmpty, IsArray, IsInt, IsPositive, Min, ValidateNested } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsInt,
+  IsPositive,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreatePedidoDto {

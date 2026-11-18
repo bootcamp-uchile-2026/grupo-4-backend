@@ -1,10 +1,21 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsDate, IsEnum, IsIn, IsInt, IsOptional, Max, Min } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsIn,
+  IsInt,
+  IsOptional,
+  Max,
+  Min,
+} from 'class-validator';
 import { EstadoPedido } from '../../pedidos/enums/estado-pedido.enum';
 
 export class HistorialPedidosQueryDto {
-  @ApiPropertyOptional({ enum: EstadoPedido, description: 'Filtra por estado del pedido' })
+  @ApiPropertyOptional({
+    enum: EstadoPedido,
+    description: 'Filtra por estado del pedido',
+  })
   @IsOptional()
   @IsEnum(EstadoPedido, { message: 'estado no es válido' })
   estado?: EstadoPedido;
@@ -34,14 +45,22 @@ export class HistorialPedidosQueryDto {
   @ApiPropertyOptional({
     enum: ['ASC', 'DESC'],
     default: 'DESC',
-    description: 'Orden por fecha de creación (más recientes primero por defecto)',
+    description:
+      'Orden por fecha de creación (más recientes primero por defecto)',
   })
   @IsOptional()
-  @Transform(({ value }) => (typeof value === 'string' ? value.toUpperCase() : value))
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.toUpperCase() : value,
+  )
   @IsIn(['ASC', 'DESC'], { message: 'order debe ser ASC o DESC' })
   order?: 'ASC' | 'DESC' = 'DESC';
 
-  @ApiPropertyOptional({ example: 1, minimum: 1, default: 1, description: 'Número de página' })
+  @ApiPropertyOptional({
+    example: 1,
+    minimum: 1,
+    default: 1,
+    description: 'Número de página',
+  })
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'page debe ser un número entero' })

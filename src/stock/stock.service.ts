@@ -1,86 +1,58 @@
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Producto } from '../productos/entities/producto.entity';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
-import { Stock } from './entities/stock.entity';
 
 @Injectable()
 export class StockService {
-  private stocks: Stock[] = [];
-
-  constructor() {
-    this.create({
-      productoId: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
-      cantidad: 50,
-      stockMinimo: 10,
-    });
-    this.create({
-      productoId: '550e8400-e29b-41d4-a716-446655440000',
-      cantidad: 5,
-      stockMinimo: 10,
-    });
+  constructor(
+    @InjectRepository(Producto)
+    private readonly productos: Repository<Producto>,
+  ) {}
+  private response(p: Producto) {
+    return {
+      id: p.id,
+      productoId: p.id,
+      cantidad: p.stock_cantidad,
+      stockMinimo: p.stock_minimo,
+    };
   }
-
-  create(createStockDto: CreateStockDto) {
-    const existe = this.stocks.find(
-      (s) => s.productoId === createStockDto.productoId,
-    );
-    if (existe) {
-      throw new ConflictException('El producto ya tiene un registro de stock.');
-    }
-
-    const stock = new Stock(
-      randomUUID(),
-      createStockDto.productoId,
-      createStockDto.cantidad,
-      createStockDto.stockMinimo,
-    );
-    this.stocks.push(stock);
-    return stock;
+  private async buscar(productoId: number): Promise<Producto> {
+    const p = await this.productos.findOneBy({ id: productoId });
+    if (!p) throw new NotFoundException('Producto no encontrado.');
+    return p;
   }
-
-  findAll() {
-    return this.stocks;
+  async findOne(productoId: number) {
+    return this.response(await this.buscar(productoId));
   }
-
-  findOne(productoId: string) {
-    const stock = this.stocks.find((s) => s.productoId === productoId);
-    if (!stock) {
-      throw new NotFoundException('No existe stock asociado al producto.');
-    }
-    return stock;
+  async create(dto: CreateStockDto) {
+    // El stock es parte de productos; no se crea una segunda fila ni una tabla stock.
+    const p = await this.buscar(dto.productoId);
+    p.stock_cantidad = dto.cantidad;
+    p.stock_minimo = dto.stockMinimo;
+    return this.response(await this.productos.save(p));
   }
-
-  update(productoId: string, updateStockDto: UpdateStockDto) {
-    const stock = this.findOne(productoId);
-
-    if (updateStockDto.productoId && updateStockDto.productoId !== productoId) {
-      const existe = this.stocks.find(
-        (s) => s.productoId === updateStockDto.productoId,
+  async update(productoId: number, dto: UpdateStockDto) {
+    if (dto.productoId !== undefined && dto.productoId !== productoId)
+      throw new BadRequestException(
+        'No se puede reasignar el stock a otro producto.',
       );
-      if (existe) {
-        throw new ConflictException(
-          'El producto ya tiene un registro de stock.',
-        );
-      }
-    }
-
-    for (const campo in updateStockDto) {
-      const valor = updateStockDto[campo];
-      if (valor !== undefined && valor !== null) {
-        stock[campo] = valor;
-      }
-    }
-
-    return stock;
+    const p = await this.buscar(productoId);
+    if (dto.cantidad !== undefined) p.stock_cantidad = dto.cantidad;
+    if (dto.stockMinimo !== undefined) p.stock_minimo = dto.stockMinimo;
+    return this.response(await this.productos.save(p));
   }
-
-  remove(productoId: string) {
-    this.findOne(productoId);
-    this.stocks = this.stocks.filter((s) => s.productoId !== productoId);
+  async remove(productoId: number): Promise<void> {
+    // No hay tabla stock: eliminar su registro equivale a poner ambas cantidades en cero.
+    const p = await this.buscar(productoId);
+    p.stock_cantidad = 0;
+    p.stock_minimo = 0;
+    await this.productos.save(p);
   }
 }
